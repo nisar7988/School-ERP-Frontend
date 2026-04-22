@@ -22,45 +22,48 @@ export function Topbar({
   }
 }: TopbarProps) {
   return (
-    <header className="h-20 px-10 flex items-center justify-between sticky top-0 bg-white/80 backdrop-blur-md z-30">
+    <header className="h-16 px-8 flex items-center justify-between sticky top-0 bg-white/90 backdrop-blur-md z-30 border-b border-gray-100">
       <div className="flex-1 flex items-center">
         {title ? (
-          <h1 className="text-xl font-bold text-gray-900 display-title">{title}</h1>
+          <h1 className="text-lg font-bold text-gray-900 display-title">{title}</h1>
         ) : showSearch ? (
-          <div className="w-96 relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-brand-orange transition-colors" />
+          <div className="w-80 relative group">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-brand-orange transition-colors" />
             <Input 
-              placeholder="Search students, courses..." 
-              className="pl-11 bg-gray-50/50 border-transparent focus:bg-white"
+              placeholder="Search students, classes..." 
+              className="pl-10 h-9 bg-gray-50 border-gray-100 focus:bg-white text-sm rounded-xl"
             />
           </div>
         ) : null}
       </div>
 
-      <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" className="relative text-gray-500">
-          <Bell className="w-5 h-5" />
-          <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+      <div className="flex items-center gap-1">
+        <Button variant="ghost" size="icon" className="relative text-gray-500 w-9 h-9">
+          <Bell className="w-4.5 h-4.5" />
+          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
         </Button>
-        <Button variant="ghost" size="icon" className="text-gray-500 lg:inline-flex hidden">
-          <HelpCircle className="w-5 h-5" />
-        </Button>
-        <Button variant="ghost" size="icon" className="text-gray-500 lg:inline-flex hidden">
-          <Settings className="w-5 h-5" />
+        <Button variant="ghost" size="icon" className="text-gray-500 lg:inline-flex hidden w-9 h-9">
+          <HelpCircle className="w-4.5 h-4.5" />
         </Button>
         
-        <div className="ml-4 flex items-center gap-3 pl-4 border-l border-gray-100">
-          <div className="text-right hidden sm:block">
-            <p className="text-sm font-bold text-gray-900 leading-none">{user.name}</p>
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mt-1">{user.role}</p>
+        <div className="ml-2 flex items-center gap-2.5 pl-3 border-l border-gray-100">
+          <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden ring-2 ring-brand-orange/10 ring-offset-1">
+            {user.avatar ? (
+              <img 
+                src={user.avatar} 
+                alt="User" 
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-brand-orange text-white font-bold text-sm">
+                {user.name.charAt(0)}
+              </div>
+            )}
           </div>
-          <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden ring-2 ring-brand-orange/10 ring-offset-2">
-            <img 
-              src={user.avatar} 
-              alt="User" 
-              className="w-full h-full object-cover"
-            />
-          </div>
+          <Button variant="ghost" size="sm" className="text-gray-700 font-semibold text-sm gap-1.5 h-8 px-2 hover:bg-gray-50">
+            <Settings className="w-3.5 h-3.5 text-gray-400" />
+            Settings
+          </Button>
         </div>
       </div>
     </header>
