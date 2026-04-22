@@ -142,15 +142,6 @@ export function Sidebar({ role: overrideRole }: SidebarProps) {
         </nav>
 
         <div className="mt-auto space-y-6">
-          <Button
-            variant="brand"
-            className="w-full h-12 shadow-md text-sm font-bold"
-          >
-            {currentRole === Role.ADMIN || currentRole === Role.TEACHER
-              ? 'Invite Member'
-              : '+ Join Class'}
-          </Button>
-
           <div className="space-y-1">
             <Button variant="ghost" className="w-full justify-start gap-3 h-10">
               <LifeBuoy className="w-5 h-5" />

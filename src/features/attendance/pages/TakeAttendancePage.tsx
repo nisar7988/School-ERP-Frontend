@@ -1,11 +1,12 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useRef, useEffect } from 'react'
 import {
-  ClipboardCheck,
   ArrowLeft,
   Loader2,
   Save,
-  Calendar as CalendarIcon,
-  Users,
+  ChevronDown,
+  MessageSquare,
+  CheckSquare,
+  X,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useClassesByTeacher } from '@/features/classes/queries/useClassesByTeacher'
@@ -14,11 +15,174 @@ import { useAttendanceMutations } from '../hooks/useAttendanceMutations'
 import { useAuthStore } from '@/features/auth/store'
 import { AttendanceStatus } from '../types'
 import { toast } from '@/lib/stores/toast.store'
-import { useNavigate } from '@tanstack/react-router'
 
 interface TakeAttendanceProps {
   onBack: () => void
   initialClassId?: string
+}
+
+// Initials + color helper
+const AVATAR_COLORS = [
+  '#F28B50', '#5B9BD5', '#6CC070', '#9B72CF', '#E88ABB', '#4BC5B8',
+]
+function getAvatarColor(name: string) {
+  let hash = 0
+  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + (hash << 5) - hash
+  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length]
+}
+function getInitials(first: string, last: string) {
+  return `${first?.[0] ?? ''}${last?.[0] ?? ''}`.toUpperCase()
+}
+
+// Toggle Switch component
+function AttendanceToggle({
+  checked,
+  onChange,
+}: {
+  checked: boolean
+  onChange: (v: boolean) => void
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      onClick={() => onChange(!checked)}
+      className={`relative inline-flex h-7 w-14 items-center rounded-full transition-colors duration-200 focus:outline-none ${
+        checked ? 'bg-green-500' : 'bg-gray-300'
+      }`}
+    >
+      <span
+        className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-transform duration-200 ${
+          checked ? 'translate-x-8' : 'translate-x-1'
+        }`}
+      />
+    </button>
+  )
+}
+
+// Dropdown for Late / Excused
+function StatusDropdown({
+  studentId,
+  currentStatus,
+  onSelect,
+}: {
+  studentId: string
+  currentStatus: AttendanceStatus
+  onSelect: (status: AttendanceStatus) => void
+}) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [])
+
+  const isSpecial =
+    currentStatus === AttendanceStatus.LATE ||
+    currentStatus === AttendanceStatus.EXCUSED
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className={`flex items-center justify-center w-8 h-8 rounded-full transition-colors ${
+          isSpecial
+            ? 'bg-orange-100 text-orange-500 border border-orange-200'
+            : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+        }`}
+      >
+        <ChevronDown className="w-4 h-4" />
+      </button>
+
+      {open && (
+        <div className="absolute right-0 top-10 z-50 w-28 bg-white rounded-xl shadow-xl border border-gray-100 py-1 overflow-hidden">
+          {[AttendanceStatus.LATE, AttendanceStatus.EXCUSED].map((s) => (
+            <button
+              key={s}
+              type="button"
+              onClick={() => {
+                onSelect(s)
+                setOpen(false)
+              }}
+              className={`w-full text-left px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-50 ${
+                currentStatus === s ? 'text-orange-500 font-bold' : 'text-gray-700'
+              }`}
+            >
+              {s.charAt(0) + s.slice(1).toLowerCase()}
+            </button>
+          ))}
+          {isSpecial && (
+            <button
+              type="button"
+              onClick={() => {
+                onSelect(AttendanceStatus.ABSENT)
+                setOpen(false)
+              }}
+              className="w-full text-left px-4 py-2 text-sm font-medium text-gray-400 hover:bg-gray-50 transition-colors"
+            >
+              Clear
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// Remark modal
+function RemarkModal({
+  studentName,
+  value,
+  onSave,
+  onClose,
+}: {
+  studentName: string
+  value: string
+  onSave: (v: string) => void
+  onClose: () => void
+}) {
+  const [text, setText] = useState(value)
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+      <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm space-y-4 mx-4">
+        <div className="flex items-center justify-between">
+          <h3 className="font-bold text-gray-900">Add Remark</h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <p className="text-sm text-gray-500">{studentName}</p>
+        <textarea
+          autoFocus
+          rows={3}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Type a remark..."
+          className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400 resize-none"
+        />
+        <div className="flex gap-3 justify-end">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => { onSave(text); onClose() }}
+            className="px-4 py-2 text-sm font-bold bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-colors"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export function TakeAttendancePage({
@@ -27,42 +191,59 @@ export function TakeAttendancePage({
 }: TakeAttendanceProps) {
   const user = useAuthStore((state) => state.user)
   const teacherId = user?.id
-  const navigate = useNavigate()
 
-  const [selectedClassId, setSelectedClassId] = useState<string>(
-    initialClassId || '',
-  )
+  const [selectedClassId, setSelectedClassId] = useState<string>(initialClassId || '')
   const [attendanceDate, setAttendanceDate] = useState<string>(
     new Date().toISOString().split('T')[0],
   )
-  const [studentStatuses, setStudentStatuses] = useState<
-    Record<string, AttendanceStatus>
-  >({})
+  const [studentStatuses, setStudentStatuses] = useState<Record<string, AttendanceStatus>>({})
   const [remarks, setRemarks] = useState<Record<string, string>>({})
+  const [remarkModal, setRemarkModal] = useState<{ id: string; name: string } | null>(null)
 
-  // Fetch data
-  const { data: classes, isLoading: isLoadingClasses } =
-    useClassesByTeacher(teacherId)
+  const { data: classes, isLoading: isLoadingClasses } = useClassesByTeacher(teacherId)
   const { data: allStudents = [], isLoading: isLoadingStudents } = useStudents(
     { classId: selectedClassId },
     { enabled: !!selectedClassId },
   )
   const { bulkCreateAttendance, isBulkCreating } = useAttendanceMutations()
 
-  React.useEffect(() => {
-    const initialStatuses: Record<string, AttendanceStatus> = {}
-    allStudents.forEach((student) => {
-      initialStatuses[student.id] = AttendanceStatus.PRESENT
-    })
-    setStudentStatuses(initialStatuses)
+  // Init statuses when students load
+  useEffect(() => {
+    const init: Record<string, AttendanceStatus> = {}
+    allStudents.forEach((s) => { init[s.id] = AttendanceStatus.PRESENT })
+    setStudentStatuses(init)
   }, [allStudents])
 
-  const handleStatusChange = (studentId: string, status: AttendanceStatus) => {
+  const selectedClass = useMemo(
+    () => classes?.find((c) => c.id === selectedClassId),
+    [classes, selectedClassId],
+  )
+
+  const markedPresentCount = useMemo(
+    () => Object.values(studentStatuses).filter((s) => s === AttendanceStatus.PRESENT).length,
+    [studentStatuses],
+  )
+
+  const formattedDate = useMemo(() => {
+    const d = new Date(attendanceDate + 'T00:00:00')
+    return d.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '/')
+  }, [attendanceDate])
+
+  const handleToggle = (studentId: string, isPresent: boolean) => {
+    setStudentStatuses((prev) => ({
+      ...prev,
+      [studentId]: isPresent ? AttendanceStatus.PRESENT : AttendanceStatus.ABSENT,
+    }))
+  }
+
+  const handleSpecialStatus = (studentId: string, status: AttendanceStatus) => {
     setStudentStatuses((prev) => ({ ...prev, [studentId]: status }))
   }
 
-  const handleRemarkChange = (studentId: string, remark: string) => {
-    setRemarks((prev) => ({ ...prev, [studentId]: remark }))
+  const handleMarkAllPresent = () => {
+    const all: Record<string, AttendanceStatus> = {}
+    allStudents.forEach((s) => { all[s.id] = AttendanceStatus.PRESENT })
+    setStudentStatuses(all)
   }
 
   const handleSubmit = async () => {
@@ -70,7 +251,6 @@ export function TakeAttendancePage({
       toast.error('Please select a class')
       return
     }
-
     const attendanceData = allStudents.map((student) => ({
       studentId: student.id,
       classId: selectedClassId,
@@ -78,187 +258,217 @@ export function TakeAttendancePage({
       status: studentStatuses[student.id] || AttendanceStatus.PRESENT,
       remarks: remarks[student.id] || '',
     }))
-
     try {
       await bulkCreateAttendance(attendanceData)
       onBack()
-    } catch (error) {
-      // Error handled in mutation toast
+    } catch {
+      // handled in mutation
     }
   }
 
-  if (isLoadingClasses || isLoadingStudents) {
+  // Loading state
+  if (isLoadingClasses) {
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-4">
-        <Loader2 className="w-10 h-10 animate-spin text-brand-orange" />
-        <p className="text-gray-500 font-medium">
-          Loading class and student data...
-        </p>
+        <Loader2 className="w-10 h-10 animate-spin text-orange-500" />
+        <p className="text-gray-400 font-medium">Loading classes...</p>
       </div>
     )
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 font-sans pb-20">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="space-y-1">
-          <button
-            onClick={onBack}
-            className="flex items-center gap-2 text-sm font-bold text-brand-orange hover:text-brand-orange/80 transition-colors mb-2"
-          >
-            <ArrowLeft className="w-4 h-4" /> Back to History
-          </button>
-          <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight flex items-center gap-3">
-            Take Attendance
-            <ClipboardCheck className="w-8 h-8 text-brand-orange" />
-          </h1>
-          <p className="text-gray-500 font-semibold">
-            Mark daily attendance for your students.
-          </p>
-        </div>
+    <>
+      {remarkModal && (
+        <RemarkModal
+          studentName={remarkModal.name}
+          value={remarks[remarkModal.id] || ''}
+          onSave={(v) => setRemarks((prev) => ({ ...prev, [remarkModal.id]: v }))}
+          onClose={() => setRemarkModal(null)}
+        />
+      )}
 
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">
-              Select Class
-            </label>
-            <select
-              value={selectedClassId}
-              onChange={(e) => setSelectedClassId(e.target.value)}
-              className="h-12 px-4 rounded-2xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10 font-bold text-gray-700 min-w-[200px]"
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 font-sans pb-24 space-y-6">
+        {/* ── Top bar ── */}
+        <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+          {/* Left: back + title */}
+          <div className="space-y-1">
+            <button
+              onClick={onBack}
+              className="flex items-center gap-1.5 text-sm font-semibold text-orange-500 hover:text-orange-600 transition-colors"
             >
-              <option value="">Choose Class</option>
-              {classes?.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name} - {c.section}
-                </option>
-              ))}
-            </select>
+              <ArrowLeft className="w-4 h-4" />
+              Back to History
+            </button>
+            <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+              {selectedClass
+                ? `Attendance - ${selectedClass.name} ${selectedClass.section ?? ''} | ${formattedDate}`
+                : 'Attendance'}
+            </h1>
+            <p className="text-sm text-gray-500">Mark presence for the class.</p>
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">
-              Date
-            </label>
-            <input
-              type="date"
-              value={attendanceDate}
-              onChange={(e) => setAttendanceDate(e.target.value)}
-              className="h-12 px-4 rounded-2xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10 font-bold text-gray-700"
-            />
-          </div>
-        </div>
-      </div>
-
-      {!selectedClassId ? (
-        <div className="bg-white rounded-[2.5rem] p-12 text-center border-2 border-dashed border-gray-100 space-y-4">
-          <div className="w-16 h-16 bg-brand-peach/30 rounded-full flex items-center justify-center mx-auto">
-            <Users className="w-8 h-8 text-brand-orange" />
-          </div>
-          <h3 className="text-xl font-bold text-gray-900">No Class Selected</h3>
-          <p className="text-gray-500 max-w-xs mx-auto">
-            Please select a class from the dropdown above to start taking
-            attendance.
-          </p>
-        </div>
-      ) : allStudents.length === 0 ? (
-        <div className="bg-white rounded-[2.5rem] p-12 text-center border-2 border-dashed border-gray-100 space-y-4">
-          <h3 className="text-xl font-bold text-gray-900">No Students Found</h3>
-          <p className="text-gray-500">
-            This class doesn't seem to have any students assigned to it yet.
-          </p>
-        </div>
-      ) : (
-        <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-gray-200/50 overflow-hidden border border-gray-50">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="bg-gray-50/50 border-b border-gray-100">
-                  <th className="px-8 py-6 text-left text-xs font-extrabold text-gray-400 uppercase tracking-[0.2em]">
-                    Student
-                  </th>
-                  <th className="px-8 py-6 text-center text-xs font-extrabold text-gray-400 uppercase tracking-[0.2em]">
-                    Status
-                  </th>
-                  <th className="px-8 py-6 text-left text-xs font-extrabold text-gray-400 uppercase tracking-[0.2em]">
-                    Remarks
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {allStudents.map((student) => (
-                  <tr
-                    key={student.id}
-                    className="hover:bg-gray-50/30 transition-colors group"
-                  >
-                    <td className="px-8 py-6">
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-brand-peach flex items-center justify-center font-bold text-brand-orange">
-                          {student.user?.firstName?.[0] || '?'}
-                          {student.user?.lastName?.[0] || ''}
-                        </div>
-                        <div>
-                          <p className="font-bold text-gray-900 group-hover:text-brand-orange transition-colors">
-                            {student.user?.firstName || 'Unknown'} {student.user?.lastName || 'Student'}
-                          </p>
-                          <p className="text-xs font-bold text-gray-400">
-                            Roll: {student.rollNo || 'N/A'}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-8 py-6">
-                      <div className="flex items-center justify-center gap-2 bg-gray-50 p-1.5 rounded-2xl w-fit mx-auto">
-                        {Object.values(AttendanceStatus).map((status) => (
-                          <button
-                            key={status}
-                            onClick={() =>
-                              handleStatusChange(student.id, status)
-                            }
-                            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 ${
-                              studentStatuses[student.id] === status
-                                ? status === AttendanceStatus.PRESENT
-                                  ? 'bg-green-500 text-white shadow-lg shadow-green-100'
-                                  : status === AttendanceStatus.ABSENT
-                                    ? 'bg-red-500 text-white shadow-lg shadow-red-100'
-                                    : 'bg-orange-500 text-white shadow-lg shadow-orange-100'
-                                : 'text-gray-400 hover:text-gray-600 hover:bg-white'
-                            }`}
-                          >
-                            {status}
-                          </button>
-                        ))}
-                      </div>
-                    </td>
-                    <td className="px-8 py-6">
-                      <input
-                        type="text"
-                        placeholder="Add a note..."
-                        value={remarks[student.id] || ''}
-                        onChange={(e) =>
-                          handleRemarkChange(student.id, e.target.value)
-                        }
-                        className="w-full bg-gray-50 border-transparent focus:border-brand-orange focus:bg-white rounded-xl h-10 px-4 text-sm font-medium transition-all"
-                      />
-                    </td>
-                  </tr>
+          {/* Right: class selector + date */}
+          <div className="flex items-end gap-4 flex-shrink-0">
+            <div className="flex flex-col gap-1">
+              <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Select Class</span>
+              <select
+                value={selectedClassId}
+                onChange={(e) => setSelectedClassId(e.target.value)}
+                className="h-10 px-3 rounded-lg border border-gray-200 bg-white text-sm font-semibold text-gray-700 focus:outline-none focus:border-orange-400 min-w-[140px] shadow-sm"
+              >
+                <option value="">Choose Class</option>
+                {classes?.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name} {c.section ?? ''}
+                  </option>
                 ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="p-8 bg-gray-50/50 border-t border-gray-100 flex justify-between items-center">
-            <div className="text-sm font-bold text-gray-500">
-              Total Students:{' '}
-              <span className="text-gray-900">{allStudents.length}</span>
+              </select>
             </div>
+
+            <div className="flex flex-col gap-1">
+              <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Date</span>
+              <input
+                type="date"
+                value={attendanceDate}
+                onChange={(e) => setAttendanceDate(e.target.value)}
+                className="h-10 px-3 rounded-lg border border-gray-200 bg-white text-sm font-semibold text-gray-700 focus:outline-none focus:border-orange-400 shadow-sm"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* ── No class selected ── */}
+        {!selectedClassId ? (
+          <div className="bg-white rounded-2xl border-2 border-dashed border-gray-100 p-16 text-center space-y-3">
+            <p className="text-gray-400 font-medium">Select a class above to start marking attendance.</p>
+          </div>
+        ) : isLoadingStudents ? (
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
+          </div>
+        ) : allStudents.length === 0 ? (
+          <div className="bg-white rounded-2xl border-2 border-dashed border-gray-100 p-16 text-center space-y-3">
+            <p className="text-gray-600 font-semibold">No students found in this class.</p>
+          </div>
+        ) : (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            {/* ── Mark All + Counter row ── */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+              <button
+                type="button"
+                onClick={handleMarkAllPresent}
+                className="flex items-center gap-2 text-sm font-semibold text-gray-600 border border-gray-200 rounded-lg px-4 py-2 hover:bg-gray-50 transition-colors"
+              >
+                <CheckSquare className="w-4 h-4 text-gray-500" />
+                Mark All Present
+              </button>
+              <span className="text-sm font-semibold text-gray-500">
+                Marked:{' '}
+                <span className="text-gray-800 font-bold">
+                  {markedPresentCount} of {allStudents.length}
+                </span>
+              </span>
+            </div>
+
+            {/* ── Student rows ── */}
+            <ul className="divide-y divide-gray-100">
+              {allStudents.map((student, idx) => {
+                const firstName = student.user?.firstName ?? 'Unknown'
+                const lastName = student.user?.lastName ?? ''
+                const fullName = `${firstName} ${lastName}`.trim()
+                const initials = getInitials(firstName, lastName)
+                const avatarColor = getAvatarColor(fullName)
+                const status = studentStatuses[student.id] ?? AttendanceStatus.PRESENT
+                const isPresent = status === AttendanceStatus.PRESENT
+                const isAbsent = status === AttendanceStatus.ABSENT
+                const isSpecial = status === AttendanceStatus.LATE || status === AttendanceStatus.EXCUSED
+                const hasRemark = !!remarks[student.id]
+
+                return (
+                  <li
+                    key={student.id}
+                    className="flex items-center gap-4 px-6 py-4 hover:bg-gray-50/60 transition-colors"
+                  >
+                    {/* Avatar */}
+                    <div
+                      className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
+                      style={{ backgroundColor: avatarColor }}
+                    >
+                      {initials}
+                    </div>
+
+                    {/* Name + Roll */}
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-gray-900 text-sm leading-tight">{fullName}</p>
+                      <p className="text-xs text-gray-400 font-medium">Roll {student.rollNo ?? idx + 1}</p>
+                    </div>
+
+                    {/* Present / Absent toggle */}
+                    <div className="flex items-center gap-3 flex-shrink-0">
+                      <span
+                        className={`text-sm font-semibold transition-colors ${
+                          isPresent || isSpecial ? 'text-gray-800' : 'text-gray-400'
+                        }`}
+                      >
+                        Present
+                      </span>
+
+                      <AttendanceToggle
+                        checked={isPresent || isSpecial}
+                        onChange={(checked) => {
+                          if (checked) {
+                            handleToggle(student.id, true)
+                          } else {
+                            handleToggle(student.id, false)
+                          }
+                        }}
+                      />
+
+                      <span
+                        className={`text-sm font-semibold transition-colors ${
+                          isAbsent ? 'text-red-500' : 'text-gray-400'
+                        }`}
+                      >
+                        Absent
+                      </span>
+                    </div>
+
+                    {/* Late / Excused dropdown */}
+                    <StatusDropdown
+                      studentId={student.id}
+                      currentStatus={status}
+                      onSelect={(s) => handleSpecialStatus(student.id, s)}
+                    />
+
+                    {/* Remark icon */}
+                    <button
+                      type="button"
+                      onClick={() => setRemarkModal({ id: student.id, name: fullName })}
+                      title="Add remark"
+                      className={`flex items-center justify-center w-8 h-8 rounded-full transition-colors ${
+                        hasRemark
+                          ? 'text-orange-500 bg-orange-50 border border-orange-200'
+                          : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
+                      }`}
+                    >
+                      <MessageSquare className="w-4 h-4" />
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        )}
+
+        {/* ── Sticky save button ── */}
+        {selectedClassId && allStudents.length > 0 && (
+          <div className="fixed bottom-6 right-6 z-40">
             <Button
               variant="brand"
               size="lg"
               onClick={handleSubmit}
               disabled={isBulkCreating}
-              className="gap-2 h-14 px-10 rounded-2xl shadow-xl shadow-orange-100 font-bold text-base"
+              className="gap-2 h-13 px-8 rounded-2xl shadow-2xl shadow-orange-200 font-bold text-base"
             >
               {isBulkCreating ? (
                 <>
@@ -268,13 +478,13 @@ export function TakeAttendancePage({
               ) : (
                 <>
                   <Save className="w-5 h-5" />
-                  Finalize Attendance
+                  Save Attendance
                 </>
               )}
             </Button>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   )
 }
