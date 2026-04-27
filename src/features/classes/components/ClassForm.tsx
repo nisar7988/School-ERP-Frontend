@@ -147,7 +147,7 @@ export function ClassForm({
                     <option value="">Select a Faculty Member</option>
                     {teachers?.map((teacher: TeacherWithRelations) => (
                       <option key={teacher.id} value={teacher.id}>
-                        {teacher.user.firstName} {teacher.user.lastName} (
+                        {teacher.user?.firstName || 'Unknown'} {teacher.user?.lastName || 'Teacher'} (
                         {teacher.employeeId})
                       </option>
                     ))}

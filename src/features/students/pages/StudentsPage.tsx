@@ -1,5 +1,5 @@
 import React from 'react'
-import { Plus, Search, Filter, Loader2, GraduationCap } from 'lucide-react'
+import { Plus, Search, Filter, Loader2, GraduationCap, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { StudentTable } from '../components/StudentTable'
@@ -29,14 +29,7 @@ export function StudentsPage() {
     return () => clearTimeout(timer)
   }, [searchQuery])
 
-  const {
-    data: studentsResponse,
-    isLoading: studentsLoading,
-    error: studentsError,
-  } = useStudents({ search: debouncedSearch, page })
-
-  const students = studentsResponse?.data || []
-  const meta = studentsResponse?.meta
+  const [selectedClassId, setSelectedClassId] = React.useState('')
 
   const { data: adminClassesResponse, isLoading: adminClassesLoading } = useClasses(
     { limit: 100 },
@@ -47,6 +40,25 @@ export function StudentsPage() {
     
   const adminClasses = adminClassesResponse?.data || []
   const teacherClasses = teacherClassesResponse?.data || []
+  const classes = isAdmin ? adminClasses : teacherClasses
+
+  React.useEffect(() => {
+    if (classes.length > 0 && !selectedClassId) {
+      setSelectedClassId(classes[0].id)
+    }
+  }, [classes, selectedClassId])
+
+  const {
+    data: studentsResponse,
+    isLoading: studentsLoading,
+    error: studentsError,
+  } = useStudents(
+    { search: debouncedSearch, page, classId: selectedClassId },
+    { enabled: !!selectedClassId }
+  )
+
+  const students = studentsResponse?.data || []
+  const meta = studentsResponse?.meta
 
   const isLoading =
     studentsLoading || (isAdmin ? adminClassesLoading : teacherClassesLoading)
@@ -105,8 +117,8 @@ export function StudentsPage() {
     </div>
 
     {/* Filters and Search */}
-    <div className="flex flex-col md:flex-row gap-4">
-      <div className="relative flex-1 group">
+    <div className="flex flex-col lg:flex-row gap-4 items-center">
+      <div className="relative flex-1 group w-full">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-orange transition-colors" />
         <Input
           placeholder="Search by name or admission number..."
@@ -115,12 +127,34 @@ export function StudentsPage() {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
-      <Button
-        variant="outline"
-        className="h-14 rounded-3xl gap-2 font-bold text-gray-600 bg-white shadow-sm"
-      >
-        <Filter className="w-5 h-5 text-gray-400" /> Filters
-      </Button>
+
+      <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+        <div className="relative min-w-[200px] w-full sm:w-auto">
+          <select
+            value={selectedClassId}
+            onChange={(e) => {
+              setSelectedClassId(e.target.value)
+              setPage(1)
+            }}
+            className="w-full h-14 pl-5 pr-10 rounded-3xl border border-gray-100 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-orange/10 font-bold text-gray-700 appearance-none cursor-pointer hover:border-brand-orange/30 transition-all"
+          >
+            <option value="">Select Class</option>
+            {classes.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name} {c.section ?? ''}
+              </option>
+            ))}
+          </select>
+          <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+        </div>
+
+        <Button
+          variant="outline"
+          className="h-14 rounded-3xl gap-2 font-bold text-gray-600 bg-white shadow-sm px-8"
+        >
+          <Filter className="w-5 h-5 text-gray-400" /> Filters
+        </Button>
+      </div>
     </div>
 
     {/* Loading state or Table */}

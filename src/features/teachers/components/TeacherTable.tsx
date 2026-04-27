@@ -78,15 +78,15 @@ export function TeacherTable({ teachers }: TeacherTableProps) {
                 <td className="px-8 py-6">
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-peach to-white border border-brand-orange/20 flex items-center justify-center text-brand-orange font-black text-lg shadow-sm group-hover:scale-105 transition-transform">
-                      {teacher.user.firstName[0]}
-                      {teacher.user.lastName[0]}
+                      {teacher.user?.firstName?.[0] || 'T'}
+                      {teacher.user?.lastName?.[0] || ''}
                     </div>
                     <div>
                       <div className="font-extrabold text-gray-900 group-hover:text-brand-orange transition-colors">
-                        {teacher.user.firstName} {teacher.user.lastName}
+                        {teacher.user?.firstName || 'Unknown'} {teacher.user?.lastName || 'Teacher'}
                       </div>
                       <div className="text-xs text-gray-500 flex items-center gap-1.5 font-medium mt-1">
-                        <Mail className="w-3.5 h-3.5 text-gray-400" /> {teacher.user.email}
+                        <Mail className="w-3.5 h-3.5 text-gray-400" /> {teacher.user?.email || 'No email'}
                       </div>
                     </div>
                   </div>
@@ -151,7 +151,7 @@ export function TeacherTable({ teachers }: TeacherTableProps) {
                       onClick={() =>
                         handleDeleteClick(
                           teacher.id,
-                          `${teacher.user.firstName} ${teacher.user.lastName}`,
+                          `${teacher.user?.firstName || 'Unknown'} ${teacher.user?.lastName || 'Teacher'}`,
                         )
                       }
                     >

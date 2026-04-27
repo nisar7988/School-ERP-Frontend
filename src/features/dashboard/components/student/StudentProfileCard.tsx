@@ -1,6 +1,25 @@
 import { Badge } from "@/components/ui/badge"
+import { useAuthStore } from "@/features/auth/store"
+import { useStudent } from "@/features/students/queries/useStudent"
 
 export function StudentProfileCard() {
+  const user = useAuthStore((state) => state.user)
+  
+  // Use user.id as the student ID if profile is missing
+  const studentId = user?.studentProfile?.id || user?.id
+  
+  const { data: fetchedProfile } = useStudent(studentId || '', {
+    enabled: !!studentId
+  })
+
+  const studentProfile = user?.studentProfile || fetchedProfile
+
+  const name = studentProfile ? `${user?.firstName} ${user?.lastName}` : "Unknown Student"
+  const admissionNo = studentProfile?.admissionNo || "N/A"
+  const classInfo = studentProfile && (studentProfile as any).enrollments?.[0]?.class 
+    ? `${(studentProfile as any).enrollments[0].class.name} - ${(studentProfile as any).enrollments[0].class.section}`
+    : "No Class Assigned"
+
   return (
     <div className="bg-gradient-to-br from-brand-peach/40 to-white border border-brand-taupe/30 rounded-[32px] p-8 relative overflow-hidden group">
       {/* Decorative background element */}
@@ -8,12 +27,8 @@ export function StudentProfileCard() {
       
       <div className="flex items-center gap-8 relative z-10">
         <div className="relative">
-          <div className="w-32 h-32 rounded-full overflow-hidden ring-[6px] ring-white shadow-xl shadow-brand-taupe/50 transition-transform duration-500 group-hover:scale-105">
-            <img 
-              src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200" 
-              alt="Alex Mercer" 
-              className="w-full h-full object-cover"
-            />
+          <div className="w-32 h-32 rounded-full overflow-hidden ring-[6px] ring-white shadow-xl shadow-brand-taupe/50 transition-transform duration-500 group-hover:scale-105 bg-brand-peach/20 flex items-center justify-center text-3xl font-black text-brand-orange">
+            {user?.firstName?.[0]}{user?.lastName?.[0]}
           </div>
           <div className="absolute bottom-1 right-1 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-md">
             <div className="w-4 h-4 bg-green-500 rounded-full border-2 border-white" />
@@ -23,29 +38,28 @@ export function StudentProfileCard() {
         <div className="space-y-4 flex-1">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
-              <h2 className="text-3xl font-extrabold text-gray-900 display-title leading-none">Alex Mercer</h2>
-              <p className="text-gray-500 font-bold ml-0.5">Computer Science, B.S. · Sophomore</p>
+              <h2 className="text-3xl font-extrabold text-gray-900 display-title leading-none">{name}</h2>
+              <p className="text-gray-500 font-bold ml-0.5">{classInfo}</p>
             </div>
             <Badge variant="outline" className="bg-brand-peach text-brand-orange border-brand-orange/20 font-bold px-4 py-1.5 rounded-full text-[10px] uppercase tracking-widest shadow-sm">
-              Good Standing
+              ID: {admissionNo}
             </Badge>
           </div>
 
           <div className="grid grid-cols-3 gap-4 mt-6">
             <div className="bg-white/80 backdrop-blur-sm border border-gray-100 p-4 rounded-2xl shadow-sm transition-all duration-300 hover:shadow-md hover:border-brand-taupe">
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">GPA</p>
-              <p className="text-2xl font-extrabold text-gray-900 tracking-tight">3.84</p>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Status</p>
+              <p className="text-2xl font-extrabold text-gray-900 tracking-tight">Active</p>
             </div>
             <div className="bg-white/80 backdrop-blur-sm border border-gray-100 p-4 rounded-2xl shadow-sm transition-all duration-300 hover:shadow-md hover:border-brand-taupe">
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Credits</p>
-              <p className="text-2xl font-extrabold text-gray-900 tracking-tight">42/120</p>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Joined</p>
+              <p className="text-2xl font-extrabold text-gray-900 tracking-tight">
+                {studentProfile ? new Date(studentProfile.createdAt).getFullYear() : "N/A"}
+              </p>
             </div>
             <div className="bg-white/80 backdrop-blur-sm border border-gray-100 p-4 rounded-2xl shadow-sm transition-all duration-300 hover:shadow-md hover:border-brand-taupe">
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Advisor</p>
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full bg-brand-orange flex items-center justify-center text-[10px] text-white font-bold">SR</div>
-                <p className="text-sm font-bold text-gray-900">Dr. Sarah Reed</p>
-              </div>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Roll No</p>
+              <p className="text-2xl font-extrabold text-gray-900 tracking-tight">{studentProfile?.rollNo || "N/A"}</p>
             </div>
           </div>
         </div>

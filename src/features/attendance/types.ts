@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { AttendanceStatus } from '../students/types'
-import type { Student } from '../students/types'
+import type { Student, PaginatedMeta } from '../students/types'
 
 export { AttendanceStatus }
 
@@ -37,6 +37,23 @@ export const UpdateAttendanceSchema = CreateAttendanceSchema.partial()
 export type CreateAttendanceDto = z.infer<typeof CreateAttendanceSchema>
 export type UpdateAttendanceDto = z.infer<typeof UpdateAttendanceSchema>
 
+export interface StudentAttendanceResponse {
+  success: boolean
+  message: string
+  data: {
+    data: Attendance[]
+    meta: PaginatedMeta
+    stats: {
+      total: number
+      present: number
+      absent: number
+      late: number
+      excused: number
+      percentage: number
+    }
+  }
+}
+
 export interface AttendanceFilters {
   page?: number
   limit?: number
@@ -45,5 +62,6 @@ export interface AttendanceFilters {
   order?: 'asc' | 'desc'
   status?: AttendanceStatus
   date?: string
+  month?: string
   classId?: string
 }

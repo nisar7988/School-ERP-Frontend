@@ -1,5 +1,17 @@
+import { useStudentAttendance } from '@/features/attendance/queries/useStudentAttendance'
+import { useAuthStore } from '@/features/auth/store'
+
 export function OverallAttendance() {
-  const percentage = 92
+  const user = useAuthStore((state) => state.user)
+  // Always use user.id for attendance requests
+  const studentId = user?.id
+
+  const { data: response } = useStudentAttendance(studentId || '')
+
+  const stats = response?.data?.stats
+  const percentage = stats?.percentage || 0
+  const missedClasses = stats?.absent || 0
+
   const strokeWidth = 6
   const radius = 80
   const circumference = 2 * Math.PI * radius
@@ -40,7 +52,7 @@ export function OverallAttendance() {
 
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className="text-5xl font-black text-gray-900 tracking-tighter">
-            {percentage}
+            {Math.round(percentage)}
             <span className="text-2xl text-brand-orange">%</span>
           </span>
         </div>
@@ -48,8 +60,9 @@ export function OverallAttendance() {
 
       <p className="text-sm font-medium text-gray-500 max-w-[200px] leading-relaxed">
         You have missed{' '}
-        <span className="font-bold text-gray-900">2 classes</span> this
-        semester. Excellent standing.
+        <span className="font-bold text-gray-900">{missedClasses} classes</span>{' '}
+        this semester. {percentage >= 75 ? 'Excellent' : 'Needs improvement'}{' '}
+        standing.
       </p>
     </div>
   )

@@ -3,7 +3,7 @@ import type {
   StudentWithRelations,
   TeacherWithRelations,
 } from '../students/types'
-import type { SchoolClass as BaseSchoolClass } from '../../types/base.types'
+import type { SchoolClass as BaseSchoolClass, Enrollment } from '../../types/base.types'
 import type { PaginatedResponse, SingleResponse, BaseQuery } from '../../types/base.types'
 import type { Subject } from '../../types/base.types'
 
@@ -41,7 +41,7 @@ export type ClassStaff = {
 }
 
 export type SchoolClassWithRelations = SchoolClass & {
-  students: StudentWithRelations[]
+  students: (Enrollment & { student: StudentWithRelations })[]
   subjects: Subject[]
   staff: ClassStaff[]
   academicYear?: AcademicYear

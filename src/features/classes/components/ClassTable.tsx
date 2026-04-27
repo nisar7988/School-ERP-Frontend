@@ -6,6 +6,7 @@ import {
   BookOpen,
   ClipboardCheck,
   History,
+  Eye,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -86,7 +87,7 @@ export function ClassTable({ classes }: ClassTableProps) {
                 <td className="px-6 py-5 text-gray-600 font-medium italic font-sans">
                   {cls.staff?.find((s) => s.role === ClassRole.INCHARGE)
                     ?.teacher ? (
-                    `${cls.staff.find((s) => s.role === ClassRole.INCHARGE)?.teacher?.user.firstName} ${cls.staff.find((s) => s.role === ClassRole.INCHARGE)?.teacher?.user.lastName}`
+                    `${cls.staff.find((s) => s.role === ClassRole.INCHARGE)?.teacher?.user?.firstName || 'Unknown'} ${cls.staff.find((s) => s.role === ClassRole.INCHARGE)?.teacher?.user?.lastName || 'Teacher'}`
                   ) : (
                     <span className="text-gray-400 italic font-sans">
                       Not Assigned
@@ -102,31 +103,50 @@ export function ClassTable({ classes }: ClassTableProps) {
                 <td className="px-6 py-5 text-right">
                   <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <Link
-                      to="/teacher/attendance"
-                      search={{ classId: cls.id, view: 'take' }}
-                    >
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-9 w-9 rounded-xl hover:bg-green-50 hover:text-green-600 transition-all"
-                        title="Take Attendance"
-                      >
-                        <ClipboardCheck className="w-4 h-4" />
-                      </Button>
-                    </Link>
-                    <Link
-                      to="/teacher/attendance"
-                      search={{ classId: cls.id, view: 'history' }}
+                      to="/classes/$id/"
+                      params={{ id: cls.id }}
+                      onClick={() => console.log(cls.id)}
                     >
                       <Button
                         variant="ghost"
                         size="icon"
                         className="h-9 w-9 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-all"
-                        title="View Attendance History"
+                        title="View Class Details"
                       >
-                        <History className="w-4 h-4" />
+                        <Eye className="w-4 h-4" />
                       </Button>
                     </Link>
+                    {!isAdmin && (
+                      <>
+                        {' '}
+                        <Link
+                          to="/teacher/attendance"
+                          search={{ classId: cls.id, view: 'take' }}
+                        >
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-9 w-9 rounded-xl hover:bg-green-50 hover:text-green-600 transition-all"
+                            title="Take Attendance"
+                          >
+                            <ClipboardCheck className="w-4 h-4" />
+                          </Button>
+                        </Link>
+                        <Link
+                          to="/teacher/attendance"
+                          search={{ classId: cls.id, view: 'history' }}
+                        >
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-9 w-9 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-all"
+                            title="View Attendance History"
+                          >
+                            <History className="w-4 h-4" />
+                          </Button>
+                        </Link>
+                      </>
+                    )}
 
                     {isAdmin && (
                       <>

@@ -1,5 +1,5 @@
 import { useParams, Link } from '@tanstack/react-router'
-import { ArrowLeft, UserEdit } from 'lucide-react'
+import { ArrowLeft, User } from 'lucide-react'
 import { StudentForm } from '../components/StudentForm'
 import { useStudent } from '../queries/useStudent'
 import { useUpdateStudent } from '../hooks/useStudentMutations'
@@ -65,7 +65,7 @@ export function EditStudentPage() {
 
         <div className="space-y-1">
           <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight flex items-center gap-3">
-            <UserEdit className="w-10 h-10 text-brand-orange" />
+            <User className="w-10 h-10 text-brand-orange" />
             Edit Student Details
           </h1>
           <p className="text-gray-500 font-semibold italic">

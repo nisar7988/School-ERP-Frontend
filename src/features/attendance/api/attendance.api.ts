@@ -4,7 +4,8 @@ import type {
   AttendanceWithStudent, 
   CreateAttendanceDto, 
   UpdateAttendanceDto,
-  AttendanceFilters
+  AttendanceFilters,
+  StudentAttendanceResponse
 } from '../types'
 import type { PaginatedResponse, SingleResponse } from '../../students/types'
 
@@ -23,4 +24,10 @@ export const attendanceApi = {
     
   deleteAttendance: (id: string) =>
     http.delete<SingleResponse<void>>(`/attendance/${id}`),
+
+  getStudentAttendance: (studentId: string, params?: AttendanceFilters) =>
+    http.get<StudentAttendanceResponse>(
+      `/attendance/student/${studentId}`,
+      { params },
+    ),
 }

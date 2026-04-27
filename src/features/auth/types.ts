@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { Student, Teacher } from '@/types/base.types';
 
 export enum Role {
   ADMIN = 'ADMIN',
@@ -20,6 +21,8 @@ export interface User {
   firstName: string;
   lastName: string;
   phone: string | null;
+  studentProfile?: Student | null;
+  teacherProfile?: Teacher | null;
 }
 
 export interface LoginResponse {

@@ -36,6 +36,8 @@ export function ClassDetailsPage() {
     )
   }
 
+  console.log(cls, 'cls')
+
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Header */}
@@ -65,7 +67,7 @@ export function ClassDetailsPage() {
               <p className="text-gray-500 font-semibold flex items-center gap-2">
                 <User className="w-4 h-4" />
                 {cls.staff?.find((s) => s.role === ClassRole.INCHARGE)?.teacher
-                  ? `Class Teacher: ${cls.staff.find((s) => s.role === ClassRole.INCHARGE)?.teacher?.user.firstName} ${cls.staff.find((s) => s.role === ClassRole.INCHARGE)?.teacher?.user.lastName}`
+                  ? `Class Teacher: ${cls.staff.find((s) => s.role === ClassRole.INCHARGE)?.teacher?.user?.firstName || 'Unknown'} ${cls.staff.find((s) => s.role === ClassRole.INCHARGE)?.teacher?.user?.lastName || 'Teacher'}`
                   : 'No Class Teacher Assigned'}
               </p>
             </div>
@@ -135,18 +137,19 @@ export function ClassDetailsPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
-                  {cls.students?.map((student) => (
-                    <tr key={student.id} className="group hover:bg-gray-50/50">
+                  {cls.students?.map((enrollment) => (
+                    <tr key={enrollment.id} className="group hover:bg-gray-50/50">
                       <td className="px-8 py-4">
                         <div className="font-bold text-gray-900">
-                          {student.user.firstName} {student.user.lastName}
+                          {enrollment.student?.user?.firstName || 'Unknown'}{' '}
+                          {enrollment.student?.user?.lastName || 'Student'}
                         </div>
                       </td>
                       <td className="px-8 py-4 font-mono text-sm text-gray-500">
-                        {student.admissionNo}
+                        {enrollment.student?.admissionNo || 'N/A'}
                       </td>
                       <td className="px-8 py-4 text-right">
-                        <Link to="/students/$id" params={{ id: student.id }}>
+                        <Link to="/students/$id" params={{ id: enrollment.student?.id || '' }}>
                           <Button
                             variant="ghost"
                             size="icon"
@@ -231,23 +234,30 @@ export function ClassDetailsPage() {
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-brand-peach/30 flex items-center justify-center text-brand-orange font-bold text-sm">
-                      {assignment.teacher?.user.firstName?.[0]}
-                      {assignment.teacher?.user.lastName?.[0]}
+                      {assignment.teacher?.user?.firstName?.[0] || 'T'}
+                      {assignment.teacher?.user?.lastName?.[0] || ''}
                     </div>
                     <div>
                       <p className="font-bold text-gray-900 group-hover:text-brand-orange transition-colors">
-                        {assignment.teacher?.user.firstName} {assignment.teacher?.user.lastName}
+                        {assignment.teacher?.user?.firstName || 'Unknown'}{' '}
+                        {assignment.teacher?.user?.lastName || 'Teacher'}
                       </p>
                       <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">
                         {assignment.role.replace('_', ' ')}
                       </p>
                     </div>
                   </div>
-                  <Badge 
-                    variant={assignment.role === ClassRole.INCHARGE ? 'brand' : 'outline'} 
+                  <Badge
+                    variant={
+                      assignment.role === ClassRole.INCHARGE
+                        ? 'brand'
+                        : 'outline'
+                    }
                     className="h-6"
                   >
-                    {assignment.role === ClassRole.INCHARGE ? 'In-charge' : 'Staff'}
+                    {assignment.role === ClassRole.INCHARGE
+                      ? 'In-charge'
+                      : 'Staff'}
                   </Badge>
                 </div>
               ))}

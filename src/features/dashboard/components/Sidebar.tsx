@@ -9,7 +9,6 @@ import {
   LifeBuoy,
   ClipboardList,
   CreditCard,
-  Award,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Link, useNavigate } from '@tanstack/react-router'
@@ -44,8 +43,8 @@ const studentNavItems = [
   { icon: Calendar, label: 'Schedule', href: '/student/schedule' },
   { icon: ClipboardList, label: 'Assignments', href: '/student/assignments' },
   { icon: CreditCard, label: 'Fees & Finance', href: '/student/fees' },
-  { icon: Award, label: 'Grades', href: '/student/grades' },
   { icon: BookOpen, label: 'Classes', href: '/student/classes' },
+  { icon: ClipboardList, label: 'Attendance', href: '/student/attendance' },
 ]
 
 const teacherNavItems = [
@@ -57,6 +56,7 @@ const teacherNavItems = [
   { icon: Users, label: 'Students', href: '/teacher/students' },
   { icon: Calendar, label: 'Schedule', href: '/teacher/schedule' },
   { icon: BookOpen, label: 'Classes', href: '/teacher/classes' },
+  { icon: ClipboardList, label: 'Attendance', href: '/teacher/attendance' },
 ]
 
 export function Sidebar({ role: overrideRole }: SidebarProps) {

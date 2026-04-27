@@ -86,15 +86,15 @@ export function StudentTable({ students }: StudentTableProps) {
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-brand-peach/30 flex items-center justify-center text-brand-orange font-bold text-sm">
-                      {student.user.firstName[0]}
-                      {student.user.lastName[0]}
+                      {student.user?.firstName?.[0] || 'S'}
+                      {student.user?.lastName?.[0] || ''}
                     </div>
                     <div>
                       <div className="font-bold text-gray-900">
-                        {student.user.firstName} {student.user.lastName}
+                        {student.user?.firstName || 'Unknown'} {student.user?.lastName || 'Student'}
                       </div>
                       <div className="text-xs text-gray-500 flex items-center gap-1">
-                        <Mail className="w-3 h-3" /> {student.user.email}
+                        <Mail className="w-3 h-3" /> {student.user?.email || 'No email'}
                       </div>
                     </div>
                   </div>
@@ -122,7 +122,7 @@ export function StudentTable({ students }: StudentTableProps) {
                 </td>
                 <td className="px-6 py-4">
                   <div className="text-xs space-y-1 text-gray-600">
-                    {student.user.phone && (
+                    {student.user?.phone && (
                       <div className="flex items-center gap-1">
                         <Phone className="w-3 h-3 text-gray-400" />{' '}
                         {student.user.phone}
@@ -146,6 +146,22 @@ export function StudentTable({ students }: StudentTableProps) {
                         className="h-8 w-8 hover:bg-brand-peach/20 hover:text-brand-orange"
                       >
                         <Eye className="w-4 h-4" />
+                      </Button>
+                    </Link>
+                    <Link
+                      to={
+                        isAdmin
+                          ? '/students/$studentId/attendance'
+                          : '/teacher/students/$studentId/attendance'
+                      }
+                      params={{ studentId: student.id }}
+                    >
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 hover:bg-brand-orange/10 hover:text-brand-orange"
+                      >
+                        <Calendar className="w-4 h-4" />
                       </Button>
                     </Link>
                     {(isAdmin || user?.role === Role.TEACHER) && (
@@ -174,7 +190,7 @@ export function StudentTable({ students }: StudentTableProps) {
                         onClick={() =>
                           handleDeleteClick(
                             student.id,
-                            `${student.user.firstName} ${student.user.lastName}`,
+                            `${student.user?.firstName || 'Unknown'} ${student.user?.lastName || 'Student'}`,
                           )
                         }
                       >

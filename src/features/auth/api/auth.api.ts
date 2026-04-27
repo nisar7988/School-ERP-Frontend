@@ -9,4 +9,12 @@ export const authApi = {
     )
     return data
   },
+  getMe: async () => {
+    const { data } = await apiClient.get<{
+      success: boolean
+      message: string
+      data: User
+    }>('/users/me')
+    return data.data
+  },
 }
