@@ -6,11 +6,12 @@ import type {
   UpdateClassDto,
   PaginatedResponse,
   SingleResponse,
+  ClassQuery,
 } from '../types'
 
 export const classesApi = {
-  getClasses: () =>
-    http.get<PaginatedResponse<SchoolClassWithRelations>>('/classes'),
+  getClasses: (params?: ClassQuery) =>
+    http.get<PaginatedResponse<SchoolClassWithRelations>>('/classes', { params }),
   getClass: (id: string) =>
     http.get<SingleResponse<SchoolClassWithRelations>>(`/classes/${id}`),
   createClass: (data: CreateClassDto) =>

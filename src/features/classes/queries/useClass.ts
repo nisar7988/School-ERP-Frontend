@@ -6,7 +6,7 @@ export const useClass = (id: string, options?: { enabled?: boolean }) => {
     queryKey: ['classes', id],
     queryFn: async () => {
       const response = await classesApi.getClass(id)
-      return response.data
+      return response.data.data
     },
     enabled: options?.enabled !== false && !!id,
   })

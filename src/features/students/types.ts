@@ -17,6 +17,8 @@ import type {
   Subject,
   SchoolClass,
   Enrollment,
+  BaseQuery,
+  PaginatedMeta,
 } from '../../types/base.types'
 
 // --- RELATIONS ---
@@ -54,11 +56,11 @@ export type FeeRecordWithStudent = FeeRecord & {
   student: Student
 }
 
-export interface StudentQuery {
+export interface StudentQuery extends BaseQuery {
   classId?: string
-  page?: number
-  limit?: number
 }
+
+export type { PaginatedResponse, SingleResponse, PaginatedMeta, BaseQuery } from '../../types/base.types'
 
 // --- SCHEMAS ---
 export const CreateStudentSchema = z.object({

@@ -20,7 +20,8 @@ export function ClassForm({
   isLoading,
   defaultValues,
 }: ClassFormProps) {
-  const { data: teachers, isLoading: isLoadingTeachers } = useTeachers()
+  const { data: teachersResponse, isLoading: isLoadingTeachers } = useTeachers({ limit: 100 })
+  const teachers = teachersResponse?.data || []
   const { data: academicYears, isLoading: isLoadingYears } = useAcademicYears()
 
   const {

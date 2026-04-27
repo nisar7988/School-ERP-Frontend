@@ -4,7 +4,7 @@ import type {
   TeacherWithRelations,
 } from '../students/types'
 import type { SchoolClass as BaseSchoolClass } from '../../types/base.types'
-import type { PaginatedResponse, SingleResponse } from '../../types/base.types'
+import type { PaginatedResponse, SingleResponse, BaseQuery } from '../../types/base.types'
 import type { Subject } from '../../types/base.types'
 
 export enum ClassRole {
@@ -57,4 +57,9 @@ export const CreateClassSchema = z.object({
 export type CreateClassDto = z.infer<typeof CreateClassSchema>
 export type UpdateClassDto = Partial<CreateClassDto>
 
-export type { PaginatedResponse, SingleResponse }
+export interface ClassQuery extends BaseQuery {
+  academicYearId?: string
+  teacherId?: string
+}
+
+export type { PaginatedResponse, SingleResponse, PaginatedMeta } from '../../types/base.types'

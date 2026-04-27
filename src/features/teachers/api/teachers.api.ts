@@ -6,12 +6,13 @@ import type {
   UpdateTeacherDto,
   PaginatedResponse,
   SingleResponse,
+  TeacherQuery,
 } from '../types'
 import type { SchoolClassWithRelations } from '#/features/students/types'
 
 export const teachersApi = {
-  getTeachers: () =>
-    http.get<PaginatedResponse<TeacherWithRelations>>('/teachers'),
+  getTeachers: (params?: TeacherQuery) =>
+    http.get<PaginatedResponse<TeacherWithRelations>>('/teachers', { params }),
   getTeacher: (id: string) =>
     http.get<SingleResponse<TeacherWithRelations>>(`/teachers/${id}`),
   createTeacher: (data: CreateTeacherDto) =>

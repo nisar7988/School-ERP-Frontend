@@ -86,8 +86,8 @@ export function StudentDetailsPage() {
               </div>
               <p className="text-gray-500 font-semibold flex items-center gap-2">
                 <School className="w-4 h-4" />{' '}
-                {student.class?.name || 'No Class'} • Section{' '}
-                {student.class?.section || 'N/A'}
+                {student.enrollments?.[0]?.class?.name || 'No Class'} • Section{' '}
+                {student.enrollments?.[0]?.class?.section || 'N/A'}
               </p>
             </div>
           </div>
@@ -144,7 +144,7 @@ export function StudentDetailsPage() {
         />
         <StatsCard
           label="Active Subjects"
-          value={student.class?.subjects?.length?.toString() || '0'}
+          value={student.enrollments?.[0]?.class?.subjects?.length?.toString() || '0'}
           icon={FileText}
           trend="Enrolled"
         />

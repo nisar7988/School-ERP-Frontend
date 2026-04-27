@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button'
 import { useClassesByTeacher } from '@/features/classes/queries/useClassesByTeacher'
 import { useStudents } from '@/features/students/queries/useStudents'
 import { useAttendanceMutations } from '../hooks/useAttendanceMutations'
+import { useAttendance } from '../queries/useAttendance'
 import { useAuthStore } from '@/features/auth/store'
 import { AttendanceStatus } from '../types'
 import { toast } from '@/lib/stores/toast.store'
@@ -23,11 +24,17 @@ interface TakeAttendanceProps {
 
 // Initials + color helper
 const AVATAR_COLORS = [
-  '#F28B50', '#5B9BD5', '#6CC070', '#9B72CF', '#E88ABB', '#4BC5B8',
+  '#F28B50',
+  '#5B9BD5',
+  '#6CC070',
+  '#9B72CF',
+  '#E88ABB',
+  '#4BC5B8',
 ]
 function getAvatarColor(name: string) {
   let hash = 0
-  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + (hash << 5) - hash
+  for (let i = 0; i < name.length; i++)
+    hash = name.charCodeAt(i) + (hash << 5) - hash
   return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length]
 }
 function getInitials(first: string, last: string) {
@@ -111,7 +118,9 @@ function StatusDropdown({
                 setOpen(false)
               }}
               className={`w-full text-left px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-50 ${
-                currentStatus === s ? 'text-orange-500 font-bold' : 'text-gray-700'
+                currentStatus === s
+                  ? 'text-orange-500 font-bold'
+                  : 'text-gray-700'
               }`}
             >
               {s.charAt(0) + s.slice(1).toLowerCase()}
@@ -153,7 +162,10 @@ function RemarkModal({
       <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm space-y-4 mx-4">
         <div className="flex items-center justify-between">
           <h3 className="font-bold text-gray-900">Add Remark</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -174,7 +186,10 @@ function RemarkModal({
             Cancel
           </button>
           <button
-            onClick={() => { onSave(text); onClose() }}
+            onClick={() => {
+              onSave(text)
+              onClose()
+            }}
             className="px-4 py-2 text-sm font-bold bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-colors"
           >
             Save
@@ -192,47 +207,96 @@ export function TakeAttendancePage({
   const user = useAuthStore((state) => state.user)
   const teacherId = user?.id
 
-  const [selectedClassId, setSelectedClassId] = useState<string>(initialClassId || '')
+  const [selectedClassId, setSelectedClassId] = useState<string>(
+    initialClassId || '',
+  )
   const [attendanceDate, setAttendanceDate] = useState<string>(
     new Date().toISOString().split('T')[0],
   )
-  const [studentStatuses, setStudentStatuses] = useState<Record<string, AttendanceStatus>>({})
-  const [remarks, setRemarks] = useState<Record<string, string>>({})
-  const [remarkModal, setRemarkModal] = useState<{ id: string; name: string } | null>(null)
+  const [page, setPage] = useState(1)
+  const limit = 20
 
-  const { data: classes, isLoading: isLoadingClasses } = useClassesByTeacher(teacherId)
-  const { data: allStudents = [], isLoading: isLoadingStudents } = useStudents(
-    { classId: selectedClassId },
+  const [studentStatuses, setStudentStatuses] = useState<
+    Record<string, AttendanceStatus>
+  >({})
+  const [remarks, setRemarks] = useState<Record<string, string>>({})
+  const [remarkModal, setRemarkModal] = useState<{
+    id: string
+    name: string
+  } | null>(null)
+
+  const { data: classes, isLoading: isLoadingClasses } =
+    useClassesByTeacher(teacherId)
+  const { data: studentsResponse, isLoading: isLoadingStudents } = useStudents(
+    { classId: selectedClassId, page, limit },
     { enabled: !!selectedClassId },
   )
+  const allStudents = studentsResponse?.data || []
+  const meta = studentsResponse?.meta
+
+  const { data: existingAttendance } = useAttendance(
+    {
+      classId: selectedClassId,
+      date: attendanceDate,
+      limit: 1000,
+    },
+    { enabled: !!selectedClassId },
+  )
+
   const { bulkCreateAttendance, isBulkCreating } = useAttendanceMutations()
 
-  // Init statuses when students load
+  // Reset page when class or date changes
+  useEffect(() => {
+    setPage(1)
+  }, [selectedClassId, attendanceDate])
+
+  // Init statuses when students or attendance load
   useEffect(() => {
     const init: Record<string, AttendanceStatus> = {}
-    allStudents.forEach((s) => { init[s.id] = AttendanceStatus.PRESENT })
+    const rem: Record<string, string> = {}
+    allStudents.forEach((s) => {
+      const existing = existingAttendance?.data?.find((a) => a.studentId === s.id)
+      if (existing) {
+        init[s.id] = existing.status
+        if (existing.remarks) rem[s.id] = existing.remarks
+      } else {
+        init[s.id] = AttendanceStatus.PRESENT
+      }
+    })
     setStudentStatuses(init)
-  }, [allStudents])
+    setRemarks((prev) => ({ ...prev, ...rem }))
+  }, [allStudents, existingAttendance])
 
   const selectedClass = useMemo(
-    () => classes?.find((c) => c.id === selectedClassId),
+    () => classes?.data?.find((c) => c.id === selectedClassId),
     [classes, selectedClassId],
   )
 
   const markedPresentCount = useMemo(
-    () => Object.values(studentStatuses).filter((s) => s === AttendanceStatus.PRESENT).length,
+    () =>
+      Object.values(studentStatuses).filter(
+        (s) => s === AttendanceStatus.PRESENT,
+      ).length,
     [studentStatuses],
   )
 
   const formattedDate = useMemo(() => {
     const d = new Date(attendanceDate + 'T00:00:00')
-    return d.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '/')
+    return d
+      .toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      })
+      .replace(/\//g, '/')
   }, [attendanceDate])
 
   const handleToggle = (studentId: string, isPresent: boolean) => {
     setStudentStatuses((prev) => ({
       ...prev,
-      [studentId]: isPresent ? AttendanceStatus.PRESENT : AttendanceStatus.ABSENT,
+      [studentId]: isPresent
+        ? AttendanceStatus.PRESENT
+        : AttendanceStatus.ABSENT,
     }))
   }
 
@@ -242,7 +306,9 @@ export function TakeAttendancePage({
 
   const handleMarkAllPresent = () => {
     const all: Record<string, AttendanceStatus> = {}
-    allStudents.forEach((s) => { all[s.id] = AttendanceStatus.PRESENT })
+    allStudents.forEach((s) => {
+      all[s.id] = AttendanceStatus.PRESENT
+    })
     setStudentStatuses(all)
   }
 
@@ -282,7 +348,9 @@ export function TakeAttendancePage({
         <RemarkModal
           studentName={remarkModal.name}
           value={remarks[remarkModal.id] || ''}
-          onSave={(v) => setRemarks((prev) => ({ ...prev, [remarkModal.id]: v }))}
+          onSave={(v) =>
+            setRemarks((prev) => ({ ...prev, [remarkModal.id]: v }))
+          }
           onClose={() => setRemarkModal(null)}
         />
       )}
@@ -304,20 +372,24 @@ export function TakeAttendancePage({
                 ? `Attendance - ${selectedClass.name} ${selectedClass.section ?? ''} | ${formattedDate}`
                 : 'Attendance'}
             </h1>
-            <p className="text-sm text-gray-500">Mark presence for the class.</p>
+            <p className="text-sm text-gray-500">
+              Mark presence for the class.
+            </p>
           </div>
 
           {/* Right: class selector + date */}
           <div className="flex items-end gap-4 flex-shrink-0">
             <div className="flex flex-col gap-1">
-              <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Select Class</span>
+              <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+                Select Class
+              </span>
               <select
                 value={selectedClassId}
                 onChange={(e) => setSelectedClassId(e.target.value)}
                 className="h-10 px-3 rounded-lg border border-gray-200 bg-white text-sm font-semibold text-gray-700 focus:outline-none focus:border-orange-400 min-w-[140px] shadow-sm"
               >
                 <option value="">Choose Class</option>
-                {classes?.map((c) => (
+                {classes?.data?.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.name} {c.section ?? ''}
                   </option>
@@ -326,7 +398,9 @@ export function TakeAttendancePage({
             </div>
 
             <div className="flex flex-col gap-1">
-              <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Date</span>
+              <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+                Date
+              </span>
               <input
                 type="date"
                 value={attendanceDate}
@@ -340,7 +414,9 @@ export function TakeAttendancePage({
         {/* ── No class selected ── */}
         {!selectedClassId ? (
           <div className="bg-white rounded-2xl border-2 border-dashed border-gray-100 p-16 text-center space-y-3">
-            <p className="text-gray-400 font-medium">Select a class above to start marking attendance.</p>
+            <p className="text-gray-400 font-medium">
+              Select a class above to start marking attendance.
+            </p>
           </div>
         ) : isLoadingStudents ? (
           <div className="flex items-center justify-center py-20">
@@ -348,7 +424,9 @@ export function TakeAttendancePage({
           </div>
         ) : allStudents.length === 0 ? (
           <div className="bg-white rounded-2xl border-2 border-dashed border-gray-100 p-16 text-center space-y-3">
-            <p className="text-gray-600 font-semibold">No students found in this class.</p>
+            <p className="text-gray-600 font-semibold">
+              No students found in this class.
+            </p>
           </div>
         ) : (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
@@ -378,10 +456,13 @@ export function TakeAttendancePage({
                 const fullName = `${firstName} ${lastName}`.trim()
                 const initials = getInitials(firstName, lastName)
                 const avatarColor = getAvatarColor(fullName)
-                const status = studentStatuses[student.id] ?? AttendanceStatus.PRESENT
+                const status =
+                  studentStatuses[student.id] ?? AttendanceStatus.PRESENT
                 const isPresent = status === AttendanceStatus.PRESENT
                 const isAbsent = status === AttendanceStatus.ABSENT
-                const isSpecial = status === AttendanceStatus.LATE || status === AttendanceStatus.EXCUSED
+                const isSpecial =
+                  status === AttendanceStatus.LATE ||
+                  status === AttendanceStatus.EXCUSED
                 const hasRemark = !!remarks[student.id]
 
                 return (
@@ -399,15 +480,21 @@ export function TakeAttendancePage({
 
                     {/* Name + Roll */}
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-gray-900 text-sm leading-tight">{fullName}</p>
-                      <p className="text-xs text-gray-400 font-medium">Roll {student.rollNo ?? idx + 1}</p>
+                      <p className="font-semibold text-gray-900 text-sm leading-tight">
+                        {fullName}
+                      </p>
+                      <p className="text-xs text-gray-400 font-medium">
+                        Roll {student.rollNo ?? idx + 1}
+                      </p>
                     </div>
 
                     {/* Present / Absent toggle */}
                     <div className="flex items-center gap-3 flex-shrink-0">
                       <span
                         className={`text-sm font-semibold transition-colors ${
-                          isPresent || isSpecial ? 'text-gray-800' : 'text-gray-400'
+                          isPresent || isSpecial
+                            ? 'text-gray-800'
+                            : 'text-gray-400'
                         }`}
                       >
                         Present
@@ -443,7 +530,9 @@ export function TakeAttendancePage({
                     {/* Remark icon */}
                     <button
                       type="button"
-                      onClick={() => setRemarkModal({ id: student.id, name: fullName })}
+                      onClick={() =>
+                        setRemarkModal({ id: student.id, name: fullName })
+                      }
                       title="Add remark"
                       className={`flex items-center justify-center w-8 h-8 rounded-full transition-colors ${
                         hasRemark
@@ -457,6 +546,31 @@ export function TakeAttendancePage({
                 )
               })}
             </ul>
+
+            {/* ── Pagination ── */}
+            {meta && meta.lastPage > 1 && (
+              <div className="flex items-center justify-between px-6 py-4 border-t border-gray-100 bg-gray-50/50">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                >
+                  Previous
+                </Button>
+                <span className="text-sm font-semibold text-gray-500">
+                  Page {page} of {meta.lastPage}
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPage((p) => Math.min(meta.lastPage, p + 1))}
+                  disabled={page === meta.lastPage}
+                >
+                  Next
+                </Button>
+              </div>
+            )}
           </div>
         )}
 

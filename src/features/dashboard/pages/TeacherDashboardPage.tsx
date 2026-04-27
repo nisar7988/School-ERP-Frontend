@@ -21,6 +21,14 @@ export function TeacherDashboardPage() {
       </div>
 
       {/* Row 2: Weekly Attendance & Action Items */}
+      <div className="grid grid-cols-12 gap-5">
+        <div className="col-span-12 lg:col-span-8">
+          <TeacherAttendance />
+        </div>
+        <div className="col-span-12 lg:col-span-4">
+          <ActionItems />
+        </div>
+      </div>
     </div>
   )
 }

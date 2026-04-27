@@ -4,8 +4,14 @@ import type {
   Subject, 
   SchoolClass, 
   PaginatedResponse, 
-  SingleResponse 
+  SingleResponse,
+  BaseQuery,
+  PaginatedMeta,
 } from '@/features/students/types';
+
+export interface TeacherQuery extends BaseQuery {
+  classId?: string;
+}
 
 export type Teacher = {
   id: string;

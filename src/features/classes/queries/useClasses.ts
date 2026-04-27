@@ -1,15 +1,16 @@
 import { useQuery, type UseQueryOptions } from '@tanstack/react-query'
 import { classesApi } from '../api/classes.api'
-import type { SchoolClassWithRelations } from '../types'
+import type { SchoolClassWithRelations, ClassQuery, PaginatedMeta } from '../types'
 
 export const useClasses = (
-  options?: Partial<UseQueryOptions<SchoolClassWithRelations[]>>,
+  params?: ClassQuery,
+  options?: Partial<UseQueryOptions<{ data: SchoolClassWithRelations[]; meta: PaginatedMeta }>>,
 ) => {
-  return useQuery<SchoolClassWithRelations[]>({
-    queryKey: ['classes'],
+  return useQuery<{ data: SchoolClassWithRelations[]; meta: PaginatedMeta }>({
+    queryKey: ['classes', params],
     queryFn: async () => {
-      const response = await classesApi.getClasses()
-      return response.data.data.data
+      const response = await classesApi.getClasses(params)
+      return response.data.data
     },
     ...options,
   })

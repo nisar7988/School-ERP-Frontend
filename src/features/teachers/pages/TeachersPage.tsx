@@ -3,24 +3,27 @@ import { Plus, Search, Filter } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { TeacherTable } from '../components/TeacherTable'
-import { useTeachers } from '../hooks/useTeacherMutations'
+import { useTeachers } from '../queries/useTeachers'
 import { Link } from '@tanstack/react-router'
+import { Pagination } from '@/components/ui/Pagination'
 
 export function TeachersPage() {
-  const { data: teachersResponse, isLoading, error } = useTeachers()
   const [searchQuery, setSearchQuery] = React.useState('')
+  const [debouncedSearch, setDebouncedSearch] = React.useState('')
+  const [page, setPage] = React.useState(1)
 
-  const teachers = teachersResponse?.data?.data || []
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery)
+      setPage(1)
+    }, 500)
+    return () => clearTimeout(timer)
+  }, [searchQuery])
 
-  const filteredTeachers = React.useMemo(() => {
-    return teachers.filter(
-      (t) =>
-        `${t.user.firstName} ${t.user.lastName}`
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()) ||
-        t.employeeId.toLowerCase().includes(searchQuery.toLowerCase()),
-    )
-  }, [teachers, searchQuery])
+  const { data: teachersResponse, isLoading, error } = useTeachers({ search: debouncedSearch, page })
+
+  const teachers = teachersResponse?.data || []
+  const meta = teachersResponse?.meta
 
   if (error) {
     return (
@@ -38,58 +41,69 @@ export function TeachersPage() {
           <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight flex items-center gap-3">
             Faculty
             <span className="text-sm font-bold bg-brand-peach text-brand-orange px-3 py-1 rounded-full uppercase tracking-widest">
-              {teachers.length} Total
-            </span>
-          </h1>
-          <p className="text-gray-500 font-semibold italic">
-            Manage your atelier's expert educators and academic staff.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <Link to="/faculty/create">
-            <Button
-              variant="brand"
-              className="gap-2 shadow-xl shadow-orange-100 h-12 px-6 rounded-2xl font-bold"
-            >
-              <Plus className="w-5 h-5" /> Onboard Faculty
-            </Button>
-          </Link>
-        </div>
+            {meta?.total || 0} Total
+          </span>
+        </h1>
+        <p className="text-gray-500 font-semibold italic">
+          Manage your atelier's expert educators and academic staff.
+        </p>
       </div>
 
-      {/* Filters and Search */}
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="relative flex-1 group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-orange transition-colors" />
-          <Input
-            placeholder="Search by name, email, or employee ID..."
-            className="pl-12 h-14 rounded-3xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10 font-medium"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-        <Button
-          variant="outline"
-          className="h-14 rounded-3xl gap-2 font-bold text-gray-600 bg-white shadow-sm px-6 border-gray-100 hover:border-brand-taupe transition-all"
-        >
-          <Filter className="w-5 h-5" /> Filters
-        </Button>
+      <div className="flex items-center gap-3">
+        <Link to="/faculty/create">
+          <Button
+            variant="brand"
+            className="gap-2 shadow-xl shadow-orange-100 h-12 px-6 rounded-2xl font-bold"
+          >
+            <Plus className="w-5 h-5" /> Onboard Faculty
+          </Button>
+        </Link>
       </div>
-
-      {/* Loading state or Table */}
-      {isLoading ? (
-        <div className="grid grid-cols-1 gap-4">
-          {[...Array(5)].map((_, i) => (
-            <div
-              key={i}
-              className="h-24 bg-gray-50/50 rounded-[2rem] animate-pulse border border-gray-100 shadow-sm"
-            />
-          ))}
-        </div>
-      ) : (
-        <TeacherTable teachers={filteredTeachers} />
-      )}
     </div>
-  )
+
+    {/* Filters and Search */}
+    <div className="flex flex-col md:flex-row gap-4">
+      <div className="relative flex-1 group">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-orange transition-colors" />
+        <Input
+          placeholder="Search by name, email, or employee ID..."
+          className="pl-12 h-14 rounded-3xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10 font-medium"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+      <Button
+        variant="outline"
+        className="h-14 rounded-3xl gap-2 font-bold text-gray-600 bg-white shadow-sm px-6 border-gray-100 hover:border-brand-taupe transition-all"
+      >
+        <Filter className="w-5 h-5" /> Filters
+      </Button>
+    </div>
+
+    {/* Loading state or Table */}
+    {isLoading ? (
+      <div className="grid grid-cols-1 gap-4">
+        {[...Array(5)].map((_, i) => (
+          <div
+            key={i}
+            className="h-24 bg-gray-50/50 rounded-[2rem] animate-pulse border border-gray-100 shadow-sm"
+          />
+        ))}
+      </div>
+    ) : (
+      <div className="space-y-4">
+        <TeacherTable teachers={teachers} />
+        {meta && meta.lastPage > 1 && (
+          <Pagination
+            currentPage={meta.page}
+            lastPage={meta.lastPage}
+            total={meta.total}
+            limit={meta.limit}
+            onPageChange={setPage}
+          />
+        )}
+      </div>
+    )}
+  </div>
+)
 }

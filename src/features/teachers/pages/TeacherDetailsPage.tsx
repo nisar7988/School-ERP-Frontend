@@ -16,7 +16,8 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { useTeacher, useTeacherMutations } from '../hooks/useTeacherMutations'
+import { useTeacher } from '../queries/useTeachers'
+import { useTeacherMutations } from '../hooks/useTeacherMutations'
 import { StatsCard } from '@/features/dashboard/components/StatsCard'
 
 export function TeacherDetailsPage() {

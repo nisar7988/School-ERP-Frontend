@@ -10,7 +10,7 @@ import { useClasses } from '@/features/classes/queries/useClasses'
 import { useClassesByTeacher } from '@/features/classes/queries/useClassesByTeacher'
 import { useAuthStore } from '@/features/auth/store'
 import { Role } from '@/features/auth/types'
-import { Gender } from '#/features/students/types'
+import { Gender } from '@/features/students/types'
 import type { SchoolClass } from '#/features/classes/types'
 interface TeacherFormProps {
   onSubmit: (data: CreateTeacherDto) => void
@@ -27,14 +27,15 @@ export function TeacherForm({
   const isAdmin = user?.role === Role.ADMIN
   const isTeacher = user?.role === Role.TEACHER
 
-  const { data: adminClasses, isLoading: isLoadingAdminClasses } = useClasses({
-    enabled: isAdmin,
-  })
+  const { data: adminClassesResponse, isLoading: isLoadingAdminClasses } =
+    useClasses({ limit: 100 }, { enabled: isAdmin })
 
-  const { data: teacherClasses, isLoading: isLoadingTeacherClasses } =
-    useClassesByTeacher(isTeacher ? user?.id : undefined)
+  const { data: teacherClassesResponse, isLoading: isLoadingTeacherClasses } =
+    useClassesByTeacher(isTeacher ? user?.id : undefined, { limit: 100 })
 
-  const classes = isAdmin ? adminClasses : teacherClasses
+  const classes = isAdmin
+    ? adminClassesResponse?.data
+    : teacherClassesResponse?.data
   const isLoadingClasses = isAdmin
     ? isLoadingAdminClasses
     : isLoadingTeacherClasses

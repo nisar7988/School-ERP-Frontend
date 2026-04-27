@@ -13,7 +13,7 @@ import { type AttendanceWithStudent, AttendanceStatus } from '../types'
 import { useClasses } from '@/features/classes/queries/useClasses'
 
 import { TakeAttendancePage } from './TakeAttendancePage'
-
+import { Pagination } from '@/components/ui/Pagination'
 import { useSearch } from '@tanstack/react-router'
 
 export function AttendancePage() {
@@ -34,18 +34,23 @@ export function AttendancePage() {
     search.classId,
   )
   const [dateFilter, setDateFilter] = useState<string>('')
+  const [page, setPage] = useState(1)
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [selectedRecord, setSelectedRecord] =
     useState<AttendanceWithStudent | null>(null)
 
-  const { data: classes } = useClasses()
+  const { data: classes } = useClasses({ limit: 100 })
 
-  const { data: records, isLoading } = useAttendance({
+  const { data: attendanceResponse, isLoading } = useAttendance({
     search: searchQuery,
     status: statusFilter,
     classId: classIdFilter,
     date: dateFilter || undefined,
+    page,
   })
+
+  const records = attendanceResponse?.data || []
+  const meta = attendanceResponse?.meta
 
   const {
     createAttendance,
@@ -99,87 +104,102 @@ export function AttendancePage() {
           <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight flex items-center gap-3">
             Attendance
             <span className="text-sm font-bold bg-brand-peach text-brand-orange px-3 py-1 rounded-full uppercase tracking-widest">
-              {records?.length || 0} Records
-            </span>
-          </h1>
-          <p className="text-gray-500 font-semibold">
-            Track and manage student daily attendance and participation.
-          </p>
-        </div>
+            {meta?.total || 0} Records
+          </span>
+        </h1>
+        <p className="text-gray-500 font-semibold">
+          Track and manage student daily attendance and participation.
+        </p>
+      </div>
 
-        <Button
-          variant="brand"
-          onClick={() => setView('take')}
-          className="gap-2 shadow-xl shadow-orange-100 font-bold h-12 px-6 rounded-2xl"
+      <Button
+        variant="brand"
+        onClick={() => setView('take')}
+        className="gap-2 shadow-xl shadow-orange-100 font-bold h-12 px-6 rounded-2xl"
+      >
+        <ClipboardCheck className="w-5 h-5" /> Take Attendance
+      </Button>
+    </div>
+
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="relative col-span-1 md:col-span-1 group">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-orange transition-colors" />
+        <Input
+          placeholder="Search student..."
+          className="pl-12 h-14 rounded-3xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10"
+          value={searchQuery}
+          onChange={(e) => {
+            setSearchQuery(e.target.value)
+            setPage(1)
+          }}
+        />
+      </div>
+
+      <div className="relative group">
+        <select
+          className="w-full h-14 pl-4 pr-10 rounded-3xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10 appearance-none font-sans font-medium text-gray-600 outline-none"
+          value={classIdFilter || ''}
+          onChange={(e) => {
+            setClassIdFilter(e.target.value || undefined)
+            setPage(1)
+          }}
         >
-          <ClipboardCheck className="w-5 h-5" /> Take Attendance
-        </Button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="relative col-span-1 md:col-span-1 group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-orange transition-colors" />
-          <Input
-            placeholder="Search student..."
-            className="pl-12 h-14 rounded-3xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-
-        <div className="relative group">
-          <select
-            className="w-full h-14 pl-4 pr-10 rounded-3xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10 appearance-none font-sans font-medium text-gray-600 outline-none"
-            value={classIdFilter || ''}
-            onChange={(e) => setClassIdFilter(e.target.value || undefined)}
-          >
-            <option value="">All Classes</option>
-            {classes?.map((cls) => (
-              <option key={cls.id} value={cls.id}>
-                {cls.name} - {cls.section}
-              </option>
-            ))}
-          </select>
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-            <Filter className="w-4 h-4 text-gray-400" />
-          </div>
-        </div>
-
-        <div className="relative group">
-          <select
-            className="w-full h-14 pl-4 pr-10 rounded-3xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10 appearance-none font-sans font-medium text-gray-600 outline-none"
-            value={statusFilter || ''}
-            onChange={(e) => setStatusFilter(e.target.value as AttendanceStatus || undefined)}
-          >
-            <option value="">All Statuses</option>
-            {Object.values(AttendanceStatus).map((status) => (
-              <option key={status} value={status}>
-                {status}
-              </option>
-            ))}
-          </select>
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-            <Filter className="w-4 h-4 text-gray-400" />
-          </div>
-        </div>
-
-        <div className="relative group">
-          <Input
-            type="date"
-            className="h-14 rounded-3xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10 font-sans font-medium text-gray-600"
-            value={dateFilter}
-            onChange={(e) => setDateFilter(e.target.value)}
-          />
+          <option value="">All Classes</option>
+          {classes?.data?.map((cls) => (
+            <option key={cls.id} value={cls.id}>
+              {cls.name} - {cls.section}
+            </option>
+          ))}
+        </select>
+        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+          <Filter className="w-4 h-4 text-gray-400" />
         </div>
       </div>
 
-      {isLoading ? (
-        <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-10 h-10 animate-spin text-brand-orange" />
+      <div className="relative group">
+        <select
+          className="w-full h-14 pl-4 pr-10 rounded-3xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10 appearance-none font-sans font-medium text-gray-600 outline-none"
+          value={statusFilter || ''}
+          onChange={(e) => {
+            setStatusFilter(
+              (e.target.value as AttendanceStatus) || undefined,
+            )
+            setPage(1)
+          }}
+        >
+          <option value="">All Statuses</option>
+          {Object.values(AttendanceStatus).map((status) => (
+            <option key={status} value={status}>
+              {status}
+            </option>
+          ))}
+        </select>
+        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+          <Filter className="w-4 h-4 text-gray-400" />
         </div>
-      ) : (
+      </div>
+
+      <div className="relative group">
+        <Input
+          type="date"
+          className="h-14 rounded-3xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10 font-sans font-medium text-gray-600"
+          value={dateFilter}
+          onChange={(e) => {
+            setDateFilter(e.target.value)
+            setPage(1)
+          }}
+        />
+      </div>
+    </div>
+
+    {isLoading ? (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="w-10 h-10 animate-spin text-brand-orange" />
+      </div>
+    ) : (
+      <div className="space-y-4">
         <AttendanceTable
-          records={records || []}
+          records={records}
           onEdit={(record) => {
             setSelectedRecord(record)
             setIsFormOpen(true)
@@ -187,7 +207,17 @@ export function AttendancePage() {
           onDelete={handleDelete}
           isAdmin={isAdmin}
         />
-      )}
+        {meta && meta.lastPage > 1 && (
+          <Pagination
+            currentPage={meta.page}
+            lastPage={meta.lastPage}
+            total={meta.total}
+            limit={meta.limit}
+            onPageChange={setPage}
+          />
+        )}
+      </div>
+    )}
 
       {/* Attendance Form Modal */}
       <Dialog

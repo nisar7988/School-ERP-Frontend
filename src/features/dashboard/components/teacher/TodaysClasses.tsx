@@ -13,7 +13,8 @@ const classSchedules = [
 
 export function TodaysClasses() {
   const user = useAuthStore((state) => state.user)
-  const { data: myClasses = [], isLoading } = useClassesByTeacher(user?.id)
+  const { data: myClassesResponse, isLoading } = useClassesByTeacher(user?.id)
+  const myClasses = myClassesResponse?.data || []
 
   if (isLoading) {
     return (

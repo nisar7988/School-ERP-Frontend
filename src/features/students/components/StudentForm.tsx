@@ -23,14 +23,15 @@ export function StudentForm({
   const isAdmin = user?.role === Role.ADMIN
   const isTeacher = user?.role === Role.TEACHER
 
-  const { data: adminClasses, isLoading: isLoadingAdminClasses } = useClasses({
-    enabled: isAdmin,
-  })
+  const { data: adminClassesResponse, isLoading: isLoadingAdminClasses } = useClasses(
+    { limit: 100 },
+    { enabled: isAdmin }
+  )
 
-  const { data: teacherClasses, isLoading: isLoadingTeacherClasses } =
-    useClassesByTeacher(isTeacher ? user?.id : undefined)
+  const { data: teacherClassesResponse, isLoading: isLoadingTeacherClasses } =
+    useClassesByTeacher(isTeacher ? user?.id : undefined, { limit: 100 })
 
-  const classes = isAdmin ? adminClasses : teacherClasses
+  const classes = isAdmin ? adminClassesResponse?.data : teacherClassesResponse?.data
   const isLoadingClasses = isAdmin
     ? isLoadingAdminClasses
     : isLoadingTeacherClasses

@@ -144,16 +144,19 @@ export type Payment = {
 }
 
 // --- COMMON RESPONSE TYPES ---
+export interface PaginatedMeta {
+  total: number
+  page: number
+  lastPage: number
+  limit?: number
+}
+
 export interface PaginatedResponse<T> {
   success: boolean
   message: string
   data: {
     data: T[]
-    meta: {
-      total: number
-      page: number
-      lastPage: number
-    }
+    meta: PaginatedMeta
   }
 }
 
@@ -161,4 +164,10 @@ export interface SingleResponse<T> {
   success: boolean
   message: string
   data: T
+}
+
+export interface BaseQuery {
+  page?: number
+  limit?: number
+  search?: string
 }
