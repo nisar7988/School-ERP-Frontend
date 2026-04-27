@@ -9,7 +9,7 @@ import { useAuthStore } from '@/features/auth/store'
 import { Role } from '@/features/auth/types'
 import { useClassesByTeacher } from '@/features/classes/queries/useClassesByTeacher'
 import { useClasses } from '@/features/classes/queries/useClasses'
-import type { SchoolClass } from '../types'
+import type { SchoolClass } from '@/types/base.types'
 export function StudentsPage() {
   const user = useAuthStore((state) => state.user)
   const isAdmin = user?.role === Role.ADMIN
@@ -35,13 +35,12 @@ export function StudentsPage() {
 
   const filteredStudents = React.useMemo(() => {
     if (!students) return []
-
     let list = students
 
     // Role-based filtering: only show students in teacher's classes
     if (isTeacher && classesResponse) {
       const myClassIds = classesResponse.map((cls: SchoolClass) => cls.id)
-      list = list.filter((s) => myClassIds.includes(s.classId))
+      list = list.filter((s) => myClassIds.includes(s.enrollments[0].classId))
     }
 
     return list?.filter(
@@ -91,7 +90,9 @@ export function StudentsPage() {
 
         {(isAdmin || isTeacher) && (
           <div className="flex items-center gap-3">
-            <Link to={isAdmin ? '/students/create' : '/teacher/students/create'}>
+            <Link
+              to={isAdmin ? '/students/create' : '/teacher/students/create'}
+            >
               <Button
                 variant="brand"
                 className="gap-2 shadow-xl shadow-orange-100 font-bold"

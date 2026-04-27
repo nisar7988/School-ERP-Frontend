@@ -16,6 +16,7 @@ import type {
   Attendance,
   Subject,
   SchoolClass,
+  Enrollment,
 } from '../../types/base.types'
 
 // --- RELATIONS ---
@@ -26,9 +27,9 @@ export type UserWithProfiles = User & {
 
 export type StudentWithRelations = Student & {
   user: User
-  class: any // Will be typed in specific contexts or use any to break circularity
   attendance: Attendance[]
   fees: FeeRecord[]
+  enrollments: (Enrollment & { class: SchoolClass })[]
 }
 
 export type TeacherWithRelations = Teacher & {

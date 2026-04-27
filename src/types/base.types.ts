@@ -25,6 +25,11 @@ export enum Gender {
   OTHER = 'OTHER',
 }
 
+export enum ClassRole {
+  INCHARGE = 'INCHARGE',
+  SUBJECT_TEACHER = 'SUBJECT_TEACHER',
+}
+
 // --- BASE MODELS ---
 export type User = {
   id: string
@@ -37,7 +42,6 @@ export type User = {
   isActive: boolean
   createdAt: string | Date
   updatedAt: string | Date
-  gender: Gender
 }
 
 export type Student = {
@@ -46,11 +50,11 @@ export type Student = {
   rollNo: string | null
   dateOfBirth: string | Date
   address: string | null
+  gender: Gender | null
   fatherName: string | null
   motherName: string | null
   emergencyContact: string | null
   userId: string
-  classId: string
   createdAt: string | Date
   updatedAt: string | Date
 }
@@ -59,9 +63,15 @@ export type Teacher = {
   id: string
   employeeId: string
   qualification: string
+  gender: Gender | null
   userId: string
   createdAt: string | Date
   updatedAt: string | Date
+}
+
+export type AcademicYear = {
+  id: string
+  year: string
 }
 
 export type SchoolClass = {
@@ -69,9 +79,16 @@ export type SchoolClass = {
   name: string
   section: string
   academicYearId: string
-  teacherId: string | null
   createdAt: string | Date
   updatedAt: string | Date
+}
+
+export type Enrollment = {
+  id: string
+  studentId: string
+  classId: string
+  startDate: string | Date
+  endDate: string | Date | null
 }
 
 export type Subject = {
@@ -79,9 +96,21 @@ export type Subject = {
   name: string
   code: string
   classId: string
-  teacherId: string
   createdAt: string | Date
   updatedAt: string | Date
+}
+
+export type SubjectTeacher = {
+  id: string
+  subjectId: string
+  teacherId: string
+}
+
+export type ClassStaff = {
+  id: string
+  classId: string
+  teacherId: string
+  role: ClassRole
 }
 
 export type Attendance = {
@@ -90,6 +119,7 @@ export type Attendance = {
   status: AttendanceStatus
   remarks: string | null
   studentId: string
+  classId: string
   createdAt: string | Date
   updatedAt: string | Date
 }
@@ -98,12 +128,19 @@ export type FeeRecord = {
   id: string
   amount: number | string
   dueDate: string | Date
-  paidDate: string | Date | null
   status: FeeStatus
   title: string
   studentId: string
   createdAt: string | Date
   updatedAt: string | Date
+}
+
+export type Payment = {
+  id: string
+  amount: number | string
+  paidAt: string | Date
+  feeId: string
+  createdAt: string | Date
 }
 
 // --- COMMON RESPONSE TYPES ---

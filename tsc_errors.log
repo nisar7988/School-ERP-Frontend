@@ -1,0 +1,87 @@
+src/components/layout/Footer.tsx(2,9): error TS6133: 'year' is declared but its value is never read.
+src/components/layout/Header.tsx(1,1): error TS6133: 'Link' is declared but its value is never read.
+src/components/layout/Header.tsx(2,1): error TS6133: 'ThemeToggle' is declared but its value is never read.
+src/features/attendance/api/attendance.api.ts(9,15): error TS2305: Module '"../../students/types"' has no exported member 'PaginatedResponse'.
+src/features/attendance/api/attendance.api.ts(9,34): error TS2305: Module '"../../students/types"' has no exported member 'SingleResponse'.
+src/features/attendance/components/AttendanceForm.tsx(46,20): error TS2339: Property 'classId' does not exist on type 'StudentWithRelations'.
+src/features/attendance/components/AttendanceForm.tsx(47,37): error TS2339: Property 'classId' does not exist on type 'StudentWithRelations'.
+src/features/attendance/components/AttendanceTable.tsx(14,62): error TS6133: 'isAdmin' is declared but its value is never read.
+src/features/attendance/pages/AttendancePage.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/features/attendance/pages/AttendancePage.tsx(2,26): error TS6133: 'Plus' is declared but its value is never read.
+src/features/attendance/pages/AttendancePage.tsx(26,24): error TS6133: 'setStatusFilter' is declared but its value is never read.
+src/features/attendance/pages/TakeAttendancePage.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/features/attendance/pages/TakeAttendancePage.tsx(66,3): error TS6133: 'studentId' is declared but its value is never read.
+src/features/attendance/types.ts(3,15): error TS2459: Module '"../students/types"' declares 'Student' locally, but it is not exported.
+src/features/classes/api/academic-years.api.ts(3,15): error TS2305: Module '"@/features/students/types"' has no exported member 'PaginatedResponse'.
+src/features/classes/components/ClassForm.tsx(32,5): error TS2322: Type 'Resolver<{ name: string; section: string; academicYearId?: string | null | undefined; staff?: { teacherId: string; role: ClassRole; }[] | undefined; }, any, { name: string; section: string; academicYearId: string | undefined; staff?: { ...; }[] | undefined; }>' is not assignable to type 'Resolver<{ name: string; section: string; academicYearId: string | undefined; staff?: { teacherId: string; role: ClassRole; }[] | undefined; }, any, { name: string; section: string; academicYearId: string | undefined; staff?: { ...; }[] | undefined; }>'.
+  Types of parameters 'options' and 'options' are incompatible.
+    Type 'ResolverOptions<{ name: string; section: string; academicYearId: string | undefined; staff?: { teacherId: string; role: ClassRole; }[] | undefined; }>' is not assignable to type 'ResolverOptions<{ name: string; section: string; academicYearId?: string | null | undefined; staff?: { teacherId: string; role: ClassRole; }[] | undefined; }>'.
+      Type 'string | null | undefined' is not assignable to type 'string | undefined'.
+        Type 'null' is not assignable to type 'string | undefined'.
+src/features/classes/components/ClassForm.tsx(45,34): error TS2345: Argument of type '(data: { name: string; section: string; academicYearId: string | undefined; staff?: { teacherId: string; role: ClassRole; }[] | undefined; }) => void' is not assignable to parameter of type 'SubmitHandler<TFieldValues>'.
+  Types of parameters 'data' and 'data' are incompatible.
+    Type 'TFieldValues' is not assignable to type '{ name: string; section: string; academicYearId: string | undefined; staff?: { teacherId: string; role: ClassRole; }[] | undefined; }'.
+      Type 'FieldValues' is missing the following properties from type '{ name: string; section: string; academicYearId: string | undefined; staff?: { teacherId: string; role: ClassRole; }[] | undefined; }': name, section, academicYearId
+src/features/classes/components/ClassTable.tsx(14,8): error TS6133: 'SchoolClass' is declared but its value is never read.
+src/features/classes/hooks/useClassMutations.ts(9,9): error TS6133: 'navigate' is declared but its value is never read.
+src/features/classes/pages/ClassDetailsPage.tsx(54,20): error TS2339: Property 'name' does not exist on type 'SingleResponse<SchoolClassWithRelations>'.
+src/features/classes/pages/ClassDetailsPage.tsx(59,24): error TS2339: Property 'name' does not exist on type 'SingleResponse<SchoolClassWithRelations>'.
+src/features/classes/pages/ClassDetailsPage.tsx(62,32): error TS2339: Property 'section' does not exist on type 'SingleResponse<SchoolClassWithRelations>'.
+src/features/classes/pages/ClassDetailsPage.tsx(67,22): error TS2339: Property 'staff' does not exist on type 'SingleResponse<SchoolClassWithRelations>'.
+src/features/classes/pages/ClassDetailsPage.tsx(67,35): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/classes/pages/ClassDetailsPage.tsx(68,43): error TS2339: Property 'staff' does not exist on type 'SingleResponse<SchoolClassWithRelations>'.
+src/features/classes/pages/ClassDetailsPage.tsx(68,55): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/classes/pages/ClassDetailsPage.tsx(68,124): error TS2339: Property 'staff' does not exist on type 'SingleResponse<SchoolClassWithRelations>'.
+src/features/classes/pages/ClassDetailsPage.tsx(68,136): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/classes/pages/ClassDetailsPage.tsx(93,22): error TS2339: Property 'students' does not exist on type 'SingleResponse<SchoolClassWithRelations>'.
+src/features/classes/pages/ClassDetailsPage.tsx(99,22): error TS2339: Property 'subjects' does not exist on type 'SingleResponse<SchoolClassWithRelations>'.
+src/features/classes/pages/ClassDetailsPage.tsx(105,31): error TS2339: Property 'createdAt' does not exist on type 'SingleResponse<SchoolClassWithRelations>'.
+src/features/classes/pages/ClassDetailsPage.tsx(138,24): error TS2339: Property 'students' does not exist on type 'SingleResponse<SchoolClassWithRelations>'.
+src/features/classes/pages/ClassDetailsPage.tsx(138,39): error TS7006: Parameter 'student' implicitly has an 'any' type.
+src/features/classes/pages/ClassDetailsPage.tsx(161,25): error TS2339: Property 'students' does not exist on type 'SingleResponse<SchoolClassWithRelations>'.
+src/features/classes/pages/ClassDetailsPage.tsx(193,20): error TS2339: Property 'subjects' does not exist on type 'SingleResponse<SchoolClassWithRelations>'.
+src/features/classes/pages/ClassDetailsPage.tsx(193,35): error TS7006: Parameter 'subject' implicitly has an 'any' type.
+src/features/classes/pages/ClassDetailsPage.tsx(211,21): error TS2339: Property 'subjects' does not exist on type 'SingleResponse<SchoolClassWithRelations>'.
+src/features/classes/pages/ClassDetailsPage.tsx(227,20): error TS2339: Property 'staff' does not exist on type 'SingleResponse<SchoolClassWithRelations>'.
+src/features/classes/pages/ClassDetailsPage.tsx(227,32): error TS7006: Parameter 'assignment' implicitly has an 'any' type.
+src/features/classes/pages/ClassDetailsPage.tsx(254,21): error TS2339: Property 'staff' does not exist on type 'SingleResponse<SchoolClassWithRelations>'.
+src/features/classes/pages/ClassesPage.tsx(2,41): error TS6133: 'GraduationCap' is declared but its value is never read.
+src/features/classes/pages/EditClassPage.tsx(76,48): error TS2339: Property 'name' does not exist on type 'SingleResponse<SchoolClassWithRelations>'.
+src/features/classes/pages/EditClassPage.tsx(76,67): error TS2339: Property 'section' does not exist on type 'SingleResponse<SchoolClassWithRelations>'.
+src/features/classes/pages/EditClassPage.tsx(87,29): error TS2339: Property 'name' does not exist on type 'SingleResponse<SchoolClassWithRelations>'.
+src/features/classes/pages/EditClassPage.tsx(88,32): error TS2339: Property 'section' does not exist on type 'SingleResponse<SchoolClassWithRelations>'.
+src/features/classes/pages/EditClassPage.tsx(89,39): error TS2339: Property 'academicYearId' does not exist on type 'SingleResponse<SchoolClassWithRelations>'.
+src/features/classes/pages/EditClassPage.tsx(91,25): error TS2339: Property 'staff' does not exist on type 'SingleResponse<SchoolClassWithRelations>'.
+src/features/classes/pages/EditClassPage.tsx(91,37): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/features/dashboard/pages/TeacherDashboardPage.tsx(4,1): error TS6133: 'TeacherAttendance' is declared but its value is never read.
+src/features/dashboard/pages/TeacherDashboardPage.tsx(5,1): error TS6133: 'ActionItems' is declared but its value is never read.
+src/features/students/api/students.api.ts(3,3): error TS2459: Module '"../types"' declares 'Student' locally, but it is not exported.
+src/features/students/api/students.api.ts(7,3): error TS2305: Module '"../types"' has no exported member 'PaginatedResponse'.
+src/features/students/api/students.api.ts(8,3): error TS2305: Module '"../types"' has no exported member 'SingleResponse'.
+src/features/students/components/StudentTable.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/features/students/components/StudentTable.tsx(3,3): error TS6133: 'MoreVertical' is declared but its value is never read.
+src/features/students/pages/EditStudentPage.tsx(2,21): error TS2305: Module '"lucide-react"' has no exported member 'UserEdit'.
+src/features/students/pages/EditStudentPage.tsx(59,11): error TS2322: Type '"../.."' is not assignable to type '"/auth/login" | "/" | "." | ".." | "/dashboard" | "/auth" | "/classes/$id" | "/classes/create" | "/faculty/$id" | "/faculty/create" | "/students/$id" | "/students/create" | ... 13 more ... | "/teacher/students/$id/edit"'.
+src/features/students/pages/StudentDetailsPage.tsx(50,40): error TS7006: Parameter 'a' implicitly has an 'any' type.
+src/features/students/pages/StudentDetailsPage.tsx(57,27): error TS7006: Parameter 'f' implicitly has an 'any' type.
+src/features/students/pages/StudentDetailsPage.tsx(256,57): error TS7006: Parameter 'record' implicitly has an 'any' type.
+src/features/students/pages/StudentDetailsPage.tsx(338,47): error TS7006: Parameter 'fee' implicitly has an 'any' type.
+src/features/students/pages/StudentsPage.tsx(2,41): error TS6133: 'GraduationCap' is declared but its value is never read.
+src/features/students/pages/StudentsPage.tsx(12,15): error TS2459: Module '"../types"' declares 'SchoolClass' locally, but it is not exported.
+src/features/teachers/components/TeacherForm.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/features/teachers/components/TeacherTable.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/features/teachers/components/TeacherTable.tsx(7,3): error TS6133: 'Phone' is declared but its value is never read.
+src/features/teachers/pages/CreateTeacherPage.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/features/teachers/pages/CreateTeacherPage.tsx(7,1): error TS6133: 'classesApi' is declared but its value is never read.
+src/features/teachers/pages/TeacherDetailsPage.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/features/teachers/pages/TeacherDetailsPage.tsx(14,3): error TS6133: 'MapPin' is declared but its value is never read.
+src/features/teachers/pages/TeacherDetailsPage.tsx(20,1): error TS6133: 'StatsCard' is declared but its value is never read.
+src/features/teachers/pages/TeacherDetailsPage.tsx(173,39): error TS7006: Parameter 'subject' implicitly has an 'any' type.
+src/features/teachers/pages/TeachersPage.tsx(17,8): error TS7006: Parameter 't' implicitly has an 'any' type.
+src/features/teachers/types.ts(3,3): error TS2459: Module '"@/features/students/types"' declares 'User' locally, but it is not exported.
+src/features/teachers/types.ts(4,3): error TS2459: Module '"@/features/students/types"' declares 'Subject' locally, but it is not exported.
+src/features/teachers/types.ts(5,3): error TS2459: Module '"@/features/students/types"' declares 'SchoolClass' locally, but it is not exported.
+src/features/teachers/types.ts(6,3): error TS2305: Module '"@/features/students/types"' has no exported member 'PaginatedResponse'.
+src/features/teachers/types.ts(7,3): error TS2305: Module '"@/features/students/types"' has no exported member 'SingleResponse'.
+src/routes/_admin/classes/$id.tsx(10,7): error TS2820: Type '"/_admin/classes/$id/edit"' is not assignable to type '"/auth/login" | "/" | "." | ".." | "/dashboard" | "/auth" | "/classes/$id" | "/classes/create" | "/faculty/$id" | "/faculty/create" | "/students/$id" | "/students/create" | ... 13 more ... | "/teacher/students/$id/edit"'. Did you mean '"/classes/$id/edit"'?
+src/routes/_admin/faculty/$id.tsx(10,7): error TS2820: Type '"/_admin/faculty/$id/edit"' is not assignable to type '"/auth/login" | "/" | "." | ".." | "/dashboard" | "/auth" | "/classes/$id" | "/classes/create" | "/faculty/$id" | "/faculty/create" | "/students/$id" | "/students/create" | ... 13 more ... | "/teacher/students/$id/edit"'. Did you mean '"/faculty/$id/edit"'?

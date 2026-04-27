@@ -9,6 +9,7 @@ import type { CreateClassDto } from '../types'
 export function EditClassPage() {
   const { id } = useParams({ from: '/_admin/classes/$id/edit' })
   const { data: classData, isLoading: isClassLoading } = useClass(id)
+  console.log('classData', classData)
   const { mutate: updateClass, isPending } = useUpdateClass(id)
   const navigate = useNavigate()
 
@@ -85,11 +86,12 @@ export function EditClassPage() {
           defaultValues={{
             name: classData.name,
             section: classData.section,
-            academicYearId: classData.academicYearId,
-            staff: classData.staff?.map((s) => ({
-              teacherId: s.teacherId,
-              role: s.role,
-            })) || [],
+            academicYearId: classData.academicYearId || '',
+            staff:
+              classData.staff?.map((s) => ({
+                teacherId: s.teacherId,
+                role: s.role,
+              })) || [],
           }}
         />
       </div>

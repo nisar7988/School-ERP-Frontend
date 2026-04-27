@@ -115,7 +115,8 @@ export function StudentTable({ students }: StudentTableProps) {
                   <div className="flex items-center gap-2">
                     <School className="w-4 h-4 text-gray-400" />
                     <span className="font-semibold text-gray-700">
-                      {student?.class?.name} - {student?.class?.section}
+                      {student.enrollments?.[0]?.class?.name} -{' '}
+                      {student.enrollments?.[0]?.class?.section}
                     </span>
                   </div>
                 </td>
@@ -135,22 +136,30 @@ export function StudentTable({ students }: StudentTableProps) {
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Link 
-                      to={isAdmin ? '/students/$id' : '/teacher/students/$id'} 
+                    <Link
+                      to={isAdmin ? '/students/$id' : '/teacher/students/$id'}
                       params={{ id: student.id }}
                     >
-                      <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-brand-peach/20 hover:text-brand-orange">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 hover:bg-brand-peach/20 hover:text-brand-orange"
+                      >
                         <Eye className="w-4 h-4" />
                       </Button>
                     </Link>
-                    {(isAdmin || (user?.role === Role.TEACHER)) && (
-                      <Link 
-                        to={isAdmin ? '/students/$id/edit' : '/teacher/students/$id/edit'} 
+                    {(isAdmin || user?.role === Role.TEACHER) && (
+                      <Link
+                        to={
+                          isAdmin
+                            ? '/students/$id/edit'
+                            : '/teacher/students/$id/edit'
+                        }
                         params={{ id: student.id }}
                       >
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           className="h-8 w-8 hover:bg-blue-50 hover:text-blue-600"
                         >
                           <Edit2 className="w-4 h-4" />

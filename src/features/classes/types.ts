@@ -50,7 +50,7 @@ export type SchoolClassWithRelations = SchoolClass & {
 export const CreateClassSchema = z.object({
   name: z.string().min(1, 'Class name is required'),
   section: z.string().min(1, 'Section is required'),
-  academicYearId: z.string().min(1, 'Academic year is required'),
+  academicYearId: z.string().nullable().optional().transform(val => (val === '' || val === null) ? undefined : val),
   staff: z.array(StaffDtoSchema).optional(),
 })
 
