@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import {
-  Eye,
   Edit2,
   Trash2,
   Users,
   BookOpen,
   ClipboardCheck,
+  History,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -101,7 +101,10 @@ export function ClassTable({ classes }: ClassTableProps) {
                 </td>
                 <td className="px-6 py-5 text-right">
                   <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Link to="/teacher/attendance" search={{ classId: cls.id }}>
+                    <Link
+                      to="/teacher/attendance"
+                      search={{ classId: cls.id, view: 'take' }}
+                    >
                       <Button
                         variant="ghost"
                         size="icon"
@@ -111,15 +114,20 @@ export function ClassTable({ classes }: ClassTableProps) {
                         <ClipboardCheck className="w-4 h-4" />
                       </Button>
                     </Link>
-                    <Link to="/classes/$id" params={{ id: cls.id }}>
+                    <Link
+                      to="/teacher/attendance"
+                      search={{ classId: cls.id, view: 'history' }}
+                    >
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-9 w-9 rounded-xl hover:bg-brand-peach hover:text-brand-orange transition-all"
+                        className="h-9 w-9 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-all"
+                        title="View Attendance History"
                       >
-                        <Eye className="w-4 h-4" />
+                        <History className="w-4 h-4" />
                       </Button>
                     </Link>
+
                     {isAdmin && (
                       <>
                         <Link to="/classes/$id/edit" params={{ id: cls.id }}>

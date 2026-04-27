@@ -9,7 +9,8 @@ import { useAuthStore } from '@/features/auth/store'
 import { Role } from '@/features/auth/types'
 import { Dialog } from '@/components/ui/Dialog'
 import { AttendanceForm } from '../components/AttendanceForm'
-import type { AttendanceWithStudent, AttendanceStatus } from '../types'
+import { type AttendanceWithStudent, AttendanceStatus } from '../types'
+import { useClasses } from '@/features/classes/queries/useClasses'
 
 import { TakeAttendancePage } from './TakeAttendancePage'
 
@@ -20,34 +21,57 @@ export function AttendancePage() {
   const isAdmin = user?.role === Role.ADMIN
   const search = useSearch({ from: '/_teacher/teacher/attendance' })
   const initialClassId = search.classId
-  
-  const [view, setView] = useState<'history' | 'take'>(initialClassId ? 'take' : 'history')
+  const initialView = search.view
+
+  const [view, setView] = useState<'history' | 'take'>(
+    initialView || (initialClassId ? 'take' : 'history'),
+  )
   const [searchQuery, setSearchQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState<AttendanceStatus | undefined>()
+  const [statusFilter, setStatusFilter] = useState<
+    AttendanceStatus | undefined
+  >(search.status as AttendanceStatus)
+  const [classIdFilter, setClassIdFilter] = useState<string | undefined>(
+    search.classId,
+  )
+  const [dateFilter, setDateFilter] = useState<string>('')
   const [isFormOpen, setIsFormOpen] = useState(false)
-  const [selectedRecord, setSelectedRecord] = useState<AttendanceWithStudent | null>(null)
+  const [selectedRecord, setSelectedRecord] =
+    useState<AttendanceWithStudent | null>(null)
+
+  const { data: classes } = useClasses()
 
   const { data: records, isLoading } = useAttendance({
     search: searchQuery,
     status: statusFilter,
+    classId: classIdFilter,
+    date: dateFilter || undefined,
   })
 
-  const { createAttendance, updateAttendance, deleteAttendance, isCreating, isUpdating } = useAttendanceMutations()
+  const {
+    createAttendance,
+    updateAttendance,
+    deleteAttendance,
+    isCreating,
+    isUpdating,
+  } = useAttendanceMutations()
 
   const handleCreate = (data: any) => {
     createAttendance(data, {
-      onSuccess: () => setIsFormOpen(false)
+      onSuccess: () => setIsFormOpen(false),
     })
   }
 
   const handleUpdate = (data: any) => {
     if (selectedRecord) {
-      updateAttendance({ id: selectedRecord.id, data }, {
-        onSuccess: () => {
-          setIsFormOpen(false)
-          setSelectedRecord(null)
-        }
-      })
+      updateAttendance(
+        { id: selectedRecord.id, data },
+        {
+          onSuccess: () => {
+            setIsFormOpen(false)
+            setSelectedRecord(null)
+          },
+        },
+      )
     }
   }
 
@@ -60,8 +84,8 @@ export function AttendancePage() {
   if (view === 'take') {
     return (
       <div className="space-y-4">
-        <TakeAttendancePage 
-          onBack={() => setView('history')} 
+        <TakeAttendancePage
+          onBack={() => setView('history')}
           initialClassId={initialClassId}
         />
       </div>
@@ -92,22 +116,61 @@ export function AttendancePage() {
         </Button>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="relative flex-1 group">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="relative col-span-1 md:col-span-1 group">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-orange transition-colors" />
           <Input
-            placeholder="Search by student name..."
+            placeholder="Search student..."
             className="pl-12 h-14 rounded-3xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <Button
-          variant="outline"
-          className="h-14 rounded-3xl gap-2 font-bold text-gray-600 bg-white shadow-sm px-6"
-        >
-          <Filter className="w-5 h-5 text-gray-400" /> Filters
-        </Button>
+
+        <div className="relative group">
+          <select
+            className="w-full h-14 pl-4 pr-10 rounded-3xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10 appearance-none font-sans font-medium text-gray-600 outline-none"
+            value={classIdFilter || ''}
+            onChange={(e) => setClassIdFilter(e.target.value || undefined)}
+          >
+            <option value="">All Classes</option>
+            {classes?.map((cls) => (
+              <option key={cls.id} value={cls.id}>
+                {cls.name} - {cls.section}
+              </option>
+            ))}
+          </select>
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+            <Filter className="w-4 h-4 text-gray-400" />
+          </div>
+        </div>
+
+        <div className="relative group">
+          <select
+            className="w-full h-14 pl-4 pr-10 rounded-3xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10 appearance-none font-sans font-medium text-gray-600 outline-none"
+            value={statusFilter || ''}
+            onChange={(e) => setStatusFilter(e.target.value as AttendanceStatus || undefined)}
+          >
+            <option value="">All Statuses</option>
+            {Object.values(AttendanceStatus).map((status) => (
+              <option key={status} value={status}>
+                {status}
+              </option>
+            ))}
+          </select>
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+            <Filter className="w-4 h-4 text-gray-400" />
+          </div>
+        </div>
+
+        <div className="relative group">
+          <Input
+            type="date"
+            className="h-14 rounded-3xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10 font-sans font-medium text-gray-600"
+            value={dateFilter}
+            onChange={(e) => setDateFilter(e.target.value)}
+          />
+        </div>
       </div>
 
       {isLoading ? (
@@ -115,8 +178,8 @@ export function AttendancePage() {
           <Loader2 className="w-10 h-10 animate-spin text-brand-orange" />
         </div>
       ) : (
-        <AttendanceTable 
-          records={records || []} 
+        <AttendanceTable
+          records={records || []}
           onEdit={(record) => {
             setSelectedRecord(record)
             setIsFormOpen(true)
@@ -136,13 +199,19 @@ export function AttendancePage() {
         <AttendanceForm
           onSubmit={selectedRecord ? handleUpdate : handleCreate}
           isLoading={isCreating || isUpdating}
-          defaultValues={selectedRecord ? {
-            date: new Date(selectedRecord.date).toISOString().split('T')[0],
-            status: selectedRecord.status,
-            remarks: selectedRecord.remarks,
-            studentId: selectedRecord.studentId,
-            classId: (selectedRecord as any).student?.classId,
-          } : undefined}
+          defaultValues={
+            selectedRecord
+              ? {
+                  date: new Date(selectedRecord.date)
+                    .toISOString()
+                    .split('T')[0],
+                  status: selectedRecord.status,
+                  remarks: selectedRecord.remarks,
+                  studentId: selectedRecord.studentId,
+                  classId: (selectedRecord as any).student?.classId,
+                }
+              : undefined
+          }
         />
       </Dialog>
     </div>

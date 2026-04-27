@@ -6,6 +6,7 @@ import { z } from 'zod'
 const attendanceSearchSchema = z.object({
   status: z.string().optional(),
   classId: z.string().optional(),
+  view: z.enum(['history', 'take']).optional(),
 })
 
 export const Route = createFileRoute('/_teacher/teacher/attendance')({
