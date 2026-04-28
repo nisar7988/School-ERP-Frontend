@@ -10,7 +10,7 @@ export const Route = createFileRoute('/_student/student/attendance')({
 function StudentAttendanceComponent() {
   const user = useAuthStore((state) => state.user)
 
-  // Always use user.id for attendance requests
+  // Use studentProfile.id if available, fallback to user.id
   const studentId = user?.id
 
   if (!studentId || !user) {

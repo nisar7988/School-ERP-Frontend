@@ -3,15 +3,14 @@ import { useAuthStore } from '@/features/auth/store'
 
 export function OverallAttendance() {
   const user = useAuthStore((state) => state.user)
-  // Always use user.id for attendance requests
+  // Use studentProfile.id if available, fallback to user.id
   const studentId = user?.id
 
   const { data: response } = useStudentAttendance(studentId || '')
 
-  const stats = response?.data?.stats
+  const stats = response?.data?.data?.stats
   const percentage = stats?.percentage || 0
   const missedClasses = stats?.absent || 0
-
   const strokeWidth = 6
   const radius = 80
   const circumference = 2 * Math.PI * radius

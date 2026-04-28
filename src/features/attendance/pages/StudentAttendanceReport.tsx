@@ -48,20 +48,6 @@ export function StudentAttendanceReport({
             Detailed tracking of your academic presence and participation.
           </p>
         </div>
-
-        {studentName && (
-          <div className="bg-brand-peach/50 border border-brand-orange/10 px-6 py-3 rounded-[2rem] flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-brand-orange text-white flex items-center justify-center font-black"></div>
-            <div>
-              <p className="text-[10px] font-black text-brand-orange uppercase tracking-widest leading-none mb-1">
-                Student
-              </p>
-              <h4 className="font-black text-gray-900 leading-none">
-                {studentName}
-              </h4>
-            </div>
-          </div>
-        )}
       </div>
 
       {stats && <StudentAttendanceStats stats={stats} />}
