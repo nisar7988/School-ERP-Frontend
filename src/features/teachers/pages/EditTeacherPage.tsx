@@ -100,7 +100,7 @@ export function EditTeacherPage() {
               lastName: teacherData.user.lastName,
               email: teacherData.user.email,
               phone: teacherData.user.phone || '',
-              gender: teacherData.user.gender,
+              gender: teacherData.user.gender || undefined,
               employeeId: teacherData.employeeId,
               qualification: teacherData.qualification,
               joiningDate: teacherData.createdAt

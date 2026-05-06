@@ -11,23 +11,25 @@ import {
 } from 'lucide-react'
 import { useLogin } from '../queries/useLogin'
 import { toast } from '@/lib/stores/toast.store'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { LoginSchema, type LoginDto } from '../types'
 
 export const LoginForm = () => {
   const { mutate, isPending, error } = useLogin()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginDto>({
+    resolver: zodResolver(LoginSchema),
+  })
 
-    if (!email.trim() || !password.trim()) {
-      toast.error('Please enter both email and password')
-      return
-    }
-
-    mutate({ email, password })
+  const onFormSubmit = (data: LoginDto) => {
+    mutate(data)
   }
 
   return (
@@ -50,7 +52,7 @@ export const LoginForm = () => {
 
       {/* Main Form Card */}
       <div className="w-full p-8 bg-white border border-gray-100 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] rounded-[2.5rem] sm:p-10">
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
           <div className="space-y-1.5">
             <label className="block text-sm font-bold text-gray-700 ml-1">
               Email address
@@ -61,12 +63,16 @@ export const LoginForm = () => {
               </div>
               <input
                 type="email"
-                className="block w-full pl-11 pr-4 py-3.5 bg-brand-peach border-transparent rounded-2xl text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-brand-orange focus:bg-white transition-all outline-none text-base border"
+                className={`block w-full pl-11 pr-4 py-3.5 bg-brand-peach border-transparent rounded-2xl text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-brand-orange focus:bg-white transition-all outline-none text-base border ${errors.email ? 'border-red-500' : ''}`}
                 placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                {...register('email')}
               />
             </div>
+            {errors.email && (
+              <p className="text-xs text-red-500 font-bold ml-1">
+                {errors.email.message}
+              </p>
+            )}
           </div>
 
           <div className="space-y-1.5">
@@ -79,10 +85,9 @@ export const LoginForm = () => {
               </div>
               <input
                 type={showPassword ? 'text' : 'password'}
-                className="block w-full pl-11 pr-12 py-3.5 bg-brand-peach border-transparent rounded-2xl text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-brand-orange focus:bg-white transition-all outline-none text-base border"
+                className={`block w-full pl-11 pr-12 py-3.5 bg-brand-peach border-transparent rounded-2xl text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-brand-orange focus:bg-white transition-all outline-none text-base border ${errors.password ? 'border-red-500' : ''}`}
                 placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                {...register('password')}
               />
               <button
                 type="button"
@@ -96,6 +101,11 @@ export const LoginForm = () => {
                 )}
               </button>
             </div>
+            {errors.password && (
+              <p className="text-xs text-red-500 font-bold ml-1">
+                {errors.password.message}
+              </p>
+            )}
           </div>
 
           <div className="flex items-center justify-between px-1">

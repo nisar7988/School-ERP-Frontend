@@ -1,18 +1,12 @@
 import { z } from 'zod'
-import { AttendanceStatus } from '../students/types'
-import type { Student, PaginatedMeta } from '../students/types'
+import {
+  AttendanceStatus,
+  type Attendance,
+  type Student,
+  type PaginatedMeta,
+} from '@/types/base.types'
 
 export { AttendanceStatus }
-
-export interface Attendance {
-  id: string
-  date: string | Date
-  status: AttendanceStatus
-  remarks: string | null
-  studentId: string
-  createdAt: string | Date
-  updatedAt: string | Date
-}
 
 export interface AttendanceWithStudent extends Attendance {
   student: Student & {

@@ -30,6 +30,7 @@ export function DashboardLayout({
     name: authUser ? `${authUser.firstName} ${authUser.lastName}` : 'Guest',
     role: currentRole.charAt(0) + currentRole.slice(1).toLowerCase(),
     avatar:
+      authUser?.profileImage ||
       'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100',
   }
 

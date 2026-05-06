@@ -77,9 +77,15 @@ export function TeacherTable({ teachers }: TeacherTableProps) {
               >
                 <td className="px-8 py-6">
                   <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-peach to-white border border-brand-orange/20 flex items-center justify-center text-brand-orange font-black text-lg shadow-sm group-hover:scale-105 transition-transform">
-                      {teacher.user?.firstName?.[0] || 'T'}
-                      {teacher.user?.lastName?.[0] || ''}
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-peach to-white border border-brand-orange/20 flex items-center justify-center text-brand-orange font-black text-lg shadow-sm group-hover:scale-105 transition-transform overflow-hidden">
+                      {teacher.user?.profileImage ? (
+                        <img src={teacher.user.profileImage} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <>
+                          {teacher.user?.firstName?.[0] || 'T'}
+                          {teacher.user?.lastName?.[0] || ''}
+                        </>
+                      )}
                     </div>
                     <div>
                       <div className="font-extrabold text-gray-900 group-hover:text-brand-orange transition-colors">

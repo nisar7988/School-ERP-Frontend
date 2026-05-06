@@ -33,7 +33,7 @@ export function StudentAttendanceReport({
 
   console.log('student attenndence', response)
 
-  const records = response?.data?.data.data || []
+  const records = response?.data?.data || []
   const meta = response?.data?.meta
   const stats = response?.data?.stats
 

@@ -1,6 +1,7 @@
 import { useQuery, type UseQueryOptions } from '@tanstack/react-query'
 import { teachersApi } from '../api/teachers.api'
-import type { TeacherQuery, TeacherWithRelations, PaginatedMeta } from '../types'
+import type { TeacherQuery, TeacherWithRelations } from '../types'
+import type { PaginatedMeta } from '@/types/base.types'
 
 export const useTeachers = (
   params?: TeacherQuery,

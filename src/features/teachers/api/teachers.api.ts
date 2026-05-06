@@ -1,14 +1,12 @@
 import { apiClient as http } from '@/lib/http/client'
 import type {
-  Teacher,
   TeacherWithRelations,
   CreateTeacherDto,
   UpdateTeacherDto,
-  PaginatedResponse,
-  SingleResponse,
   TeacherQuery,
 } from '../types'
-import type { SchoolClassWithRelations } from '#/features/students/types'
+import type { Teacher, PaginatedResponse, SingleResponse } from '@/types/base.types'
+import type { SchoolClassWithRelations } from '@/features/classes/types'
 
 export const teachersApi = {
   getTeachers: (params?: TeacherQuery) =>

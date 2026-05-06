@@ -1,11 +1,10 @@
 import { z } from 'zod';
 import type { Student, Teacher } from '@/types/base.types';
 
-export enum Role {
-  ADMIN = 'ADMIN',
-  TEACHER = 'TEACHER',
-  STUDENT = 'STUDENT',
-}
+import { Role, type UserWithProfiles as User } from '@/types/base.types'
+
+export { Role }
+export type { User }
 
 export const LoginSchema = z.object({
   email: z.string().email('Invalid email address').min(1, 'Email is required'),
@@ -13,17 +12,6 @@ export const LoginSchema = z.object({
 });
 
 export type LoginDto = z.infer<typeof LoginSchema>;
-
-export interface User {
-  id: string;
-  email: string;
-  role: Role;
-  firstName: string;
-  lastName: string;
-  phone: string | null;
-  studentProfile?: Student | null;
-  teacherProfile?: Teacher | null;
-}
 
 export interface LoginResponse {
   success: boolean;

@@ -10,8 +10,13 @@ import {
   CircleCheck,
   CreditCard,
   User,
+  Camera,
+  Loader2,
 } from 'lucide-react'
 import { Link, useParams } from '@tanstack/react-router'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useRef } from 'react'
+import { authApi } from '#/features/auth/api/auth.api'
 import { useStudent } from '../queries/useStudent'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -27,6 +32,33 @@ export function StudentDetailsPage() {
 
   const { id } = useParams({ strict: false }) as { id: string }
   const { data: student, isLoading, error } = useStudent(id)
+  
+  const queryClient = useQueryClient()
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  
+  const uploadImageMutation = useMutation({
+    mutationFn: (file: File) => authApi.updateUserProfileImage(student!.user!.id, file),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['students', id] })
+    },
+    onError: (err) => {
+      alert('Failed to upload image')
+      console.error(err)
+    }
+  })
+
+  const handleImageClick = () => {
+    if (isAdmin || isTeacher) {
+      fileInputRef.current?.click()
+    }
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      uploadImageMutation.mutate(file)
+    }
+  }
 
   if (isLoading) {
     return (
@@ -70,10 +102,33 @@ export function StudentDetailsPage() {
 
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="flex items-center gap-6">
-            <div className="w-24 h-24 rounded-[2rem] bg-brand-peach flex items-center justify-center text-brand-orange text-4xl shadow-lg font-black italic">
-              {student.user?.firstName?.[0] || '?'}
-              {student.user?.lastName?.[0] || '?'}
+            <div 
+              className={`relative w-24 h-24 rounded-[2rem] bg-brand-peach flex items-center justify-center text-brand-orange text-4xl shadow-lg font-black italic ${(isAdmin || isTeacher) ? 'cursor-pointer group' : ''}`}
+              onClick={handleImageClick}
+            >
+              {student.user?.profileImage ? (
+                <img src={student.user.profileImage} alt="Profile" className="w-full h-full object-cover rounded-[2rem]" />
+              ) : (
+                <>{student.user?.firstName?.[0] || '?'}{student.user?.lastName?.[0] || '?'}</>
+              )}
+              
+              {(isAdmin || isTeacher) && (
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-[2rem]">
+                  {uploadImageMutation.isPending ? (
+                    <Loader2 className="w-8 h-8 text-white animate-spin" />
+                  ) : (
+                    <Camera className="w-8 h-8 text-white" />
+                  )}
+                </div>
+              )}
             </div>
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              className="hidden" 
+              accept="image/*" 
+              onChange={handleFileChange} 
+            />
             <div className="space-y-1">
               <div className="flex items-center gap-3">
                 <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">

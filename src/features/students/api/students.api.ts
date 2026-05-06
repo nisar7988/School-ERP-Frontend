@@ -1,13 +1,11 @@
 import { apiClient as http } from '@/lib/http/client'
 import type {
-  Student,
   StudentWithRelations,
   CreateStudentDto,
   UpdateStudentDto,
-  PaginatedResponse,
-  SingleResponse,
   StudentQuery,
 } from '../types'
+import type { Student, PaginatedResponse, SingleResponse } from '@/types/base.types'
 
 export const studentsApi = {
   getStudents: (params?: StudentQuery) =>

@@ -1,16 +1,17 @@
 import { z } from 'zod'
-import type {
-  StudentWithRelations,
-  TeacherWithRelations,
-} from '../students/types'
-import type { SchoolClass as BaseSchoolClass, Enrollment } from '../../types/base.types'
-import type { PaginatedResponse, SingleResponse, BaseQuery } from '../../types/base.types'
-import type { Subject } from '../../types/base.types'
+import type { StudentWithRelations } from '../students/types'
+import type { TeacherWithRelations } from '../teachers/types'
+import {
+  type SchoolClass as BaseSchoolClass,
+  type Enrollment,
+  type PaginatedResponse,
+  type SingleResponse,
+  type BaseQuery,
+  type Subject,
+  ClassRole,
+} from '../../types/base.types'
 
-export enum ClassRole {
-  INCHARGE = 'INCHARGE',
-  SUBJECT_TEACHER = 'SUBJECT_TEACHER',
-}
+export { ClassRole }
 
 export const StaffDtoSchema = z.object({
   teacherId: z.string().min(1, 'Teacher selection is required'),
@@ -50,7 +51,7 @@ export type SchoolClassWithRelations = SchoolClass & {
 export const CreateClassSchema = z.object({
   name: z.string().min(1, 'Class name is required'),
   section: z.string().min(1, 'Section is required'),
-  academicYearId: z.string().nullable().optional().transform(val => (val === '' || val === null) ? undefined : val),
+  academicYearId: z.string().nullable().optional(),
   staff: z.array(StaffDtoSchema).optional(),
 })
 
@@ -62,4 +63,3 @@ export interface ClassQuery extends BaseQuery {
   teacherId?: string
 }
 
-export type { PaginatedResponse, SingleResponse, PaginatedMeta } from '../../types/base.types'

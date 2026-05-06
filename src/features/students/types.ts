@@ -1,66 +1,38 @@
 import { z } from 'zod'
 import {
-  UserRole,
+  Role,
   AttendanceStatus,
   FeeStatus,
   Gender,
 } from '../../types/base.types'
 
-export { UserRole, AttendanceStatus, FeeStatus, Gender }
+export { Role, AttendanceStatus, FeeStatus, Gender }
 
 import type {
   Student,
-  Teacher,
   User,
   FeeRecord,
   Attendance,
-  Subject,
   SchoolClass,
   Enrollment,
   BaseQuery,
-  PaginatedMeta,
+  Subject,
 } from '../../types/base.types'
 
 // --- RELATIONS ---
-export type UserWithProfiles = User & {
-  studentProfile?: Student | null
-  teacherProfile?: Teacher | null
-}
-
 export type StudentWithRelations = Student & {
   user: User
   attendance: Attendance[]
   fees: FeeRecord[]
-  enrollments: (Enrollment & { class: SchoolClass })[]
-}
-
-export type TeacherWithRelations = Teacher & {
-  user: User
-  subjects: Subject[]
-  classTeacherOf?: SchoolClass | null
+  enrollments: (Enrollment & { class: SchoolClass & { subjects: Subject[] } })[]
 }
 
 // Note: SchoolClassWithRelations is now authoritative in classes/types.ts
 export type { SchoolClassWithRelations } from '../classes/types'
 
-export type SubjectWithRelations = Subject & {
-  class: SchoolClass
-  teacher: Teacher
-}
-
-export type AttendanceWithStudent = Attendance & {
-  student: Student
-}
-
-export type FeeRecordWithStudent = FeeRecord & {
-  student: Student
-}
-
 export interface StudentQuery extends BaseQuery {
   classId?: string
 }
-
-export type { PaginatedResponse, SingleResponse, PaginatedMeta, BaseQuery } from '../../types/base.types'
 
 // --- SCHEMAS ---
 export const CreateStudentSchema = z.object({

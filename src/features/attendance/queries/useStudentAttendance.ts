@@ -9,7 +9,10 @@ export function useStudentAttendance(
 ) {
   return useQuery({
     queryKey: ['attendance', 'student', studentId, params],
-    queryFn: () => attendanceApi.getStudentAttendance(studentId, params),
+    queryFn: async () => {
+      const response = await attendanceApi.getStudentAttendance(studentId, params)
+      return response.data
+    },
     enabled: !!studentId,
     ...options,
   })

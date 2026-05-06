@@ -1,5 +1,5 @@
 // --- ENUMS ---
-export enum UserRole {
+export enum Role {
   ADMIN = 'ADMIN',
   TEACHER = 'TEACHER',
   STUDENT = 'STUDENT',
@@ -35,13 +35,20 @@ export type User = {
   id: string
   email: string
   password?: string
-  role: UserRole
+  role: Role
   firstName: string
   lastName: string
   phone: string | null
+  profileImage?: string | null
+  gender?: Gender | null
   isActive: boolean
   createdAt: string | Date
   updatedAt: string | Date
+}
+
+export type UserWithProfiles = User & {
+  studentProfile?: Student | null
+  teacherProfile?: Teacher | null
 }
 
 export type Student = {

@@ -13,19 +13,57 @@ import {
   BadgeCheck,
   MapPin,
   Fingerprint,
+  Camera,
+  Loader2,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useRef } from 'react'
+import { authApi } from '#/features/auth/api/auth.api'
+import { useAuthStore } from '#/features/auth/store'
+import { Role } from '#/features/auth/types'
 import { useTeacher } from '../queries/useTeachers'
 import { useTeacherMutations } from '../hooks/useTeacherMutations'
-import { StatsCard } from '@/features/dashboard/components/StatsCard'
-
+import type { Subject, Teacher } from '#/types/base.types'
 export function TeacherDetailsPage() {
   const { id } = useParams({ from: '/_admin/faculty/$id' })
   const { data: teacherResponse, isLoading, error } = useTeacher(id)
   const { deleteTeacher } = useTeacherMutations()
 
-  const teacher = teacherResponse?.data
+  const teacher = teacherResponse
+
+  const user = useAuthStore((state) => state.user)
+  const isAdmin = user?.role === Role.ADMIN
+  const isTeacher = user?.role === Role.TEACHER
+
+  const queryClient = useQueryClient()
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const uploadImageMutation = useMutation({
+    mutationFn: (file: File) =>
+      authApi.updateUserProfileImage(teacher!.user!.id, file),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['teachers', id] })
+    },
+    onError: (err) => {
+      alert('Failed to upload image')
+      console.error(err)
+    },
+  })
+
+  const handleImageClick = () => {
+    if (isAdmin || isTeacher) {
+      fileInputRef.current?.click()
+    }
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      uploadImageMutation.mutate(file)
+    }
+  }
 
   if (isLoading) {
     return (
@@ -107,10 +145,40 @@ export function TeacherDetailsPage() {
 
         <div className="flex flex-col lg:flex-row items-center lg:items-start gap-12 relative z-10">
           <div className="relative">
-            <div className="w-40 h-40 rounded-[2.5rem] bg-gradient-to-br from-brand-peach to-white border-[6px] border-white shadow-2xl flex items-center justify-center text-brand-orange text-5xl font-black group-hover:scale-105 transition-transform duration-500">
-              {teacher.user.firstName[0]}
-              {teacher.user.lastName[0]}
+            <div
+              className={`w-40 h-40 rounded-[2.5rem] bg-gradient-to-br from-brand-peach to-white border-[6px] border-white shadow-2xl flex items-center justify-center text-brand-orange text-5xl font-black transition-transform duration-500 ${isAdmin || isTeacher ? 'cursor-pointer group/avatar' : ''}`}
+              onClick={handleImageClick}
+            >
+              {teacher.user.profileImage ? (
+                <img
+                  src={teacher.user.profileImage}
+                  alt="Profile"
+                  className="w-full h-full object-cover rounded-[2.5rem]"
+                />
+              ) : (
+                <>
+                  {teacher.user.firstName[0]}
+                  {teacher.user.lastName[0]}
+                </>
+              )}
+
+              {(isAdmin || isTeacher) && (
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover/avatar:opacity-100 transition-opacity rounded-[2.5rem]">
+                  {uploadImageMutation.isPending ? (
+                    <Loader2 className="w-8 h-8 text-white animate-spin" />
+                  ) : (
+                    <Camera className="w-8 h-8 text-white" />
+                  )}
+                </div>
+              )}
             </div>
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
             <div className="absolute -bottom-2 -right-2 bg-green-500 text-white p-2 rounded-2xl shadow-lg border-4 border-white">
               <BadgeCheck className="w-6 h-6" />
             </div>
@@ -171,7 +239,7 @@ export function TeacherDetailsPage() {
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {teacher.subjects?.map((subject) => (
+              {teacher.subjects?.map((subject: Subject) => (
                 <div
                   key={subject.id}
                   className="p-6 rounded-3xl bg-gray-50/50 border border-transparent hover:border-brand-peach hover:bg-white hover:shadow-xl hover:shadow-orange-100/50 transition-all duration-300 group/item"

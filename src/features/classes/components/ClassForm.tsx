@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useTeachers } from '@/features/teachers/queries/useTeachers'
 import { useAcademicYears } from '../queries/useAcademicYears'
-import type { TeacherWithRelations } from '#/features/students/types'
+import type { TeacherWithRelations } from '@/features/teachers/types'
 
 interface ClassFormProps {
   onSubmit: (data: CreateClassDto) => void

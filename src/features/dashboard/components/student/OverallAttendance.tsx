@@ -8,7 +8,7 @@ export function OverallAttendance() {
 
   const { data: response } = useStudentAttendance(studentId || '')
 
-  const stats = response?.data?.data?.stats
+  const stats = response?.data?.stats
   const percentage = stats?.percentage || 0
   const missedClasses = stats?.absent || 0
   const strokeWidth = 6

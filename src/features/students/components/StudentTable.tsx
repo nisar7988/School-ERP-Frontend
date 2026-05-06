@@ -85,16 +85,28 @@ export function StudentTable({ students }: StudentTableProps) {
               >
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-brand-peach/30 flex items-center justify-center text-brand-orange font-bold text-sm">
-                      {student.user?.firstName?.[0] || 'S'}
-                      {student.user?.lastName?.[0] || ''}
+                    <div className="w-10 h-10 rounded-full bg-brand-peach/30 flex items-center justify-center text-brand-orange font-bold text-sm overflow-hidden">
+                      {student.user?.profileImage ? (
+                        <img
+                          src={student.user.profileImage}
+                          alt=""
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <>
+                          {student.user?.firstName?.[0] || 'S'}
+                          {student.user?.lastName?.[0] || ''}
+                        </>
+                      )}
                     </div>
                     <div>
                       <div className="font-bold text-gray-900">
-                        {student.user?.firstName || 'Unknown'} {student.user?.lastName || 'Student'}
+                        {student.user?.firstName || 'Unknown'}{' '}
+                        {student.user?.lastName || 'Student'}
                       </div>
                       <div className="text-xs text-gray-500 flex items-center gap-1">
-                        <Mail className="w-3 h-3" /> {student.user?.email || 'No email'}
+                        <Mail className="w-3 h-3" />{' '}
+                        {student.user?.email || 'No email'}
                       </div>
                     </div>
                   </div>
@@ -151,10 +163,10 @@ export function StudentTable({ students }: StudentTableProps) {
                     <Link
                       to={
                         isAdmin
-                          ? '/students/$studentId/attendance'
-                          : '/teacher/students/$studentId/attendance'
+                          ? '/students/$id/attendance'
+                          : '/teacher/students/$id/attendance'
                       }
-                      params={{ studentId: student.id }}
+                      params={{ id: student.id }}
                     >
                       <Button
                         variant="ghost"

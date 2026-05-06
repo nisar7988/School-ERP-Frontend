@@ -1,13 +1,11 @@
 import { apiClient as http } from '@/lib/http/client'
 import type {
-  SchoolClass,
   SchoolClassWithRelations,
   CreateClassDto,
   UpdateClassDto,
-  PaginatedResponse,
-  SingleResponse,
   ClassQuery,
 } from '../types'
+import type { SchoolClass, PaginatedResponse, SingleResponse } from '@/types/base.types'
 
 export const classesApi = {
   getClasses: (params?: ClassQuery) =>

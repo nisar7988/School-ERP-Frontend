@@ -1,12 +1,20 @@
-import { Users, GraduationCap } from "lucide-react"
+import { Users, GraduationCap, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { StatsCard } from "../components/StatsCard"
 import { AttendanceTrends } from "../components/AttendanceTrends"
 import { RevenueCard } from "../components/RevenueCard"
 import { ApprovalsList } from "../components/ApprovalsList"
 import { RecentActivity } from "../components/RecentActivity"
+import { useStudents } from "@/features/students/queries/useStudents"
+import { useTeachers } from "@/features/teachers/queries/useTeachers"
 
 export function DashboardPage() {
+  const { data: studentsData, isLoading: isLoadingStudents } = useStudents({ limit: 1 })
+  const { data: teachersData, isLoading: isLoadingTeachers } = useTeachers({ limit: 1 })
+
+  const totalStudents = studentsData?.meta.total ?? 0
+  const totalTeachers = teachersData?.meta.total ?? 0
+
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="flex items-center justify-between">
@@ -28,13 +36,13 @@ export function DashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <StatsCard 
               label="Total Students" 
-              value="2,845" 
+              value={isLoadingStudents ? "..." : totalStudents.toLocaleString()} 
               icon={Users} 
               trend="4.2%" 
             />
             <StatsCard 
               label="Active Faculty" 
-              value="142" 
+              value={isLoadingTeachers ? "..." : totalTeachers.toLocaleString()} 
               icon={GraduationCap} 
               trend="1.1%" 
             />

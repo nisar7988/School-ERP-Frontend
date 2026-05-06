@@ -1,13 +1,12 @@
 import { apiClient as http } from '@/lib/http/client'
 import type { 
-  Attendance, 
   AttendanceWithStudent, 
   CreateAttendanceDto, 
   UpdateAttendanceDto,
   AttendanceFilters,
   StudentAttendanceResponse
 } from '../types'
-import type { PaginatedResponse, SingleResponse } from '../../students/types'
+import type { Attendance, PaginatedResponse, SingleResponse } from '@/types/base.types'
 
 export const attendanceApi = {
   getAttendance: (params?: AttendanceFilters) =>

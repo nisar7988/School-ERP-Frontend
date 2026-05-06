@@ -6,21 +6,12 @@ import type {
   PaginatedResponse, 
   SingleResponse,
   BaseQuery,
-  PaginatedMeta,
-} from '@/features/students/types';
+  Teacher,
+} from '@/types/base.types';
 
 export interface TeacherQuery extends BaseQuery {
   classId?: string;
 }
-
-export type Teacher = {
-  id: string;
-  employeeId: string;
-  qualification: string;
-  userId: string;
-  createdAt: string | Date;
-  updatedAt: string | Date;
-};
 
 export type TeacherWithRelations = Teacher & {
   user: User;
@@ -45,4 +36,3 @@ export const CreateTeacherSchema = z.object({
 export type CreateTeacherDto = z.infer<typeof CreateTeacherSchema>;
 export type UpdateTeacherDto = Partial<CreateTeacherDto>;
 
-export type { PaginatedResponse, SingleResponse };
