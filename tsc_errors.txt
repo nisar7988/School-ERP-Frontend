@@ -1,0 +1,38 @@
+src/features/attendance/components/AttendanceTable.tsx(18,3): error TS6133: 'onEdit' is declared but its value is never read.
+src/features/attendance/components/AttendanceTable.tsx(19,3): error TS6133: 'onDelete' is declared but its value is never read.
+src/features/attendance/components/AttendanceTable.tsx(20,3): error TS6133: 'isAdmin' is declared but its value is never read.
+src/features/attendance/components/AttendanceTable.tsx(22,3): error TS6133: 'showActions' is declared but its value is never read.
+src/features/attendance/pages/StudentAttendanceReport.tsx(18,3): error TS6133: 'studentName' is declared but its value is never read.
+src/features/attendance/pages/StudentAttendanceReport.tsx(24,22): error TS6133: 'setDateFilter' is declared but its value is never read.
+src/features/attendance/pages/TakeAttendancePage.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/features/attendance/pages/TakeAttendancePage.tsx(73,3): error TS6133: 'studentId' is declared but its value is never read.
+src/features/dashboard/components/Sidebar.tsx(7,3): error TS6133: 'BarChart3' is declared but its value is never read.
+src/features/schedule/api/mutations.ts(4,15): error TS6196: 'CreateScheduleDto' is declared but never used.
+src/features/schedule/api/services.ts(1,1): error TS6133: 'http' is declared but its value is never read.
+src/features/schedule/api/services.ts(2,1): error TS6133: 'SCHEDULE_ROUTES' is declared but its value is never read.
+src/features/schedule/api/services.ts(106,9): error TS2322: Type '{ id: string; teacherName: string; className: string; subject: string; teacherId: string; classId: string; room: string; dayOfWeek: string; startTime: string; endTime: string; }' is not assignable to type 'ScheduleItem'.
+  Types of property 'dayOfWeek' are incompatible.
+    Type 'string' is not assignable to type '"MON" | "TUE" | "WED" | "THU" | "FRI" | "SAT" | "SUN"'.
+src/features/schedule/api/services.ts(145,3): error TS2322: Type '{ subject: string; teacherId: string; classId: string; room: string; dayOfWeek: string; startTime: string; endTime: string; id: string; teacherName?: string; className?: string; }' is not assignable to type 'ScheduleItem'.
+  Types of property 'dayOfWeek' are incompatible.
+    Type 'string' is not assignable to type '"MON" | "TUE" | "WED" | "THU" | "FRI" | "SAT" | "SUN"'.
+src/features/schedule/components/ScheduleCard.tsx(3,1): error TS6133: 'cn' is declared but its value is never read.
+src/features/schedule/components/ScheduleFormModal.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/features/schedule/components/ScheduleManagementPage.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/features/schedule/components/ScheduleManagementPage.tsx(2,18): error TS6133: 'AlertCircle' is declared but its value is never read.
+src/features/schedule/components/ScheduleManagementPage.tsx(10,1): error TS6133: 'toast' is declared but its value is never read.
+src/features/schedule/components/WeeklyTimetable.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/features/schedule/components/WeeklyTimetable.tsx(5,1): error TS6133: 'cn' is declared but its value is never read.
+src/features/students/api/services.ts(95,38): error TS6133: 'id' is declared but its value is never read.
+src/features/students/pages/EditStudentPage.tsx(17,21): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/features/students/pages/EditStudentPage.tsx(58,11): error TS2322: Type '"../.."' is not assignable to type '"/auth/login" | "/" | "." | ".." | "/dashboard" | "/schedule" | "/auth" | "/classes/create" | "/faculty/create" | "/students/create" | "/student/Fees" | "/student/attendance" | ... 20 more ... | "/teacher/students/$id"'.
+src/features/teachers/components/TeacherForm.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/features/teachers/pages/CreateTeacherPage.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/features/teachers/pages/SchedulePage.tsx(125,20): error TS18048: 'data' is possibly 'undefined'.
+src/features/teachers/pages/SchedulePage.tsx(125,41): error TS18048: 'data' is possibly 'undefined'.
+src/features/teachers/pages/SchedulePage.tsx(125,59): error TS18048: 'data' is possibly 'undefined'.
+src/features/teachers/pages/SchedulePage.tsx(128,20): error TS18048: 'data' is possibly 'undefined'.
+src/features/teachers/pages/SchedulePage.tsx(131,20): error TS18048: 'data' is possibly 'undefined'.
+src/features/teachers/pages/SchedulePage.tsx(135,18): error TS18048: 'data' is possibly 'undefined'.
+src/features/teachers/pages/SchedulePage.tsx(154,16): error TS18048: 'data' is possibly 'undefined'.

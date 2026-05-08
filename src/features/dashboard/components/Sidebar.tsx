@@ -30,7 +30,6 @@ const adminNavItems = [
   { icon: Users, label: 'Students', href: '/students' },
   { icon: UserSquare2, label: 'Faculty', href: '/faculty' },
   { icon: Calendar, label: 'Schedule', href: '/schedule' },
-  { icon: BarChart3, label: 'Reports', href: '/reports' },
   { icon: BookOpen, label: 'Classes', href: '/classes' },
 ]
 

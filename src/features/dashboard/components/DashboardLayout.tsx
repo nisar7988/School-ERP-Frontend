@@ -43,7 +43,7 @@ export function DashboardLayout({
           user={displayUser}
           showSearch={currentRole === Role.ADMIN}
         />
-        <main className="flex-1 p-10 overflow-y-auto">
+        <main className="flex-1 p-5 overflow-y-auto">
           {children || <Outlet />}
         </main>
       </div>

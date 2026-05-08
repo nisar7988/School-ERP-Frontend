@@ -12,11 +12,13 @@ import {
 import { useLogin } from '../api/mutations'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { LoginSchema  } from '../types'
+import { LoginSchema, Role  } from '../types'
 import type {LoginDto} from '../types';
+import { useNavigate } from '@tanstack/react-router'
 
 export const LoginForm = () => {
   const { mutate, isPending, error } = useLogin()
+  const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
 
@@ -29,7 +31,18 @@ export const LoginForm = () => {
   })
 
   const onFormSubmit = (data: LoginDto) => {
-    mutate(data)
+    mutate(data, {
+      onSuccess: (response) => {
+        const user = response.data.user
+        if (user.role === Role.TEACHER) {
+          navigate({ to: '/teacher/dashboard' })
+        } else if (user.role === Role.STUDENT) {
+          navigate({ to: '/student/dashboard' })
+        } else {
+          navigate({ to: '/dashboard' })
+        }
+      },
+    })
   }
 
   return (
