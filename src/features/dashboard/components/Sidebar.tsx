@@ -41,9 +41,7 @@ const studentNavItems = [
     href: '/student/dashboard',
   },
   { icon: Calendar, label: 'Schedule', href: '/student/schedule' },
-  { icon: ClipboardList, label: 'Assignments', href: '/student/assignments' },
   { icon: CreditCard, label: 'Fees & Finance', href: '/student/fees' },
-  { icon: BookOpen, label: 'Classes', href: '/student/classes' },
   { icon: ClipboardList, label: 'Attendance', href: '/student/attendance' },
 ]
 
