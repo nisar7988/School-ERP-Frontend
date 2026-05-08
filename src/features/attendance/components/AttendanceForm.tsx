@@ -3,13 +3,14 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import {
   CreateAttendanceSchema,
-  type CreateAttendanceDto,
-  AttendanceStatus,
+  
+  AttendanceStatus
 } from '../types'
+import type {CreateAttendanceDto} from '../types';
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/Textarea'
-import { useStudents } from '../../students/queries/useStudents'
+import { useStudents } from '@/features/students/api/queries'
 
 interface AttendanceFormProps {
   onSubmit: (data: CreateAttendanceDto) => void
@@ -42,9 +43,10 @@ export function AttendanceForm({
   const watchedStudentId = watch('studentId')
   useEffect(() => {
     if (watchedStudentId && students) {
-      const student = students.find((s) => s.id === watchedStudentId)
-      if (student?.classId) {
-        setValue('classId', student.classId)
+      const student = students.data.find((s) => s.id === watchedStudentId)
+      const currentClassId = student?.enrollments?.[0]?.classId
+      if (currentClassId) {
+        setValue('classId', currentClassId)
       }
     }
   }, [watchedStudentId, students, setValue])
@@ -65,7 +67,7 @@ export function AttendanceForm({
               } bg-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-orange/20`}
             >
               <option value="">Select a student</option>
-              {students?.map((student) => (
+              {students?.data.map((student) => (
                 <option key={student.id} value={student.id}>
                   {student.user?.firstName || 'Unknown'}{' '}
                   {student.user?.lastName || 'Student'} (

@@ -2,7 +2,7 @@ import { MapPin, Loader2, Clock } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { useClassesByTeacher } from '../../../classes/queries/useClassesByTeacher'
+import { useClassesByTeacher } from '@/features/classes/api/queries'
 import { useAuthStore } from '@/features/auth/store'
 
 // Mock schedule times for demo — in real life these come from the schedule API

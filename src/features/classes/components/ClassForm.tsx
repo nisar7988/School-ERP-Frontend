@@ -5,8 +5,8 @@ import { CreateClassSchema, ClassRole } from '../types'
 import type { AcademicYear, CreateClassDto } from '../types'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { useTeachers } from '@/features/teachers/queries/useTeachers'
-import { useAcademicYears } from '../queries/useAcademicYears'
+import { useTeachers } from '@/features/teachers/api/queries'
+import { useAcademicYears } from '../api/queries'
 import type { TeacherWithRelations } from '@/features/teachers/types'
 
 interface ClassFormProps {
@@ -92,7 +92,7 @@ export function ClassForm({
             className={`w-full h-14  px-4 rounded-2xl border border-gray-100 bg-gray-50/50 text-sm font-bold focus:outline-none focus:bg-white focus:ring-4 focus:ring-brand-orange/10 transition-all ${errors.academicYearId ? 'border-red-500 ring-4 ring-red-50' : ''}`}
           >
             <option value="">Select Academic Year</option>
-            {academicYears?.map((year: AcademicYear) => (
+            {academicYears?.data.map((year: AcademicYear) => (
               <option key={year.id} value={year.id}>
                 {year.year}
               </option>

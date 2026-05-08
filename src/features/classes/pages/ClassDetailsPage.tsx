@@ -8,8 +8,9 @@ import {
   Trash2,
   Edit2,
 } from 'lucide-react'
-import { Link, useParams } from '@tanstack/react-router'
-import { useClass } from '../queries/useClass'
+import { useClass } from '../api/queries'
+import { useDeleteClass } from '../api/mutations'
+import { Link, useNavigate, useParams } from '@tanstack/react-router'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -19,6 +20,22 @@ import { ClassRole } from '../types'
 export function ClassDetailsPage() {
   const { id } = useParams({ from: '/_admin/classes/$id' })
   const { data: cls, isLoading, error } = useClass(id)
+  const { mutate: deleteClass } = useDeleteClass()
+  const navigate = useNavigate()
+
+  const handleDelete = () => {
+    if (
+      confirm(
+        'Are you sure you want to delete this class? This will affect all enrolled students.',
+      )
+    ) {
+      deleteClass(id, {
+        onSuccess: () => {
+          navigate({ to: '/classes' })
+        },
+      })
+    }
+  }
 
   if (isLoading) {
     return (
@@ -81,6 +98,7 @@ export function ClassDetailsPage() {
             <Button
               variant="destructive"
               className="gap-2 rounded-xl font-bold"
+              onClick={handleDelete}
             >
               <Trash2 className="w-4 h-4" /> Delete
             </Button>
@@ -138,7 +156,10 @@ export function ClassDetailsPage() {
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {cls.students?.map((enrollment) => (
-                    <tr key={enrollment.id} className="group hover:bg-gray-50/50">
+                    <tr
+                      key={enrollment.id}
+                      className="group hover:bg-gray-50/50"
+                    >
                       <td className="px-8 py-4">
                         <div className="font-bold text-gray-900">
                           {enrollment.student?.user?.firstName || 'Unknown'}{' '}
@@ -149,7 +170,10 @@ export function ClassDetailsPage() {
                         {enrollment.student?.admissionNo || 'N/A'}
                       </td>
                       <td className="px-8 py-4 text-right">
-                        <Link to="/students/$id" params={{ id: enrollment.student?.id || '' }}>
+                        <Link
+                          to="/students/$id"
+                          params={{ id: enrollment.student?.id || '' }}
+                        >
                           <Button
                             variant="ghost"
                             size="icon"

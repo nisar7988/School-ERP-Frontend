@@ -3,7 +3,7 @@ import { Plus, Search, Filter } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { TeacherTable } from '../components/TeacherTable'
-import { useTeachers } from '../queries/useTeachers'
+import { useTeachers } from '../api/queries'
 import { Link } from '@tanstack/react-router'
 import { Pagination } from '@/components/ui/Pagination'
 

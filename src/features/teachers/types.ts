@@ -2,9 +2,7 @@ import { z } from 'zod';
 import type { 
   User, 
   Subject, 
-  SchoolClass, 
-  PaginatedResponse, 
-  SingleResponse,
+  SchoolClass,
   BaseQuery,
   Teacher,
 } from '@/types/base.types';

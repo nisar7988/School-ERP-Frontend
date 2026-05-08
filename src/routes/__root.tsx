@@ -7,8 +7,6 @@ import {
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
-import Footer from '@/components/layout/Footer'
-import Header from '@/components/layout/Header'
 import { QueryProvider } from '@/lib/providers/query-provider'
 import { useAuthStore } from '@/features/auth/store'
 import { Role } from '@/features/auth/types'
@@ -92,9 +90,8 @@ export default function RootLayout() {
       </head>
       <body className="font-sans antialiased [overflow-wrap:anywhere] selection:bg-[rgba(79,184,178,0.24)]">
         <QueryProvider>
-          <Header />
           {!_hasHydrated && !isServer ? <Loader /> : <Outlet />}
-          <Footer />
+
           <TanStackDevtools
             config={{ position: 'bottom-right' }}
             plugins={[

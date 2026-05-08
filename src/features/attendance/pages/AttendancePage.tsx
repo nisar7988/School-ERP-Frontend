@@ -1,16 +1,21 @@
-import React, { useState } from 'react'
-import { ClipboardCheck, Plus, Search, Filter, Loader2 } from 'lucide-react'
+import { useState } from 'react'
+import { ClipboardCheck, Search, Filter, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { AttendanceTable } from '../components/AttendanceTable'
-import { useAttendance } from '../queries/useAttendance'
-import { useAttendanceMutations } from '../hooks/useAttendanceMutations'
+import { useAttendance } from '../api/queries'
+import {
+  useCreateAttendance,
+  useUpdateAttendance,
+  useDeleteAttendance,
+} from '../api/mutations'
 import { useAuthStore } from '@/features/auth/store'
 import { Role } from '@/features/auth/types'
 import { Dialog } from '@/components/ui/Dialog'
 import { AttendanceForm } from '../components/AttendanceForm'
-import { type AttendanceWithStudent, AttendanceStatus } from '../types'
-import { useClasses } from '@/features/classes/queries/useClasses'
+import { AttendanceStatus } from '../types'
+import type { AttendanceWithStudent } from '../types'
+import { useClasses } from '@/features/classes/api/queries'
 
 import { TakeAttendancePage } from './TakeAttendancePage'
 import { Pagination } from '@/components/ui/Pagination'
@@ -52,13 +57,11 @@ export function AttendancePage() {
   const records = attendanceResponse?.data || []
   const meta = attendanceResponse?.meta
 
-  const {
-    createAttendance,
-    updateAttendance,
-    deleteAttendance,
-    isCreating,
-    isUpdating,
-  } = useAttendanceMutations()
+  const { mutate: createAttendance, isPending: isCreating } =
+    useCreateAttendance()
+  const { mutate: updateAttendance, isPending: isUpdating } =
+    useUpdateAttendance()
+  const { mutate: deleteAttendance } = useDeleteAttendance()
 
   const handleCreate = (data: any) => {
     createAttendance(data, {
@@ -104,120 +107,118 @@ export function AttendancePage() {
           <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight flex items-center gap-3">
             Attendance
             <span className="text-sm font-bold bg-brand-peach text-brand-orange px-3 py-1 rounded-full uppercase tracking-widest">
-            {meta?.total || 0} Records
-          </span>
-        </h1>
-        <p className="text-gray-500 font-semibold">
-          Track and manage student daily attendance and participation.
-        </p>
-      </div>
-
-      <Button
-        variant="brand"
-        onClick={() => setView('take')}
-        className="gap-2 shadow-xl shadow-orange-100 font-bold h-12 px-6 rounded-2xl"
-      >
-        <ClipboardCheck className="w-5 h-5" /> Take Attendance
-      </Button>
-    </div>
-
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <div className="relative col-span-1 md:col-span-1 group">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-orange transition-colors" />
-        <Input
-          placeholder="Search student..."
-          className="pl-12 h-14 rounded-3xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10"
-          value={searchQuery}
-          onChange={(e) => {
-            setSearchQuery(e.target.value)
-            setPage(1)
-          }}
-        />
-      </div>
-
-      <div className="relative group">
-        <select
-          className="w-full h-14 pl-4 pr-10 rounded-3xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10 appearance-none font-sans font-medium text-gray-600 outline-none"
-          value={classIdFilter || ''}
-          onChange={(e) => {
-            setClassIdFilter(e.target.value || undefined)
-            setPage(1)
-          }}
-        >
-          <option value="">All Classes</option>
-          {classes?.data?.map((cls) => (
-            <option key={cls.id} value={cls.id}>
-              {cls.name} - {cls.section}
-            </option>
-          ))}
-        </select>
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-          <Filter className="w-4 h-4 text-gray-400" />
+              {meta?.total || 0} Records
+            </span>
+          </h1>
+          <p className="text-gray-500 font-semibold">
+            Track and manage student daily attendance and participation.
+          </p>
         </div>
-      </div>
 
-      <div className="relative group">
-        <select
-          className="w-full h-14 pl-4 pr-10 rounded-3xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10 appearance-none font-sans font-medium text-gray-600 outline-none"
-          value={statusFilter || ''}
-          onChange={(e) => {
-            setStatusFilter(
-              (e.target.value as AttendanceStatus) || undefined,
-            )
-            setPage(1)
-          }}
+        <Button
+          variant="brand"
+          onClick={() => setView('take')}
+          className="gap-2 shadow-xl shadow-orange-100 font-bold h-12 px-6 rounded-2xl"
         >
-          <option value="">All Statuses</option>
-          {Object.values(AttendanceStatus).map((status) => (
-            <option key={status} value={status}>
-              {status}
-            </option>
-          ))}
-        </select>
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-          <Filter className="w-4 h-4 text-gray-400" />
-        </div>
+          <ClipboardCheck className="w-5 h-5" /> Take Attendance
+        </Button>
       </div>
 
-      <div className="relative group">
-        <Input
-          type="date"
-          className="h-14 rounded-3xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10 font-sans font-medium text-gray-600"
-          value={dateFilter}
-          onChange={(e) => {
-            setDateFilter(e.target.value)
-            setPage(1)
-          }}
-        />
-      </div>
-    </div>
-
-    {isLoading ? (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-10 h-10 animate-spin text-brand-orange" />
-      </div>
-    ) : (
-      <div className="space-y-4">
-        <AttendanceTable
-          records={records}
-          onEdit={(record) => {
-            setSelectedRecord(record)
-            setIsFormOpen(true)
-          }}
-          onDelete={handleDelete}
-          isAdmin={isAdmin}
-        />
-        {meta && meta.lastPage > 1 && (
-          <Pagination
-            currentPage={meta.page}
-            lastPage={meta.lastPage}
-            total={meta.total}
-            limit={meta.limit}
-            onPageChange={setPage}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="relative col-span-1 md:col-span-1 group">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-orange transition-colors" />
+          <Input
+            placeholder="Search student..."
+            className="pl-12 h-14 rounded-3xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10"
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value)
+              setPage(1)
+            }}
           />
-        )}
+        </div>
+
+        <div className="relative group">
+          <select
+            className="w-full h-14 pl-4 pr-10 rounded-3xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10 appearance-none font-sans font-medium text-gray-600 outline-none"
+            value={classIdFilter || ''}
+            onChange={(e) => {
+              setClassIdFilter(e.target.value || undefined)
+              setPage(1)
+            }}
+          >
+            <option value="">All Classes</option>
+            {classes?.data?.map((cls) => (
+              <option key={cls.id} value={cls.id}>
+                {cls.name} - {cls.section}
+              </option>
+            ))}
+          </select>
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+            <Filter className="w-4 h-4 text-gray-400" />
+          </div>
+        </div>
+
+        <div className="relative group">
+          <select
+            className="w-full h-14 pl-4 pr-10 rounded-3xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10 appearance-none font-sans font-medium text-gray-600 outline-none"
+            value={statusFilter || ''}
+            onChange={(e) => {
+              setStatusFilter((e.target.value as AttendanceStatus) || undefined)
+              setPage(1)
+            }}
+          >
+            <option value="">All Statuses</option>
+            {Object.values(AttendanceStatus).map((status) => (
+              <option key={status} value={status}>
+                {status}
+              </option>
+            ))}
+          </select>
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+            <Filter className="w-4 h-4 text-gray-400" />
+          </div>
+        </div>
+
+        <div className="relative group">
+          <Input
+            type="date"
+            className="h-14 rounded-3xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10 font-sans font-medium text-gray-600"
+            value={dateFilter}
+            onChange={(e) => {
+              setDateFilter(e.target.value)
+              setPage(1)
+            }}
+          />
+        </div>
       </div>
-    )}
+
+      {isLoading ? (
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="w-10 h-10 animate-spin text-brand-orange" />
+        </div>
+      ) : (
+        <div className="space-y-4">
+          <AttendanceTable
+            records={records}
+            onEdit={(record) => {
+              setSelectedRecord(record)
+              setIsFormOpen(true)
+            }}
+            onDelete={handleDelete}
+            isAdmin={isAdmin}
+          />
+          {meta && meta.lastPage > 1 && (
+            <Pagination
+              currentPage={meta.page}
+              lastPage={meta.lastPage}
+              total={meta.total}
+              limit={meta.limit}
+              onPageChange={setPage}
+            />
+          )}
+        </div>
+      )}
 
       {/* Attendance Form Modal */}
       <Dialog

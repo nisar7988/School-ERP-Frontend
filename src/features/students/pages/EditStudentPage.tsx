@@ -1,21 +1,20 @@
 import { useParams, Link } from '@tanstack/react-router'
-import { ArrowLeft, User } from 'lucide-react'
+import { ArrowLeft, User, Loader2 } from 'lucide-react'
 import { StudentForm } from '../components/StudentForm'
-import { useStudent } from '../queries/useStudent'
-import { useUpdateStudent } from '../hooks/useStudentMutations'
-import { Loader2 } from 'lucide-react'
+import { useStudent } from '../api/queries'
+import { useUpdateStudent } from '../api/mutations'
 
 export function EditStudentPage() {
-  const { id } = useParams({ strict: false }) as { id: string }
+  const { id } = useParams({ strict: false })
   const { data: student, isLoading: isFetching } = useStudent(id)
-  const { mutate: updateStudent, isPending: isUpdating } = useUpdateStudent(id)
+  const { mutate: updateStudent, isPending: isUpdating } = useUpdateStudent()
 
   const handleSubmit = (data: any) => {
     // If password is empty, remove it from payload
     if (!data.password) {
       delete data.password
     }
-    updateStudent(data)
+    updateStudent({ id, data })
   }
 
   if (isFetching) {
@@ -39,16 +38,16 @@ export function EditStudentPage() {
     firstName: student.user.firstName,
     lastName: student.user.lastName,
     email: student.user.email,
-    gender: student.user.gender,
-    phone: student.user.phone,
+    gender: student.user.gender ?? undefined,
+    phone: student.user.phone ?? '',
     admissionNo: student.admissionNo,
-    rollNo: student.rollNo,
+    rollNo: student.rollNo ?? '',
     dateOfBirth: new Date(student.dateOfBirth).toISOString().split('T')[0],
-    address: student.address,
-    fatherName: student.fatherName,
-    motherName: student.motherName,
-    emergencyContact: student.emergencyContact,
-    classId: student.classId,
+    address: student.address ?? '',
+    fatherName: student.fatherName ?? '',
+    motherName: student.motherName ?? '',
+    emergencyContact: student.emergencyContact ?? '',
+    classId: student.enrollments?.[0]?.classId,
   }
 
   return (
@@ -69,17 +68,18 @@ export function EditStudentPage() {
             Edit Student Details
           </h1>
           <p className="text-gray-500 font-semibold italic">
-            Updating records for {student.user.firstName} {student.user.lastName}.
+            Updating records for {student.user.firstName}{' '}
+            {student.user.lastName}.
           </p>
         </div>
       </div>
 
       {/* Form Card */}
       <div className="bg-white rounded-[2.5rem] border border-gray-100 p-10 shadow-xl shadow-orange-50/50">
-        <StudentForm 
-          onSubmit={handleSubmit} 
-          isLoading={isUpdating} 
-          defaultValues={defaultValues} 
+        <StudentForm
+          onSubmit={handleSubmit}
+          isLoading={isUpdating}
+          defaultValues={defaultValues}
         />
       </div>
     </div>

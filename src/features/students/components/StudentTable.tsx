@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import {
-  MoreVertical,
   Eye,
   Edit2,
   Trash2,
@@ -13,7 +12,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Link } from '@tanstack/react-router'
 import type { StudentWithRelations } from '../types'
-import { useDeleteStudent } from '../hooks/useStudentMutations'
+import { useDeleteStudent } from '../api/mutations'
 import { Dialog } from '@/components/ui/Dialog'
 
 import { useAuthStore } from '@/features/auth/store'

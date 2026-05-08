@@ -6,8 +6,6 @@ import {
   Gender,
 } from '../../types/base.types'
 
-export { Role, AttendanceStatus, FeeStatus, Gender }
-
 import type {
   Student,
   User,
@@ -18,6 +16,8 @@ import type {
   BaseQuery,
   Subject,
 } from '../../types/base.types'
+
+export { Role, AttendanceStatus, FeeStatus, Gender }
 
 // --- RELATIONS ---
 export type StudentWithRelations = Student & {
@@ -58,3 +58,38 @@ export const CreateStudentSchema = z.object({
 
 export type CreateStudentDto = z.infer<typeof CreateStudentSchema>
 export type UpdateStudentDto = Partial<CreateStudentDto>
+
+export interface FeeData {
+  header: {
+    title: string;
+    description: string;
+    nextDueDate: string;
+  };
+  balance: {
+    amount: string;
+    description: string;
+  };
+  status: {
+    standing: string;
+    totalPaid: string;
+    scholarship: string;
+    message: string;
+  };
+  payments: Array<{
+    date: string;
+    title: string;
+    sub: string;
+    amount: string;
+    status: 'Paid' | 'Pending' | 'Overdue';
+    ref: string;
+  }>;
+  installments: Array<{
+    label: string;
+    due: string;
+    amount: string;
+  }>;
+  documents: Array<{
+    name: string;
+    sub: string;
+  }>;
+}

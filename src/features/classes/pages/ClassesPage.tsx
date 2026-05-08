@@ -1,15 +1,13 @@
 import React from 'react'
-import { Plus, Search, Filter, Loader2, GraduationCap } from 'lucide-react'
+import { Plus, Search, Filter, Loader2 } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ClassTable } from '../components/ClassTable'
-import { useClasses } from '../queries/useClasses'
-import { useAuthStore } from '@/features/auth/store'
-import { Role } from '@/features/auth/types'
-import { useClassesByTeacher } from '../queries/useClassesByTeacher'
+import { useClasses, useClassesByTeacher } from '../api/queries'
 import { Pagination } from '@/components/ui/Pagination'
-import type { SchoolClassWithRelations } from '../types'
+import { useAuthStore } from '#/features/auth/store'
+import { Role } from '#/types/base.types'
 
 export function ClassesPage() {
   const user = useAuthStore((state) => state.user)
@@ -38,7 +36,10 @@ export function ClassesPage() {
     data: teacherClasses,
     isLoading: teacherLoading,
     error: teacherError,
-  } = useClassesByTeacher(isTeacher ? user?.id : undefined, { search: debouncedSearch, page })
+  } = useClassesByTeacher(isTeacher ? user?.id : undefined, {
+    search: debouncedSearch,
+    page,
+  })
 
   const response = isAdmin ? adminClasses : teacherClasses
   const classes = response?.data || []
@@ -72,68 +73,68 @@ export function ClassesPage() {
           <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight flex items-center gap-3">
             {isAdmin ? 'Classes' : 'My Assigned Classes'}
             <span className="text-sm font-bold bg-brand-peach text-brand-orange px-3 py-1 rounded-full uppercase tracking-widest">
-            {meta?.total || 0} {isAdmin ? 'Total' : 'Assigned'}
-          </span>
-        </h1>
-        <p className="text-gray-500 font-semibold font-sans">
-          {isAdmin
-            ? 'Define and manage academic classes, sections, and class teachers.'
-            : 'Overview of the classes and sections you are currently managing.'}
-        </p>
+              {meta?.total || 0} {isAdmin ? 'Total' : 'Assigned'}
+            </span>
+          </h1>
+          <p className="text-gray-500 font-semibold font-sans">
+            {isAdmin
+              ? 'Define and manage academic classes, sections, and class teachers.'
+              : 'Overview of the classes and sections you are currently managing.'}
+          </p>
+        </div>
+
+        {isAdmin && (
+          <div className="flex items-center gap-3">
+            <Link to="/classes/create">
+              <Button
+                variant="brand"
+                className="gap-2 shadow-xl shadow-orange-100 font-bold"
+              >
+                <Plus className="w-5 h-5" /> Add New Class
+              </Button>
+            </Link>
+          </div>
+        )}
       </div>
 
-      {isAdmin && (
-        <div className="flex items-center gap-3">
-          <Link to="/classes/create">
-            <Button
-              variant="brand"
-              className="gap-2 shadow-xl shadow-orange-100 font-bold"
-            >
-              <Plus className="w-5 h-5" /> Add New Class
-            </Button>
-          </Link>
+      {/* Filters and Search */}
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="relative flex-1 group">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-orange transition-colors" />
+          <Input
+            placeholder="Search classes by name or section..."
+            className="pl-12 h-14 rounded-3xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10 font-sans"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        <Button
+          variant="outline"
+          className="h-14 rounded-3xl gap-2 font-bold text-gray-600 bg-white shadow-sm"
+        >
+          <Filter className="w-5 h-5 text-gray-400" /> Filters
+        </Button>
+      </div>
+
+      {/* Loading state or Table */}
+      {isLoading ? (
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="w-10 h-10 animate-spin text-brand-orange" />
+        </div>
+      ) : (
+        <div className="space-y-4">
+          <ClassTable classes={classes} />
+          {meta && meta.lastPage > 1 && (
+            <Pagination
+              currentPage={meta.page}
+              lastPage={meta.lastPage}
+              total={meta.total}
+              limit={meta.limit}
+              onPageChange={setPage}
+            />
+          )}
         </div>
       )}
     </div>
-
-    {/* Filters and Search */}
-    <div className="flex flex-col md:flex-row gap-4">
-      <div className="relative flex-1 group">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-brand-orange transition-colors" />
-        <Input
-          placeholder="Search classes by name or section..."
-          className="pl-12 h-14 rounded-3xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10 font-sans"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-      </div>
-      <Button
-        variant="outline"
-        className="h-14 rounded-3xl gap-2 font-bold text-gray-600 bg-white shadow-sm"
-      >
-        <Filter className="w-5 h-5 text-gray-400" /> Filters
-      </Button>
-    </div>
-
-    {/* Loading state or Table */}
-    {isLoading ? (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-10 h-10 animate-spin text-brand-orange" />
-      </div>
-    ) : (
-      <div className="space-y-4">
-        <ClassTable classes={classes} />
-        {meta && meta.lastPage > 1 && (
-          <Pagination
-            currentPage={meta.page}
-            lastPage={meta.lastPage}
-            total={meta.total}
-            limit={meta.limit}
-            onPageChange={setPage}
-          />
-        )}
-      </div>
-    )}
-  </div>
-)
+  )
 }

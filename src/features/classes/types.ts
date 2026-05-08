@@ -2,14 +2,15 @@ import { z } from 'zod'
 import type { StudentWithRelations } from '../students/types'
 import type { TeacherWithRelations } from '../teachers/types'
 import {
-  type SchoolClass as BaseSchoolClass,
-  type Enrollment,
-  type PaginatedResponse,
-  type SingleResponse,
-  type BaseQuery,
-  type Subject,
-  ClassRole,
+  
+  
+  
+  
+  
+  
+  ClassRole
 } from '../../types/base.types'
+import type {SchoolClass as BaseSchoolClass, Enrollment, BaseQuery, Subject} from '../../types/base.types';
 
 export { ClassRole }
 

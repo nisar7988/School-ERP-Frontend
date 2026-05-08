@@ -1,72 +1,20 @@
 import { useState } from 'react'
-import { Calendar, User, MapPin, ChevronDown, Clock } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { User, MapPin, Clock } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils/cn'
 import { Calendar as ShadCalendar } from '@/components/ui/calendar'
-
-const SCHEDULE_DATA = {
-  today: 'Monday, October 14th, 2024',
-  calendar: {
-    month: 'October 2024',
-    days: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
-    dates: [12, 13, 14, 15, 16, 17, 18],
-    currentDate: 14,
-  },
-  timeline: [
-    {
-      id: 1,
-      time: '08:00',
-      type: 'class',
-      label: 'ARCHITECTURE STUDIO',
-      title: 'Advanced Structural Systems',
-      timeRange: '8:30 – 10:00 AM',
-      professor: 'Prof. Elena Vance',
-      location: 'Studio A, Floor 4',
-      variant: 'default',
-    },
-    {
-      id: 2,
-      time: '10:42 AM',
-      type: 'class',
-      label: 'WORKSHOP',
-      title: 'Design Thinking & Materiality',
-      timeRange: '10:30 – 12:00 PM',
-      professor: 'Dr. Marcus Thorne',
-      location: 'Workshop Lab 2',
-      variant: 'active',
-      isCurrent: true,
-      ongoing: true,
-    },
-    {
-      id: 3,
-      time: '12:30',
-      type: 'break',
-      title: 'Academic Lunch Break',
-    },
-    {
-      id: 4,
-      time: '14:00',
-      type: 'class',
-      label: 'THEORY',
-      title: 'Contemporary Urbanism',
-      timeRange: '2:00 – 3:30 PM',
-      professor: 'Prof. Sarah Jenkins',
-      location: 'Lecture Hall 3B',
-      variant: 'default',
-    },
-  ],
-  officeHours: {
-    professor: 'Dr. Marcus Thorne',
-    time: '1:00 PM — 3:00 PM',
-    location: 'Room 402',
-  },
-}
+import { useSchedule } from '../api/queries'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export function SchedulePage() {
   const [view, setView] = useState<'daily' | 'weekly'>('daily')
-  const [showAllAssign, setShowAllAssign] = useState(false)
   const [date, setDate] = useState<Date | undefined>(new Date(2024, 9, 14))
+  
+  const { data, isLoading } = useSchedule()
+
+  if (isLoading || !data) {
+    return <ScheduleLoading />
+  }
 
   return (
     <div className="flex gap-8 p-10 bg-[#FAF9F7] min-h-screen font-sans text-gray-900 animate-in fade-in duration-700">
@@ -79,7 +27,7 @@ export function SchedulePage() {
               Academic Timeline
             </h1>
             <p className="text-gray-500 font-semibold mt-1">
-              Today is Monday, October 14th, 2024
+              Today is {data.today}
             </p>
           </div>
           {/* Toggle */}
@@ -103,7 +51,7 @@ export function SchedulePage() {
 
         {/* Timeline */}
         <div className="flex flex-col gap-0">
-          {SCHEDULE_DATA.timeline.map((event) => (
+          {data.timeline.map((event) => (
             <TimeRow
               key={event.id}
               time={event.time}
@@ -169,6 +117,38 @@ export function SchedulePage() {
             }}
           />
         </div>
+      </div>
+    </div>
+  )
+}
+
+function ScheduleLoading() {
+  return (
+    <div className="flex gap-8 p-10 bg-[#FAF9F7] min-h-screen font-sans">
+      <div className="flex-1 min-w-0">
+        <div className="flex items-start justify-between mb-8">
+          <div className="space-y-3">
+            <Skeleton className="h-12 w-64" />
+            <Skeleton className="h-4 w-48" />
+          </div>
+          <Skeleton className="h-10 w-48 rounded-full" />
+        </div>
+
+        <div className="space-y-8">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex gap-6">
+              <Skeleton className="h-6 w-16 mt-4" />
+              <div className="flex flex-col items-center pt-5 shrink-0">
+                <Skeleton className="w-3 h-3 rounded-full" />
+                <Skeleton className="w-[2px] flex-1 mt-2 min-h-[40px]" />
+              </div>
+              <Skeleton className="flex-1 h-32 rounded-[24px]" />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="w-[340px] shrink-0">
+        <Skeleton className="h-[350px] rounded-[32px]" />
       </div>
     </div>
   )

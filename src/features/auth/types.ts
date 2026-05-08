@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import type { Student, Teacher } from '@/types/base.types';
+import { Role } from '@/types/base.types';
+import type { UserWithProfiles as User  } from '@/types/base.types';
 
-import { Role, type UserWithProfiles as User } from '@/types/base.types'
 
 export { Role }
 export type { User }

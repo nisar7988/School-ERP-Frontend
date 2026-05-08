@@ -9,10 +9,10 @@ import {
   X,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useClassesByTeacher } from '@/features/classes/queries/useClassesByTeacher'
-import { useStudents } from '@/features/students/queries/useStudents'
-import { useAttendanceMutations } from '../hooks/useAttendanceMutations'
-import { useAttendance } from '../queries/useAttendance'
+import { useClassesByTeacher } from '@/features/classes/api/queries'
+import { useStudents } from '@/features/students/api/queries'
+import { useBulkCreateAttendance } from '../api/mutations'
+import { useAttendance } from '../api/queries'
 import { useAuthStore } from '@/features/auth/store'
 import { AttendanceStatus } from '../types'
 import { toast } from '@/lib/stores/toast.store'
@@ -243,7 +243,7 @@ export function TakeAttendancePage({
     { enabled: !!selectedClassId },
   )
 
-  const { bulkCreateAttendance, isBulkCreating } = useAttendanceMutations()
+  const { mutateAsync: bulkCreateAttendance, isPending: isBulkCreating } = useBulkCreateAttendance()
 
   // Reset page when class or date changes
   useEffect(() => {

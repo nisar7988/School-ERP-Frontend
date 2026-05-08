@@ -4,7 +4,6 @@ import {
   XCircle,
   Clock,
   Calendar,
-  Percent,
   ArrowUpRight,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'

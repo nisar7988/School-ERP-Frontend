@@ -1,8 +1,8 @@
 import { ArrowLeft, BookOpen, Loader2 } from 'lucide-react'
 import { Link, useNavigate, useParams } from '@tanstack/react-router'
 import { ClassForm } from '../components/ClassForm'
-import { useUpdateClass } from '../hooks/useClassMutations'
-import { useClass } from '../queries/useClass'
+import { useUpdateClass } from '../api/mutations'
+import { useClass } from '../api/queries'
 import { Button } from '@/components/ui/button'
 import type { CreateClassDto } from '../types'
 
@@ -10,11 +10,11 @@ export function EditClassPage() {
   const { id } = useParams({ from: '/_admin/classes/$id/edit' })
   const { data: classData, isLoading: isClassLoading } = useClass(id)
   console.log('classData', classData)
-  const { mutate: updateClass, isPending } = useUpdateClass(id)
+  const { mutate: updateClass, isPending } = useUpdateClass()
   const navigate = useNavigate()
 
   const handleSubmit = (data: CreateClassDto) => {
-    updateClass(data, {
+    updateClass({ id, data }, {
       onSuccess: () => {
         navigate({ to: '/classes' })
       },

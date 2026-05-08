@@ -25,6 +25,7 @@ import { Route as TeacherTeacherAttendanceRouteImport } from './routes/_teacher/
 import { Route as StudentStudentScheduleRouteImport } from './routes/_student/student/schedule'
 import { Route as StudentStudentDashboardRouteImport } from './routes/_student/student/dashboard'
 import { Route as StudentStudentAttendanceRouteImport } from './routes/_student/student/attendance'
+import { Route as StudentStudentFeesRouteImport } from './routes/_student/student/Fees'
 import { Route as AdminStudentsCreateRouteImport } from './routes/_admin/students/create'
 import { Route as AdminStudentsIdRouteImport } from './routes/_admin/students/$id'
 import { Route as AdminFacultyCreateRouteImport } from './routes/_admin/faculty/create'
@@ -124,6 +125,11 @@ const StudentStudentAttendanceRoute =
     path: '/student/attendance',
     getParentRoute: () => StudentRoute,
   } as any)
+const StudentStudentFeesRoute = StudentStudentFeesRouteImport.update({
+  id: '/student/Fees',
+  path: '/student/Fees',
+  getParentRoute: () => StudentRoute,
+} as any)
 const AdminStudentsCreateRoute = AdminStudentsCreateRouteImport.update({
   id: '/students/create',
   path: '/students/create',
@@ -238,6 +244,7 @@ export interface FileRoutesByFullPath {
   '/faculty/create': typeof AdminFacultyCreateRoute
   '/students/$id': typeof AdminStudentsIdRouteWithChildren
   '/students/create': typeof AdminStudentsCreateRoute
+  '/student/Fees': typeof StudentStudentFeesRoute
   '/student/attendance': typeof StudentStudentAttendanceRoute
   '/student/dashboard': typeof StudentStudentDashboardRoute
   '/student/schedule': typeof StudentStudentScheduleRoute
@@ -269,6 +276,7 @@ export interface FileRoutesByTo {
   '/classes/create': typeof AdminClassesCreateRoute
   '/faculty/create': typeof AdminFacultyCreateRoute
   '/students/create': typeof AdminStudentsCreateRoute
+  '/student/Fees': typeof StudentStudentFeesRoute
   '/student/attendance': typeof StudentStudentAttendanceRoute
   '/student/dashboard': typeof StudentStudentDashboardRoute
   '/student/schedule': typeof StudentStudentScheduleRoute
@@ -306,6 +314,7 @@ export interface FileRoutesById {
   '/_admin/faculty/create': typeof AdminFacultyCreateRoute
   '/_admin/students/$id': typeof AdminStudentsIdRouteWithChildren
   '/_admin/students/create': typeof AdminStudentsCreateRoute
+  '/_student/student/Fees': typeof StudentStudentFeesRoute
   '/_student/student/attendance': typeof StudentStudentAttendanceRoute
   '/_student/student/dashboard': typeof StudentStudentDashboardRoute
   '/_student/student/schedule': typeof StudentStudentScheduleRoute
@@ -342,6 +351,7 @@ export interface FileRouteTypes {
     | '/faculty/create'
     | '/students/$id'
     | '/students/create'
+    | '/student/Fees'
     | '/student/attendance'
     | '/student/dashboard'
     | '/student/schedule'
@@ -373,6 +383,7 @@ export interface FileRouteTypes {
     | '/classes/create'
     | '/faculty/create'
     | '/students/create'
+    | '/student/Fees'
     | '/student/attendance'
     | '/student/dashboard'
     | '/student/schedule'
@@ -409,6 +420,7 @@ export interface FileRouteTypes {
     | '/_admin/faculty/create'
     | '/_admin/students/$id'
     | '/_admin/students/create'
+    | '/_student/student/Fees'
     | '/_student/student/attendance'
     | '/_student/student/dashboard'
     | '/_student/student/schedule'
@@ -554,6 +566,13 @@ declare module '@tanstack/react-router' {
       path: '/student/attendance'
       fullPath: '/student/attendance'
       preLoaderRoute: typeof StudentStudentAttendanceRouteImport
+      parentRoute: typeof StudentRoute
+    }
+    '/_student/student/Fees': {
+      id: '/_student/student/Fees'
+      path: '/student/Fees'
+      fullPath: '/student/Fees'
+      preLoaderRoute: typeof StudentStudentFeesRouteImport
       parentRoute: typeof StudentRoute
     }
     '/_admin/students/create': {
@@ -765,12 +784,14 @@ const AdminRouteChildren: AdminRouteChildren = {
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface StudentRouteChildren {
+  StudentStudentFeesRoute: typeof StudentStudentFeesRoute
   StudentStudentAttendanceRoute: typeof StudentStudentAttendanceRoute
   StudentStudentDashboardRoute: typeof StudentStudentDashboardRoute
   StudentStudentScheduleRoute: typeof StudentStudentScheduleRoute
 }
 
 const StudentRouteChildren: StudentRouteChildren = {
+  StudentStudentFeesRoute: StudentStudentFeesRoute,
   StudentStudentAttendanceRoute: StudentStudentAttendanceRoute,
   StudentStudentDashboardRoute: StudentStudentDashboardRoute,
   StudentStudentScheduleRoute: StudentStudentScheduleRoute,

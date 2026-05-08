@@ -1,10 +1,11 @@
 import * as React from "react"
 import {
   DayPicker,
-  getDefaultClassNames,
-  type DayButton,
-  type Locale,
+  getDefaultClassNames
+  
+  
 } from "react-day-picker"
+import type {DayButton, Locale} from "react-day-picker";
 
 import { cn } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -132,39 +133,39 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        Root: ({ className, rootRef, ...props }) => {
+        Root: ({ className: cClassName, rootRef, ...cProps }) => {
           return (
             <div
               data-slot="calendar"
               ref={rootRef}
-              className={cn(className)}
-              {...props}
+              className={cn(cClassName)}
+              {...cProps}
             />
           )
         },
-        Chevron: ({ className, orientation, ...props }) => {
+        Chevron: ({ className: cClassName, orientation, ...cProps }) => {
           if (orientation === "left") {
             return (
-              <ChevronLeftIcon className={cn("size-4", className)} {...props} />
+              <ChevronLeftIcon className={cn("size-4", cClassName)} {...cProps} />
             )
           }
 
           if (orientation === "right") {
             return (
-              <ChevronRightIcon className={cn("size-4", className)} {...props} />
+              <ChevronRightIcon className={cn("size-4", cClassName)} {...cProps} />
             )
           }
 
           return (
-            <ChevronDownIcon className={cn("size-4", className)} {...props} />
+            <ChevronDownIcon className={cn("size-4", cClassName)} {...cProps} />
           )
         },
-        DayButton: ({ ...props }) => (
-          <CalendarDayButton locale={locale} {...props} />
+        DayButton: ({ ...cProps }) => (
+          <CalendarDayButton locale={locale} {...cProps} />
         ),
-        WeekNumber: ({ children, ...props }) => {
+        WeekNumber: ({ children, ...cProps }) => {
           return (
-            <td {...props}>
+            <td {...cProps}>
               <div className="flex size-(--cell-size) items-center justify-center text-center">
                 {children}
               </div>

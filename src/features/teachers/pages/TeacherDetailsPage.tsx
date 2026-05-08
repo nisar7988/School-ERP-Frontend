@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { useParams, Link } from '@tanstack/react-router'
 import {
   ArrowLeft,
@@ -11,25 +11,23 @@ import {
   Edit2,
   Trash2,
   BadgeCheck,
-  MapPin,
   Fingerprint,
   Camera,
   Loader2,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useRef } from 'react'
-import { authApi } from '#/features/auth/api/auth.api'
 import { useAuthStore } from '#/features/auth/store'
 import { Role } from '#/features/auth/types'
-import { useTeacher } from '../queries/useTeachers'
-import { useTeacherMutations } from '../hooks/useTeacherMutations'
-import type { Subject, Teacher } from '#/types/base.types'
+import { useUpdateProfileImage } from '#/features/auth/api/mutations'
+import { useTeacher } from '../api/queries'
+import { useDeleteTeacher } from '../api/mutations'
+import type { Subject } from '#/types/base.types'
+
 export function TeacherDetailsPage() {
   const { id } = useParams({ from: '/_admin/faculty/$id' })
   const { data: teacherResponse, isLoading, error } = useTeacher(id)
-  const { deleteTeacher } = useTeacherMutations()
+  const { mutate: deleteTeacher } = useDeleteTeacher()
 
   const teacher = teacherResponse
 
@@ -37,20 +35,10 @@ export function TeacherDetailsPage() {
   const isAdmin = user?.role === Role.ADMIN
   const isTeacher = user?.role === Role.TEACHER
 
-  const queryClient = useQueryClient()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const uploadImageMutation = useMutation({
-    mutationFn: (file: File) =>
-      authApi.updateUserProfileImage(teacher!.user!.id, file),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['teachers', id] })
-    },
-    onError: (err) => {
-      alert('Failed to upload image')
-      console.error(err)
-    },
-  })
+  const { mutate: uploadImage, isPending: isUploadingImage } =
+    useUpdateProfileImage()
 
   const handleImageClick = () => {
     if (isAdmin || isTeacher) {
@@ -61,7 +49,7 @@ export function TeacherDetailsPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      uploadImageMutation.mutate(file)
+      uploadImage({ userId: teacher!.user.id, file })
     }
   }
 
@@ -130,7 +118,7 @@ export function TeacherDetailsPage() {
                   'Are you sure you want to offboard this faculty member?',
                 )
               ) {
-                deleteTeacher.mutate(id)
+                deleteTeacher(id)
               }
             }}
           >
@@ -164,7 +152,7 @@ export function TeacherDetailsPage() {
 
               {(isAdmin || isTeacher) && (
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover/avatar:opacity-100 transition-opacity rounded-[2.5rem]">
-                  {uploadImageMutation.isPending ? (
+                  {isUploadingImage ? (
                     <Loader2 className="w-8 h-8 text-white animate-spin" />
                   ) : (
                     <Camera className="w-8 h-8 text-white" />

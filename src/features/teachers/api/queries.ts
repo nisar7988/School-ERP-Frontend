@@ -1,5 +1,6 @@
-import { useQuery, type UseQueryOptions } from '@tanstack/react-query'
-import { teachersApi } from '../api/teachers.api'
+import { useQuery  } from '@tanstack/react-query'
+import type {UseQueryOptions} from '@tanstack/react-query';
+import { getTeachersService, getTeacherService, getClassesByTeacherService } from './services'
 import type { TeacherQuery, TeacherWithRelations } from '../types'
 import type { PaginatedMeta } from '@/types/base.types'
 
@@ -13,7 +14,7 @@ export const useTeachers = (
   return useQuery<{ data: TeacherWithRelations[]; meta: PaginatedMeta }, Error>({
     queryKey: ['teachers', params],
     queryFn: async () => {
-      const response = await teachersApi.getTeachers(params)
+      const response = await getTeachersService(params)
       return response.data.data
     },
     ...options,
@@ -25,9 +26,19 @@ export const useTeacher = (id: string | undefined) => {
     queryKey: ['teachers', id],
     queryFn: async () => {
       if (!id) return null
-      const response = await teachersApi.getTeacher(id)
+      const response = await getTeacherService(id)
       return response.data.data
     },
     enabled: !!id,
+  })
+}
+
+export const useClassesByTeacher = () => {
+  return useQuery({
+    queryKey: ['teachers', 'classes'],
+    queryFn: async () => {
+      const response = await getClassesByTeacherService()
+      return response.data.data
+    },
   })
 }

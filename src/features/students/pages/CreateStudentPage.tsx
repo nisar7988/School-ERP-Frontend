@@ -1,7 +1,7 @@
 import { ArrowLeft, UserPlus } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { StudentForm } from '../components/StudentForm'
-import { useCreateStudent } from '../hooks/useStudentMutations'
+import { useCreateStudent } from '../api/mutations'
 import type { CreateStudentDto } from '../types'
 
 export function CreateStudentPage() {

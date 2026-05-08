@@ -2,12 +2,11 @@ import React from 'react'
 import { ArrowLeft, UserPlus2 } from 'lucide-react'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { TeacherForm } from '../components/TeacherForm'
-import { useTeacherMutations } from '../hooks/useTeacherMutations'
+import { useCreateTeacher } from '../api/mutations'
 import type { CreateTeacherDto } from '../types'
-import { classesApi } from '@/features/classes/api/classes.api'
 
 export function CreateTeacherPage() {
-  const { createTeacher } = useTeacherMutations()
+  const { mutate: createTeacher, isPending } = useCreateTeacher()
   const navigate = useNavigate()
 
   const handleSubmit = async (values: CreateTeacherDto) => {
@@ -17,7 +16,7 @@ export function CreateTeacherPage() {
       classId: values.classId || null,
     }
     
-    createTeacher.mutate(payload, {
+    createTeacher(payload, {
       onSuccess: () => {
         navigate({ to: '/faculty' })
       },
@@ -51,7 +50,7 @@ export function CreateTeacherPage() {
       <div className="bg-white rounded-[3rem] border border-gray-100 p-12 shadow-2xl shadow-orange-50/50 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-brand-orange/5 rounded-full -mr-32 -mt-32 blur-3xl" />
         <div className="relative z-10">
-          <TeacherForm onSubmit={handleSubmit} isLoading={createTeacher.isPending} />
+          <TeacherForm onSubmit={handleSubmit} isLoading={isPending} />
         </div>
       </div>
     </div>

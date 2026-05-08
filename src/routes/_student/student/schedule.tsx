@@ -1,6 +1,7 @@
 import { SchedulePage } from '#/features/dashboard/pages/SchedulePage'
 import { createFileRoute } from '@tanstack/react-router'
 import { DashboardLayout } from '#/features/dashboard/components/DashboardLayout'
+
 export const Route = createFileRoute('/_student/student/schedule')({
   component: RouteComponent,
 })

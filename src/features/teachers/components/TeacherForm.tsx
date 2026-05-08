@@ -1,17 +1,18 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CreateTeacherSchema, type CreateTeacherDto } from '../types'
+import { CreateTeacherSchema  } from '../types'
+import type {CreateTeacherDto} from '../types';
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { UserCircle, GraduationCap, Briefcase } from 'lucide-react'
 
-import { useClasses } from '@/features/classes/queries/useClasses'
-import { useClassesByTeacher } from '@/features/classes/queries/useClassesByTeacher'
+import { useClasses, useClassesByTeacher } from '@/features/classes/api/queries'
 import { useAuthStore } from '@/features/auth/store'
 import { Role } from '@/features/auth/types'
 import { Gender } from '@/features/students/types'
 import type { SchoolClass } from '#/features/classes/types'
+
 interface TeacherFormProps {
   onSubmit: (data: CreateTeacherDto) => void
   isLoading: boolean

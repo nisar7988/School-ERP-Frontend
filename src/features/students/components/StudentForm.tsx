@@ -1,13 +1,13 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CreateStudentSchema, type CreateStudentDto } from '../types'
+import { CreateStudentSchema, Gender } from '../types'
+import type { CreateStudentDto } from '../types'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { useClasses } from '@/features/classes/queries/useClasses'
-import { useClassesByTeacher } from '@/features/classes/queries/useClassesByTeacher'
+import { useClasses, useClassesByTeacher } from '@/features/classes/api/queries'
 import { useAuthStore } from '@/features/auth/store'
 import { Role } from '@/features/auth/types'
-import { Gender } from '../types'
+
 interface StudentFormProps {
   onSubmit: (data: CreateStudentDto) => void
   isLoading: boolean
@@ -23,15 +23,15 @@ export function StudentForm({
   const isAdmin = user?.role === Role.ADMIN
   const isTeacher = user?.role === Role.TEACHER
 
-  const { data: adminClassesResponse, isLoading: isLoadingAdminClasses } = useClasses(
-    { limit: 100 },
-    { enabled: isAdmin }
-  )
+  const { data: adminClassesResponse, isLoading: isLoadingAdminClasses } =
+    useClasses({ limit: 100 }, { enabled: isAdmin })
 
   const { data: teacherClassesResponse, isLoading: isLoadingTeacherClasses } =
     useClassesByTeacher(isTeacher ? user?.id : undefined, { limit: 100 })
 
-  const classes = isAdmin ? adminClassesResponse?.data : teacherClassesResponse?.data
+  const classes = isAdmin
+    ? adminClassesResponse?.data
+    : teacherClassesResponse?.data
   const isLoadingClasses = isAdmin
     ? isLoadingAdminClasses
     : isLoadingTeacherClasses

@@ -1,10 +1,11 @@
 import { z } from 'zod'
 import {
-  AttendanceStatus,
-  type Attendance,
-  type Student,
-  type PaginatedMeta,
+  AttendanceStatus
+  
+  
+  
 } from '@/types/base.types'
+import type {Attendance, Student, PaginatedMeta} from '@/types/base.types';
 
 export { AttendanceStatus }
 

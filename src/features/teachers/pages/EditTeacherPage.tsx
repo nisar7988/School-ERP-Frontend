@@ -1,8 +1,8 @@
 import { ArrowLeft, Edit3, Loader2, GraduationCap } from 'lucide-react'
 import { Link, useNavigate, useParams } from '@tanstack/react-router'
 import { TeacherForm } from '../components/TeacherForm'
-import { useTeacherMutations } from '../hooks/useTeacherMutations'
-import { useTeacher } from '../queries/useTeachers'
+import { useUpdateTeacher } from '../api/mutations'
+import { useTeacher } from '../api/queries'
 import type { CreateTeacherDto } from '../types'
 
 import { Button } from '@/components/ui/button'
@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button'
 export function EditTeacherPage() {
   const { id } = useParams({ from: '/_admin/faculty/$id/edit' })
   const { data: teacherData, isLoading: isTeacherLoading } = useTeacher(id)
-  const { updateTeacher } = useTeacherMutations()
+  const { mutate: updateTeacher, isPending } = useUpdateTeacher()
   const navigate = useNavigate()
 
   const handleSubmit = async (values: CreateTeacherDto) => {
@@ -20,7 +20,7 @@ export function EditTeacherPage() {
       classId: values.classId || null, // Ensure empty strings are sent as null for unassignment
     }
 
-    updateTeacher.mutate(
+    updateTeacher(
       { id, data: payload },
       {
         onSuccess: () => {
@@ -94,7 +94,7 @@ export function EditTeacherPage() {
         <div className="relative z-10">
           <TeacherForm
             onSubmit={handleSubmit}
-            isLoading={updateTeacher.isPending}
+            isLoading={isPending}
             defaultValues={{
               firstName: teacherData.user.firstName,
               lastName: teacherData.user.lastName,

@@ -11,12 +11,13 @@ import {
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import {
-  ClassRole,
-  type SchoolClass,
-  type SchoolClassWithRelations,
+  ClassRole
+  
+  
 } from '../types'
+import type { SchoolClassWithRelations} from '../types';
 import { Link } from '@tanstack/react-router'
-import { useDeleteClass } from '../hooks/useClassMutations'
+import { useDeleteClass } from '../api/mutations'
 import { Dialog } from '@/components/ui/Dialog'
 import { useAuthStore } from '@/features/auth/store'
 import { Role } from '@/features/auth/types'

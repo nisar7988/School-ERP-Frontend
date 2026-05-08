@@ -1,12 +1,12 @@
-import { Users, GraduationCap, Loader2 } from "lucide-react"
+import { Users, GraduationCap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { StatsCard } from "../components/StatsCard"
 import { AttendanceTrends } from "../components/AttendanceTrends"
 import { RevenueCard } from "../components/RevenueCard"
 import { ApprovalsList } from "../components/ApprovalsList"
 import { RecentActivity } from "../components/RecentActivity"
-import { useStudents } from "@/features/students/queries/useStudents"
-import { useTeachers } from "@/features/teachers/queries/useTeachers"
+import { useStudents } from "@/features/students/api/queries"
+import { useTeachers } from "@/features/teachers/api/queries"
 
 export function DashboardPage() {
   const { data: studentsData, isLoading: isLoadingStudents } = useStudents({ limit: 1 })

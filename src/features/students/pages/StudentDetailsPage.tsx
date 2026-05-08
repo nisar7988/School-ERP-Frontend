@@ -14,38 +14,28 @@ import {
   Loader2,
 } from 'lucide-react'
 import { Link, useParams } from '@tanstack/react-router'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useRef } from 'react'
-import { authApi } from '#/features/auth/api/auth.api'
-import { useStudent } from '../queries/useStudent'
+import { useStudent } from '../api/queries'
+import { useUpdateProfileImage } from '#/features/auth/api/mutations'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { StatsCard } from '@/features/dashboard/components/StatsCard'
 import { Button } from '#/components/ui/button'
 import { useAuthStore } from '#/features/auth/store'
 import { Role } from '#/features/auth/types'
+import { useRef } from 'react'
 
 export function StudentDetailsPage() {
   const user = useAuthStore((state) => state.user)
   const isAdmin = user?.role === Role.ADMIN
   const isTeacher = user?.role === Role.TEACHER
 
-  const { id } = useParams({ strict: false }) as { id: string }
+  const { id } = useParams({ strict: false })
   const { data: student, isLoading, error } = useStudent(id)
-  
-  const queryClient = useQueryClient()
+
   const fileInputRef = useRef<HTMLInputElement>(null)
-  
-  const uploadImageMutation = useMutation({
-    mutationFn: (file: File) => authApi.updateUserProfileImage(student!.user!.id, file),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['students', id] })
-    },
-    onError: (err) => {
-      alert('Failed to upload image')
-      console.error(err)
-    }
-  })
+
+  const { mutate: uploadImage, isPending: isUploadingImage } =
+    useUpdateProfileImage()
 
   const handleImageClick = () => {
     if (isAdmin || isTeacher) {
@@ -56,7 +46,7 @@ export function StudentDetailsPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      uploadImageMutation.mutate(file)
+      uploadImage({ userId: student!.user.id, file })
     }
   }
 
@@ -102,19 +92,26 @@ export function StudentDetailsPage() {
 
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="flex items-center gap-6">
-            <div 
-              className={`relative w-24 h-24 rounded-[2rem] bg-brand-peach flex items-center justify-center text-brand-orange text-4xl shadow-lg font-black italic ${(isAdmin || isTeacher) ? 'cursor-pointer group' : ''}`}
+            <div
+              className={`relative w-24 h-24 rounded-[2rem] bg-brand-peach flex items-center justify-center text-brand-orange text-4xl shadow-lg font-black italic ${isAdmin || isTeacher ? 'cursor-pointer group' : ''}`}
               onClick={handleImageClick}
             >
               {student.user?.profileImage ? (
-                <img src={student.user.profileImage} alt="Profile" className="w-full h-full object-cover rounded-[2rem]" />
+                <img
+                  src={student.user.profileImage}
+                  alt="Profile"
+                  className="w-full h-full object-cover rounded-[2rem]"
+                />
               ) : (
-                <>{student.user?.firstName?.[0] || '?'}{student.user?.lastName?.[0] || '?'}</>
+                <>
+                  {student.user?.firstName?.[0] || '?'}
+                  {student.user?.lastName?.[0] || '?'}
+                </>
               )}
-              
+
               {(isAdmin || isTeacher) && (
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-[2rem]">
-                  {uploadImageMutation.isPending ? (
+                  {isUploadingImage ? (
                     <Loader2 className="w-8 h-8 text-white animate-spin" />
                   ) : (
                     <Camera className="w-8 h-8 text-white" />
@@ -122,12 +119,12 @@ export function StudentDetailsPage() {
                 </div>
               )}
             </div>
-            <input 
-              type="file" 
-              ref={fileInputRef} 
-              className="hidden" 
-              accept="image/*" 
-              onChange={handleFileChange} 
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              accept="image/*"
+              onChange={handleFileChange}
             />
             <div className="space-y-1">
               <div className="flex items-center gap-3">
@@ -199,7 +196,9 @@ export function StudentDetailsPage() {
         />
         <StatsCard
           label="Active Subjects"
-          value={student.enrollments?.[0]?.class?.subjects?.length?.toString() || '0'}
+          value={
+            student.enrollments?.[0]?.class?.subjects?.length?.toString() || '0'
+          }
           icon={FileText}
           trend="Enrolled"
         />

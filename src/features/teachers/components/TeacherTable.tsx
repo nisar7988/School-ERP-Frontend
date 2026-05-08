@@ -4,7 +4,6 @@ import {
   Edit2,
   Trash2,
   Mail,
-  Phone,
   BookOpen,
   GraduationCap,
   Fingerprint,
@@ -14,7 +13,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Link } from '@tanstack/react-router'
 import type { TeacherWithRelations } from '../types'
-import { useTeacherMutations } from '../hooks/useTeacherMutations'
+import { useDeleteTeacher } from '../api/mutations'
 import { Dialog } from '@/components/ui/Dialog'
 
 interface TeacherTableProps {
@@ -22,7 +21,7 @@ interface TeacherTableProps {
 }
 
 export function TeacherTable({ teachers }: TeacherTableProps) {
-  const { deleteTeacher } = useTeacherMutations()
+  const { mutate: deleteTeacher } = useDeleteTeacher()
 
   const [deleteDialog, setDeleteDialog] = useState<{
     isOpen: boolean
@@ -39,7 +38,7 @@ export function TeacherTable({ teachers }: TeacherTableProps) {
   }
 
   const handleConfirmDelete = () => {
-    deleteTeacher.mutate(deleteDialog.id, {
+    deleteTeacher(deleteDialog.id, {
       onSuccess: () => {
         setDeleteDialog({ ...deleteDialog, isOpen: false })
       }

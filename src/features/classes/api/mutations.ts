@@ -1,31 +1,29 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { classesApi } from '../api/classes.api'
-import { useNavigate } from '@tanstack/react-router'
-import type { CreateClassDto, UpdateClassDto } from '../types'
+import { createClassService, updateClassService, deleteClassService } from './services'
+import type { UpdateClassDto } from '../types'
 import { toast } from '@/lib/stores/toast.store'
 
 export const useCreateClass = () => {
   const queryClient = useQueryClient()
-  const navigate = useNavigate()
-
+  
   return useMutation({
-    mutationFn: (data: CreateClassDto) => classesApi.createClass(data),
+    mutationFn: createClassService,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['classes'] })
       toast.success('Class created successfully')
-      navigate({ to: '/classes' })
     },
   })
 }
 
-export const useUpdateClass = (id: string) => {
+export const useUpdateClass = () => {
   const queryClient = useQueryClient()
-
+  
   return useMutation({
-    mutationFn: (data: UpdateClassDto) => classesApi.updateClass(id, data),
-    onSuccess: () => {
+    mutationFn: ({ id, data }: { id: string; data: UpdateClassDto }) =>
+      updateClassService(id, data),
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['classes'] })
-      queryClient.invalidateQueries({ queryKey: ['classes', id] })
+      queryClient.invalidateQueries({ queryKey: ['classes', variables.id] })
       toast.success('Class updated successfully')
     },
   })
@@ -33,9 +31,9 @@ export const useUpdateClass = (id: string) => {
 
 export const useDeleteClass = () => {
   const queryClient = useQueryClient()
-
+  
   return useMutation({
-    mutationFn: (id: string) => classesApi.deleteClass(id),
+    mutationFn: deleteClassService,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['classes'] })
       toast.success('Class deleted successfully')

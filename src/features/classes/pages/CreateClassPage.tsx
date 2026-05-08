@@ -1,7 +1,7 @@
 import { ArrowLeft, BookOpen } from 'lucide-react'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { ClassForm } from '../components/ClassForm'
-import { useCreateClass } from '../hooks/useClassMutations'
+import { useCreateClass } from '../api/mutations'
 import type { CreateClassDto } from '../types'
 
 export function CreateClassPage() {

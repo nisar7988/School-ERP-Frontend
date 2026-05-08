@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { StudentAttendanceReport } from '@/features/attendance/pages/StudentAttendanceReport'
-import { useStudent } from '@/features/students/queries/useStudent'
+import { useStudent } from '@/features/students/api/queries'
 import { DashboardLayout } from '@/features/dashboard/components/DashboardLayout'
 
 export const Route = createFileRoute(

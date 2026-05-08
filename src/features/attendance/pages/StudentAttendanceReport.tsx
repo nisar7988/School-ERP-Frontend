@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
-import { Calendar, Search, Filter, Loader2, Download } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { useState } from 'react'
+import { Calendar, Search, Filter } from 'lucide-react'
+
 import { Input } from '@/components/ui/input'
 import { StudentAttendanceStats } from '../components/StudentAttendanceStats'
 import { AttendanceTable } from '../components/AttendanceTable'
-import { useStudentAttendance } from '../queries/useStudentAttendance'
+import { useStudentAttendance } from '../api/queries'
 import { Pagination } from '@/components/ui/Pagination'
 import { AttendanceStatus } from '../types'
 
@@ -33,9 +33,9 @@ export function StudentAttendanceReport({
 
   console.log('student attenndence', response)
 
-  const records = response?.data?.data || []
-  const meta = response?.data?.meta
-  const stats = response?.data?.stats
+  const records = response?.data || []
+  const meta = response?.meta
+  const stats = response?.stats
 
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-1000 font-sans pb-20">
