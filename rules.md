@@ -38,16 +38,14 @@ To ensure consistency and prevent scattered API logic, **all API integrations MU
    ```
 
 2. **Define Service Functions (`services.ts`):**
-   Create pure, asynchronous functions using the global `apiClient` (`axios`). These handle DTOs and return standardized responses.
+   Create pure functions using the global `apiClient` (`axios`). These return the Axios promise directly, which will be unwrapped in the query hooks.
    ```ts
    // src/features/auth/api/services.ts
    import { apiClient } from '../../../services/client';
    import { AUTH_ROUTES } from './routes';
    
-   export const loginService = async (credentials: LoginDto) => {
-     const { data } = await apiClient.post<LoginResponse>(AUTH_ROUTES.LOGIN, credentials);
-     return data;
-   };
+   export const loginService = (credentials: LoginDto) => 
+     apiClient.post<LoginResponse>(AUTH_ROUTES.LOGIN, credentials);
    ```
 
 3. **Define TanStack Query Hooks (`queries.ts` or `mutations.ts`):**
