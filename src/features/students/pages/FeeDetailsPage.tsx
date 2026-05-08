@@ -21,7 +21,7 @@ import { useAuthStore } from '@/features/auth/store'
 
 export function FeeDetailsPage() {
   const user = useAuthStore((state) => state.user)
-  const studentId = user?.studentProfile?.id
+  const studentId = user?.studentProfile?.id || user?.id || 'mock-student-id'
   const [showNotification, setShowNotification] = useState(true)
   const { data, isLoading } = useFeeDetails(studentId)
 

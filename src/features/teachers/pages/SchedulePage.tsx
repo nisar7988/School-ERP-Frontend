@@ -1,9 +1,7 @@
-import { useState } from 'react'
 import { Lock, MessageSquare } from 'lucide-react'
 import { useSchedule } from '../api/queries'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
-import { cn } from '@/lib/utils/cn'
 
 // ─── Class Card ───────────────────────────────────────────────────────────────
 const ClassCard = ({ item }: { item: any }) => (
@@ -101,7 +99,7 @@ const LoadingState = () => (
 )
 
 export default function SchedulePage() {
-  const { data: scheduleItems = [], isLoading, isError } = useSchedule()
+  const { data, isLoading, isError } = useSchedule()
 
   return (
     <div className=" bg-[#F7F3EF] pb-20">
@@ -126,7 +124,7 @@ export default function SchedulePage() {
 
             {/* Timetable List */}
             <div className="flex flex-col gap-6">
-              {scheduleItems.map((item: any) =>
+              {data?.scheduleItems?.map((item: any) =>
                 item.type === 'priority' || item.type === 'meeting' ? (
                   <PriorityCard key={item.id} item={item} />
                 ) : (
