@@ -74,13 +74,20 @@ export const ScheduleManagementPage = () => {
 
   const handleFormSubmit = async (data: any) => {
     try {
-      // Create Date objects. Axios will stringify these to ISO strings (with 'Z').
-      // Note: If the backend uses @IsDate() without @Type(() => Date), it may fail to parse JSON strings.
-      const today = new Date().toISOString().split('T')[0];
+      // Construction of Date objects that preserves the literal time entered by the user.
+      // We use the current date but set the hours/minutes directly.
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = today.getMonth();
+      const date = today.getDate();
+
+      const [sH, sM] = data.startTime.split(':').map(Number);
+      const [eH, eM] = data.endTime.split(':').map(Number);
+
       const payload = {
         ...data,
-        startTime: new Date(`${today}T${data.startTime}:00`),
-        endTime: new Date(`${today}T${data.endTime}:00`),
+        startTime: new Date(year, month, date, sH, sM),
+        endTime: new Date(year, month, date, eH, eM),
       };
 
       if (data.dayOfWeek === 'ALL' && !editingItem) {
@@ -169,7 +176,7 @@ export const ScheduleManagementPage = () => {
                 <option value="">Select Teacher</option>
                 {teachers.map((teacher) => (
                   <option key={teacher.id} value={teacher.id}>
-                    {teacher.firstName} {teacher.lastName}
+                    {teacher.user?.firstName} {teacher.user?.lastName}
                   </option>
                 ))}
               </select>

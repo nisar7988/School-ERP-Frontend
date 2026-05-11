@@ -13,7 +13,7 @@ export function EditClassPage() {
   const { id } = useParams({ from: '/_admin/classes/$id/edit' })
   const [isSelectorOpen, setIsSelectorOpen] = useState(false)
   const { data: classData, isLoading: isClassLoading } = useClass(id)
-  
+
   const { mutate: updateClass, isPending } = useUpdateClass()
   const { mutate: updateSubject } = useUpdateSubject()
   const navigate = useNavigate()
@@ -93,20 +93,82 @@ export function EditClassPage() {
               Updating the details of {classData.name} - {classData.section}.
             </p>
           </div>
-
-          <Button
-            variant="brand"
-            onClick={() => setIsSelectorOpen(true)}
-            className="h-14 px-10 rounded-2xl font-extrabold shadow-xl shadow-orange-100 flex items-center gap-2 group"
-          >
-            <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
-            Attach Subject
-          </Button>
         </div>
       </div>
 
-      {/* Form Card */}
-      <div className="bg-white rounded-[2.5rem] border border-gray-100 p-10 shadow-xl shadow-orange-50/50">
+      {/* Main Unified Card */}
+      <div className="bg-white rounded-[3rem] border border-gray-100 p-8 md:p-12 shadow-2xl shadow-orange-50/40 space-y-10">
+        {/* Subjects Sub-Section */}
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <h2 className="text-2xl font-black text-gray-900 flex items-center gap-2">
+                Class Subjects
+                <span className="text-xs font-bold bg-brand-peach text-brand-orange px-2 py-0.5 rounded-full uppercase tracking-tighter">
+                  {classData.subjects?.length || 0}
+                </span>
+              </h2>
+              <p className="text-xs font-bold text-gray-400 italic">
+                Manage curriculum for this class
+              </p>
+            </div>
+            <Button
+              variant="brand"
+              onClick={() => setIsSelectorOpen(true)}
+              className="h-12 px-6 rounded-2xl font-black shadow-lg shadow-orange-100 flex items-center gap-2 group text-sm"
+            >
+              <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" />
+              Attach Subject
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {classData.subjects?.map((subject) => (
+              <div
+                key={subject.id}
+                className="p-4 rounded-[1.5rem] bg-gray-50/50 border border-gray-100 flex justify-between items-center group hover:bg-white hover:shadow-md transition-all"
+              >
+                <div>
+                  <span className="block font-black text-gray-900 text-sm">
+                    {subject.name}
+                  </span>
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                    {subject.code}
+                  </span>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleDetach(subject.id)}
+                  className="h-8 w-8 p-0 rounded-xl hover:bg-red-50 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <Unlink className="w-3.5 h-3.5" />
+                </Button>
+              </div>
+            ))}
+            {(!classData.subjects || classData.subjects.length === 0) && (
+              <p className="col-span-full text-center py-6 text-gray-400 font-bold italic text-sm">
+                No subjects assigned yet.
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="relative">
+          <div
+            className="absolute inset-0 flex items-center"
+            aria-hidden="true"
+          >
+            <div className="w-full border-t border-gray-100"></div>
+          </div>
+          <div className="relative flex justify-center">
+            <span className="bg-white px-4 text-xs font-black text-gray-300 uppercase tracking-[0.3em]">
+              Class Metadata
+            </span>
+          </div>
+        </div>
+
+        {/* Form Sub-Section */}
         <ClassForm
           onSubmit={handleSubmit}
           isLoading={isPending}
@@ -121,40 +183,6 @@ export function EditClassPage() {
               })) || [],
           }}
         />
-      </div>
-
-      {/* Subjects Section */}
-      <div className="bg-white rounded-[2.5rem] border border-gray-100 p-10 shadow-sm space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-black text-gray-900">Class Subjects</h2>
-          <span className="text-sm font-bold text-gray-400 italic">
-            {classData.subjects?.length || 0} subjects assigned
-          </span>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {classData.subjects?.map((subject) => (
-            <div key={subject.id} className="p-4 rounded-2xl bg-gray-50 border border-gray-100 flex justify-between items-center group">
-              <div>
-                <span className="block font-black text-gray-900">{subject.name}</span>
-                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{subject.code}</span>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => handleDetach(subject.id)}
-                className="h-10 w-10 p-0 rounded-xl hover:bg-white hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                <Unlink className="w-4 h-4" />
-              </Button>
-            </div>
-          ))}
-          {(!classData.subjects || classData.subjects.length === 0) && (
-            <p className="col-span-2 text-center py-8 text-gray-400 font-bold italic">
-              No subjects assigned to this class yet.
-            </p>
-          )}
-        </div>
       </div>
 
       <SubjectSelectorModal

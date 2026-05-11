@@ -9,7 +9,7 @@ import type { ScheduleItem, CreateScheduleDto } from '../types'
 
 import { useClasses } from '@/features/classes/api/queries'
 import { useTeachers } from '@/features/teachers/api/queries'
-import { useSubjectsByClass } from '@/features/subjects/api/queries'
+import { useSubjects } from '@/features/subjects/api/queries'
 
 const scheduleSchema = z.object({
   subjectId: z.string().min(1, 'Subject is required'),
@@ -23,7 +23,14 @@ const scheduleSchema = z.object({
   endTime: z
     .string()
     .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, 'Invalid time format (HH:MM)'),
-})
+}).refine((data) => {
+  const start = parseInt(data.startTime.replace(':', ''));
+  const end = parseInt(data.endTime.replace(':', ''));
+  return end > start;
+}, {
+  message: "End time must be after start time",
+  path: ["endTime"],
+});
 
 type ScheduleFormData = z.infer<typeof scheduleSchema>
 
@@ -66,7 +73,7 @@ export const ScheduleFormModal = ({
   const selectedClassId = watch('classId')
   const { data: classesData } = useClasses({ limit: 100 })
   const { data: teachersData } = useTeachers({ limit: 100 })
-  const { data: subjectsData } = useSubjectsByClass(selectedClassId)
+  const { data: subjectsData } = useSubjects({ limit: 100 })
 
   const classes = classesData?.data || []
   const teachers = teachersData?.data || []

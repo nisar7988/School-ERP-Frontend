@@ -9,6 +9,7 @@ import {
   LifeBuoy,
   ClipboardList,
   CreditCard,
+  BookMarked,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Link, useNavigate } from '@tanstack/react-router'
@@ -31,6 +32,7 @@ const adminNavItems = [
   { icon: UserSquare2, label: 'Faculty', href: '/faculty' },
   { icon: Calendar, label: 'Schedule', href: '/schedule' },
   { icon: BookOpen, label: 'Classes', href: '/classes' },
+  { icon: BookMarked, label: 'Subjects', href: '/subjects' },
 ]
 
 const studentNavItems = [

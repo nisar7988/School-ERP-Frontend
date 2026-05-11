@@ -1,20 +1,29 @@
-import { MapPin, Loader2, Clock } from 'lucide-react'
+import { MapPin, Loader2 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { useClassesByTeacher } from '@/features/classes/api/queries'
+import { useSchedulesByTeacher } from '@/features/schedule/api/queries'
 import { useAuthStore } from '@/features/auth/store'
 
 // Mock schedule times for demo — in real life these come from the schedule API
 const classSchedules = [
-  { time: '09:00', period: 'AM', room: 'Room 4B, Science Wing', urgency: 'In 30 mins' },
-  { time: '11:30', period: 'AM', room: 'Lab 2, Research Center', urgency: null },
+  {
+    time: '09:00',
+    period: 'AM',
+    room: 'Room 4B, Science Wing',
+    urgency: 'In 30 mins',
+  },
+  {
+    time: '11:30',
+    period: 'AM',
+    room: 'Lab 2, Research Center',
+    urgency: null,
+  },
 ]
 
 export function TodaysClasses() {
   const user = useAuthStore((state) => state.user)
-  const { data: myClassesResponse, isLoading } = useClassesByTeacher(user?.id)
-  const myClasses = myClassesResponse?.data || []
+  const teacherId = user?.teacherProfile?.id
+  const { data: schedules, isLoading } = useSchedulesByTeacher(teacherId || '')
 
   if (isLoading) {
     return (
@@ -24,7 +33,28 @@ export function TodaysClasses() {
     )
   }
 
-  const displayClasses = myClasses.length > 0 ? myClasses : []
+  const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
+  const today = days[new Date().getDay()]
+  const todaysSchedules = schedules?.filter((s) => s.dayOfWeek === today) || []
+
+  const formatTime = (timeStr: string) => {
+    if (!timeStr) return { time: '--:--', period: '' }
+    const date = timeStr.includes('T') ? new Date(timeStr) : null
+
+    if (date) {
+      const hours = date.getHours()
+      const displayHours = hours % 12 || 12
+      const period = hours >= 12 ? 'PM' : 'AM'
+      const minutes = date.getMinutes().toString().padStart(2, '0')
+      return { time: `${displayHours}:${minutes}`, period }
+    }
+
+    const [h, m] = timeStr.split(':')
+    const hourNum = parseInt(h)
+    const displayHour = hourNum % 12 || 12
+    const period = hourNum >= 12 ? 'PM' : 'AM'
+    return { time: `${displayHour}:${m}`, period }
+  }
 
   return (
     <Card className="h-full border border-gray-100 shadow-sm bg-white rounded-2xl p-6">
@@ -40,56 +70,51 @@ export function TodaysClasses() {
         </Button>
       </CardHeader>
       <CardContent className="p-0 space-y-3">
-        {displayClasses.length === 0 ? (
-          /* Fallback: show demo cards from the design */
-          <>
-            {classSchedules.map((sched, i) => (
-              <DemoClassCard key={i} schedule={sched} showButtons={i === 0} />
-            ))}
-          </>
+        {todaysSchedules.length === 0 ? (
+          <div className="text-center py-10 bg-gray-50/50 rounded-2xl border border-dashed border-gray-200">
+            <p className="text-sm font-bold text-gray-400 italic">
+              No classes scheduled for today
+            </p>
+          </div>
         ) : (
-          displayClasses.map((cls, idx) => {
-            const sched = classSchedules[idx] || classSchedules[0]
+          todaysSchedules.map((item, idx) => {
+            const { time, period } = formatTime(item.startTime)
             return (
               <div
-                key={cls.id}
-                className="bg-gray-50/60 rounded-xl p-4 hover:shadow-sm transition-all duration-200"
+                key={item.id}
+                className="bg-gray-50/60 rounded-2xl p-4 hover:shadow-sm transition-all duration-200 border border-gray-100/50 group text-left"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex gap-3">
-                    {/* Time block */}
-                    <div className="w-14 h-14 bg-white rounded-xl flex flex-col items-center justify-center border border-gray-100 shrink-0">
-                      <span className="text-sm font-bold text-gray-900 leading-none">{sched.time}</span>
-                      <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-tight mt-0.5">{sched.period}</span>
+                    <div className="w-14 h-14 bg-white rounded-xl flex flex-col items-center justify-center border border-gray-100 shrink-0 shadow-sm group-hover:border-brand-orange/30 transition-colors">
+                      <span className="text-sm font-black text-gray-900 leading-none">
+                        {time}
+                      </span>
+                      <span className="text-[10px] font-black text-brand-orange uppercase tracking-tight mt-0.5">
+                        {period}
+                      </span>
                     </div>
                     <div className="space-y-0.5">
-                      <h3 className="font-bold text-gray-900 text-base leading-tight">{cls.name}</h3>
-                      <div className="flex items-center gap-1.5 text-gray-500 text-xs font-medium">
-                        <MapPin className="w-3.5 h-3.5 text-gray-400" />
-                        {sched.room}
+                      <h3 className="font-black text-gray-900 text-base leading-tight">
+                        {item.subject?.name || item.subjectName}
+                      </h3>
+                      <p className="text-xs font-bold text-gray-500">
+                        {item.class?.name} - {item.class?.section}
+                      </p>
+                      <div className="flex items-center gap-1.5 text-gray-400 text-[10px] font-bold uppercase tracking-wider mt-1">
+                        <MapPin className="w-3 h-3" />
+                        {item.room}
                       </div>
                     </div>
                   </div>
-                  {sched.urgency && (
-                    <Badge className="bg-orange-50 text-brand-orange border border-orange-100 px-2.5 py-1 font-semibold text-[11px] rounded-lg shrink-0">
-                      {sched.urgency}
-                    </Badge>
-                  )}
                 </div>
                 {idx === 0 && (
                   <div className="flex gap-2 mt-3 pt-3 border-t border-gray-100">
                     <Button
                       size="sm"
-                      className="rounded-lg font-semibold bg-brand-orange text-white hover:bg-brand-orange/90 h-8 px-4 text-xs shadow-sm shadow-orange-100"
+                      className="rounded-lg font-black bg-brand-orange text-white hover:bg-brand-orange/90 h-8 px-4 text-xs shadow-md shadow-orange-100 transition-all"
                     >
                       Take Attendance
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="rounded-lg font-semibold bg-white text-gray-600 border-gray-200 hover:bg-gray-50 h-8 px-4 text-xs"
-                    >
-                      Resources
                     </Button>
                   </div>
                 )}
@@ -99,57 +124,5 @@ export function TodaysClasses() {
         )}
       </CardContent>
     </Card>
-  )
-}
-
-function DemoClassCard({
-  schedule,
-  showButtons,
-}: {
-  schedule: { time: string; period: string; room: string; urgency: string | null }
-  showButtons: boolean
-}) {
-  const className = showButtons ? 'Advanced Physics 301' : 'Quantum Mechanics 405'
-  return (
-    <div className="bg-gray-50/60 rounded-xl p-4 hover:shadow-sm transition-all duration-200">
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex gap-3">
-          <div className="w-14 h-14 bg-white rounded-xl flex flex-col items-center justify-center border border-gray-100 shrink-0">
-            <span className="text-sm font-bold text-gray-900 leading-none">{schedule.time}</span>
-            <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-tight mt-0.5">{schedule.period}</span>
-          </div>
-          <div className="space-y-0.5">
-            <h3 className="font-bold text-gray-900 text-base leading-tight">{className}</h3>
-            <div className="flex items-center gap-1.5 text-gray-500 text-xs font-medium">
-              <MapPin className="w-3.5 h-3.5 text-gray-400" />
-              {schedule.room}
-            </div>
-          </div>
-        </div>
-        {schedule.urgency && (
-          <Badge className="bg-orange-50 text-brand-orange border border-orange-100 px-2.5 py-1 font-semibold text-[11px] rounded-lg shrink-0">
-            <Clock className="w-3 h-3 mr-1 inline-block" />
-            {schedule.urgency}
-          </Badge>
-        )}
-      </div>
-      {showButtons && (
-        <div className="flex gap-2 mt-3 pt-3 border-t border-gray-100">
-          <Button
-            size="sm"
-            className="rounded-lg font-semibold bg-brand-orange text-white hover:bg-brand-orange/90 h-8 px-4 text-xs shadow-sm shadow-orange-100"
-          >
-            Take Attendance
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="rounded-lg font-semibold bg-white text-gray-600 border-gray-200 hover:bg-gray-50 h-8 px-4 text-xs"
-          >
-            Resources
-          </Button>
-        </div>
-      )}
-    </div>
   )
 }
