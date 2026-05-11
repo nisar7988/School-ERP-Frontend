@@ -60,23 +60,25 @@ export const useSchedulesByMe = () => {
     queryFn: async () => {
       if (!user) throw new Error('Not authenticated');
       
+      // TEACHER: Use teacher-specific schedules
       if (user.role === Role.TEACHER && user.teacherProfile) {
         const response = await getSchedulesByTeacherService(user.teacherProfile.id);
         return response.data.data;
       }
       
+      // STUDENT: Use class-specific schedules via /api/schedule/class/{classId}
       if (user.role === Role.STUDENT && user.studentProfile) {
-        // Typically students see their class schedule
-        // Need to find their classId. Assuming it might be in their profile or we might need another call.
-        // For now, if we have classId in studentProfile:
-        const classId = (user.studentProfile as any).classId;
+        // Attempt to find classId from profile or enrollments
+        const student = user.studentProfile as any;
+        const classId = student.classId || student.enrollments?.[0]?.classId || student.currentClassId;
+        
         if (classId) {
           const response = await getSchedulesByClassService(classId);
           return response.data.data;
         }
       }
       
-      // Fallback or Admin view (all)
+      // ADMIN or FALLBACK: Get all (or filter by generic params)
       const response = await getSchedulesService();
       return response.data.data;
     },
