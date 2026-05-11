@@ -1,36 +1,45 @@
-import React, { useState } from 'react';
-import { BookOpen, Plus, Search, Filter, Edit2, Trash2, MoreVertical, Loader2 } from 'lucide-react';
-import { useSubjects, useDeleteSubject } from '../api/queries';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { SubjectModal } from '../components/SubjectModal';
-import { Badge } from '@/components/ui/badge';
-import type { Subject } from '../types';
+import React, { useState } from 'react'
+import {
+  BookOpen,
+  Plus,
+  Search,
+  Filter,
+  Edit2,
+  Trash2,
+  MoreVertical,
+  Loader2,
+} from 'lucide-react'
+import { useSubjects, useDeleteSubject } from '../api/queries'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { SubjectModal } from '../components/SubjectModal'
+import { Badge } from '@/components/ui/badge'
+import type { Subject } from '../types'
 
 export function SubjectsListPage() {
-  const [search, setSearch] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedSubject, setSelectedSubject] = useState<Subject | null>(null);
+  const [search, setSearch] = useState('')
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedSubject, setSelectedSubject] = useState<Subject | null>(null)
 
-  const { data: subjectsData, isLoading } = useSubjects({ search });
-  const subjects = subjectsData?.data || [];
-  const { mutate: deleteSubject } = useDeleteSubject();
+  const { data: subjectsData, isLoading } = useSubjects({ search })
+  const subjects = subjectsData?.data || []
+  const { mutate: deleteSubject } = useDeleteSubject()
 
   const handleEdit = (subject: Subject) => {
-    setSelectedSubject(subject);
-    setIsModalOpen(true);
-  };
+    setSelectedSubject(subject)
+    setIsModalOpen(true)
+  }
 
   const handleAdd = () => {
-    setSelectedSubject(null);
-    setIsModalOpen(true);
-  };
+    setSelectedSubject(null)
+    setIsModalOpen(true)
+  }
 
   const handleDelete = (id: string) => {
     if (window.confirm('Are you sure you want to delete this subject?')) {
-      deleteSubject(id);
+      deleteSubject(id)
     }
-  };
+  }
 
   return (
     <div className="space-y-8 animate-in fade-in duration-700">
@@ -65,7 +74,10 @@ export function SubjectsListPage() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <Button variant="outline" className="h-14 w-14 rounded-2xl border-gray-100 text-gray-400">
+          <Button
+            variant="outline"
+            className="h-14 w-14 rounded-2xl border-gray-100 text-gray-400"
+          >
             <Filter className="w-6 h-6" />
           </Button>
         </div>
@@ -74,9 +86,15 @@ export function SubjectsListPage() {
           <table className="w-full">
             <thead>
               <tr className="text-left border-b border-gray-50">
-                <th className="pb-4 font-black text-gray-400 text-[10px] tracking-widest uppercase">Subject</th>
-                <th className="pb-4 font-black text-gray-400 text-[10px] tracking-widest uppercase">Code</th>
-                <th className="pb-4 font-black text-gray-400 text-[10px] tracking-widest uppercase">Class</th>
+                <th className="pb-4 font-black text-gray-400 text-[10px] tracking-widest uppercase">
+                  Subject
+                </th>
+                <th className="pb-4 font-black text-gray-400 text-[10px] tracking-widest uppercase">
+                  Code
+                </th>
+                <th className="pb-4 font-black text-gray-400 text-[10px] tracking-widest uppercase">
+                  Class
+                </th>
                 <th className="pb-4 text-right"></th>
               </tr>
             </thead>
@@ -84,26 +102,43 @@ export function SubjectsListPage() {
               {isLoading ? (
                 Array.from({ length: 5 }).map((_, i) => (
                   <tr key={i} className="animate-pulse">
-                    <td className="py-6"><div className="h-4 w-32 bg-gray-100 rounded" /></td>
-                    <td className="py-6"><div className="h-4 w-20 bg-gray-100 rounded" /></td>
-                    <td className="py-6"><div className="h-4 w-24 bg-gray-100 rounded" /></td>
+                    <td className="py-6">
+                      <div className="h-4 w-32 bg-gray-100 rounded" />
+                    </td>
+                    <td className="py-6">
+                      <div className="h-4 w-20 bg-gray-100 rounded" />
+                    </td>
+                    <td className="py-6">
+                      <div className="h-4 w-24 bg-gray-100 rounded" />
+                    </td>
                     <td className="py-6" />
                   </tr>
                 ))
               ) : subjects?.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="py-20 text-center text-gray-400 font-bold italic">
+                  <td
+                    colSpan={4}
+                    className="py-20 text-center text-gray-400 font-bold italic"
+                  >
                     No subjects found.
                   </td>
                 </tr>
               ) : (
                 subjects?.map((subject) => (
-                  <tr key={subject.id} className="group hover:bg-gray-50/50 transition-colors">
+                  <tr
+                    key={subject.id}
+                    className="group hover:bg-gray-50/50 transition-colors"
+                  >
                     <td className="py-6">
-                      <span className="font-black text-gray-900">{subject.name}</span>
+                      <span className="font-black text-gray-900">
+                        {subject.name}
+                      </span>
                     </td>
                     <td className="py-6">
-                      <Badge variant="secondary" className="bg-brand-peach/30 text-brand-orange border-none font-bold">
+                      <Badge
+                        variant="secondary"
+                        className="bg-brand-peach/30 text-brand-orange border-none font-bold"
+                      >
                         {subject.code}
                       </Badge>
                     </td>
@@ -146,5 +181,5 @@ export function SubjectsListPage() {
         subject={selectedSubject}
       />
     </div>
-  );
+  )
 }

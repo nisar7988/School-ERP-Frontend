@@ -1,4 +1,4 @@
-import { SchedulePage } from '#/features/dashboard/pages/SchedulePage'
+import { SchedulePage } from '@/features/schedule/pages/SchedulePage'
 import { createFileRoute } from '@tanstack/react-router'
 import { DashboardLayout } from '#/features/dashboard/components/DashboardLayout'
 

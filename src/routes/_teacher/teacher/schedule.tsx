@@ -1,5 +1,5 @@
 import { DashboardLayout } from '#/features/dashboard/components/DashboardLayout'
-import SchedulePage from '#/features/teachers/pages/SchedulePage'
+import { SchedulePage } from '@/features/schedule/pages/SchedulePage'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_teacher/teacher/schedule')({

@@ -1,19 +1,27 @@
 import { useSchedulesByMe } from '@/features/schedule/api/queries'
 import { WeeklyTimetable } from '@/features/schedule/components/WeeklyTimetable'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useAuthStore } from '@/features/auth/store'
+import { Role } from '@/features/auth/types'
 
-export default function SchedulePage() {
+export function SchedulePage() {
   const { data: schedules, isLoading, isError } = useSchedulesByMe()
+  const user = useAuthStore((state) => state.user)
+
+  const title = user?.role === Role.TEACHER ? 'Professional Timetable' : 'My Academic Schedule'
+  const subtitle = user?.role === Role.TEACHER 
+    ? 'Manage and view your academic commitments for the week.'
+    : 'View your weekly class timetable and subject sessions.'
 
   return (
     <div className="bg-[#FDFBF9] min-h-screen">
       <main className="max-w-7xl mx-auto px-6 py-10">
         <div className="mb-10 animate-in fade-in slide-in-from-top-4 duration-500">
           <h1 className="text-4xl font-black text-gray-900 tracking-tight leading-none text-left">
-            Weekly Timetable
+            {title}
           </h1>
           <p className="text-gray-500 font-bold mt-2 italic text-left">
-            Your professional academic commitments for the current week.
+            {subtitle}
           </p>
         </div>
 
@@ -34,7 +42,7 @@ export default function SchedulePage() {
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
             <WeeklyTimetable
               schedules={schedules || []}
-              viewMode="teacher"
+              viewMode={user?.role === Role.TEACHER ? 'teacher' : 'class'}
             />
           </div>
         )}
