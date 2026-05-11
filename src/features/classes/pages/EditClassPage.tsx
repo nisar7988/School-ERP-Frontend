@@ -1,24 +1,41 @@
-import { ArrowLeft, BookOpen, Loader2 } from 'lucide-react'
+import { ArrowLeft, BookOpen, Loader2, Plus, Unlink } from 'lucide-react'
 import { Link, useNavigate, useParams } from '@tanstack/react-router'
 import { ClassForm } from '../components/ClassForm'
 import { useUpdateClass } from '../api/mutations'
 import { useClass } from '../api/queries'
 import { Button } from '@/components/ui/button'
 import type { CreateClassDto } from '../types'
+import { useState } from 'react'
+import { SubjectSelectorModal } from '@/features/subjects/components/SubjectSelectorModal'
+import { useUpdateSubject } from '@/features/subjects/api/queries'
 
 export function EditClassPage() {
   const { id } = useParams({ from: '/_admin/classes/$id/edit' })
+  const [isSelectorOpen, setIsSelectorOpen] = useState(false)
   const { data: classData, isLoading: isClassLoading } = useClass(id)
-  console.log('classData', classData)
+  
   const { mutate: updateClass, isPending } = useUpdateClass()
+  const { mutate: updateSubject } = useUpdateSubject()
   const navigate = useNavigate()
 
   const handleSubmit = (data: CreateClassDto) => {
-    updateClass({ id, data }, {
-      onSuccess: () => {
-        navigate({ to: '/classes' })
+    updateClass(
+      { id, data },
+      {
+        onSuccess: () => {
+          navigate({ to: '/classes' })
+        },
       },
-    })
+    )
+  }
+
+  const handleDetach = (subjectId: string) => {
+    if (window.confirm('Are you sure you want to detach this subject?')) {
+      // Assuming setting classId to null or a placeholder would detach it
+      // For now, following the pattern, we might need a specific "unassign" logic
+      // But we'll just call updateSubject with an empty classId if allowed
+      updateSubject({ id: subjectId, data: { classId: '' } })
+    }
   }
 
   if (isClassLoading) {
@@ -66,15 +83,25 @@ export function EditClassPage() {
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           Back to Classes
         </Link>
+        <div className="flex justify-between items-center">
+          <div className="space-y-1">
+            <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight flex items-center gap-3">
+              <BookOpen className="w-10 h-10 text-brand-orange" />
+              Edit Class
+            </h1>
+            <p className="text-gray-500 font-semibold italic">
+              Updating the details of {classData.name} - {classData.section}.
+            </p>
+          </div>
 
-        <div className="space-y-1">
-          <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight flex items-center gap-3">
-            <BookOpen className="w-10 h-10 text-brand-orange" />
-            Edit Class
-          </h1>
-          <p className="text-gray-500 font-semibold italic">
-            Updating the details of {classData.name} - {classData.section}.
-          </p>
+          <Button
+            variant="brand"
+            onClick={() => setIsSelectorOpen(true)}
+            className="h-14 px-10 rounded-2xl font-extrabold shadow-xl shadow-orange-100 flex items-center gap-2 group"
+          >
+            <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
+            Attach Subject
+          </Button>
         </div>
       </div>
 
@@ -95,6 +122,46 @@ export function EditClassPage() {
           }}
         />
       </div>
+
+      {/* Subjects Section */}
+      <div className="bg-white rounded-[2.5rem] border border-gray-100 p-10 shadow-sm space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-black text-gray-900">Class Subjects</h2>
+          <span className="text-sm font-bold text-gray-400 italic">
+            {classData.subjects?.length || 0} subjects assigned
+          </span>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {classData.subjects?.map((subject) => (
+            <div key={subject.id} className="p-4 rounded-2xl bg-gray-50 border border-gray-100 flex justify-between items-center group">
+              <div>
+                <span className="block font-black text-gray-900">{subject.name}</span>
+                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{subject.code}</span>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleDetach(subject.id)}
+                className="h-10 w-10 p-0 rounded-xl hover:bg-white hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <Unlink className="w-4 h-4" />
+              </Button>
+            </div>
+          ))}
+          {(!classData.subjects || classData.subjects.length === 0) && (
+            <p className="col-span-2 text-center py-8 text-gray-400 font-bold italic">
+              No subjects assigned to this class yet.
+            </p>
+          )}
+        </div>
+      </div>
+
+      <SubjectSelectorModal
+        isOpen={isSelectorOpen}
+        onClose={() => setIsSelectorOpen(false)}
+        classId={id}
+      />
     </div>
   )
 }

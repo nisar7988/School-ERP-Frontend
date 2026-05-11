@@ -78,6 +78,13 @@ function ErrorComponent({ error }: { error: any }) {
   )
 }
 
+import { useMe } from '@/features/auth/api/queries'
+
+function AuthSync() {
+  useMe()
+  return null
+}
+
 export default function RootLayout() {
   const _hasHydrated = useAuthStore((state) => state._hasHydrated)
   const isServer = typeof window === 'undefined'
@@ -90,6 +97,7 @@ export default function RootLayout() {
       </head>
       <body className="font-sans antialiased [overflow-wrap:anywhere] selection:bg-[rgba(79,184,178,0.24)]">
         <QueryProvider>
+          <AuthSync />
           {!_hasHydrated && !isServer ? <Loader /> : <Outlet />}
 
           <TanStackDevtools

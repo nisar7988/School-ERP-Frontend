@@ -1,11 +1,15 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { createClassService, updateClassService, deleteClassService } from './services'
+import {
+  createClassService,
+  updateClassService,
+  deleteClassService,
+} from './services'
 import type { UpdateClassDto } from '../types'
 import { toast } from '@/lib/stores/toast.store'
 
 export const useCreateClass = () => {
   const queryClient = useQueryClient()
-  
+
   return useMutation({
     mutationFn: createClassService,
     onSuccess: () => {
@@ -17,7 +21,7 @@ export const useCreateClass = () => {
 
 export const useUpdateClass = () => {
   const queryClient = useQueryClient()
-  
+
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateClassDto }) =>
       updateClassService(id, data),
@@ -31,7 +35,7 @@ export const useUpdateClass = () => {
 
 export const useDeleteClass = () => {
   const queryClient = useQueryClient()
-  
+
   return useMutation({
     mutationFn: deleteClassService,
     onSuccess: () => {

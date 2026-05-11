@@ -1,18 +1,36 @@
 export interface ScheduleItem {
   id: string;
-  subject: string;
+  subjectId: string;
+  subject?: {
+    id: string;
+    name: string;
+    code: string;
+  };
+  subjectName?: string;
   teacherId: string;
+  teacher?: {
+    id: string;
+    user: {
+      firstName: string;
+      lastName: string;
+    }
+  };
   teacherName?: string;
   classId: string;
+  class?: {
+    id: string;
+    name: string;
+    section: string;
+  };
   className?: string;
   room: string;
   dayOfWeek: 'MON' | 'TUE' | 'WED' | 'THU' | 'FRI' | 'SAT' | 'SUN';
-  startTime: string; // HH:mm format, e.g., '08:00'
-  endTime: string;   // HH:mm format, e.g., '09:30'
+  startTime: string; 
+  endTime: string;   
 }
 
 export interface CreateScheduleDto {
-  subject: string;
+  subjectId: string;
   teacherId: string;
   classId: string;
   room: string;

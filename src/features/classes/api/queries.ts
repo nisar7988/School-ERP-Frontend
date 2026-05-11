@@ -16,7 +16,7 @@ export const useClasses = (
     queryKey: ['classes', params],
     queryFn: async () => {
       const response = await getClassesService(params)
-      return response.data.data
+      return response.data.data || response.data
     },
     ...options,
   })

@@ -26,8 +26,21 @@ export const WeeklyTimetable = ({
 
   const getPositionStyles = (startTime: string, endTime: string) => {
     const toMinutes = (t: string) => {
-      const [h, m] = t.split(':').map(Number);
-      return h * 60 + m;
+      if (!t) return 0;
+      let hours = 0;
+      let minutes = 0;
+
+      if (t.includes('T')) {
+        const date = new Date(t);
+        hours = date.getHours();
+        minutes = date.getMinutes();
+      } else {
+        const [h, m] = t.split(':').map(Number);
+        hours = h;
+        minutes = m;
+      }
+      
+      return hours * 60 + minutes;
     };
     
     const startMins = toMinutes(startTime);

@@ -9,25 +9,37 @@ interface ScheduleCardProps {
 }
 
 export const ScheduleCard = ({ item, viewMode, onEdit, onDelete }: ScheduleCardProps) => {
+  const formatTime = (timeStr: string) => {
+    if (!timeStr) return '';
+    if (timeStr.includes('T')) {
+      return new Date(timeStr).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+    }
+    return timeStr;
+  };
+
+  const subjectName = item.subject?.name || item.subjectName;
+  const teacherName = item.teacher ? `${item.teacher.user.firstName} ${item.teacher.user.lastName}` : item.teacherName;
+  const className = item.class ? `${item.class.name} - ${item.class.section}` : item.className;
+
   return (
     <div className="relative group bg-brand-peach/30 hover:bg-brand-peach/60 transition-colors border border-brand-orange/20 rounded-xl p-3 shadow-sm h-full flex flex-col justify-between">
       <div>
         <div className="flex justify-between items-start mb-1">
-          <h4 className="font-bold text-gray-900 text-sm truncate">{item.subject}</h4>
+          <h4 className="font-bold text-gray-900 text-sm truncate">{subjectName}</h4>
           <span className="text-xs font-bold text-brand-orange bg-white px-1.5 py-0.5 rounded shadow-sm">
             {item.room}
           </span>
         </div>
         <p className="text-xs text-gray-500 font-medium mb-2">
-          {item.startTime} - {item.endTime}
+          {formatTime(item.startTime)} - {formatTime(item.endTime)}
         </p>
         
         <div className="flex items-center gap-1.5 mt-auto">
           <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-[10px] font-bold text-gray-600">
-            {viewMode === 'class' ? item.teacherName?.charAt(0) : item.className?.charAt(0)}
+            {(viewMode === 'class' ? teacherName : className)?.charAt(0)}
           </div>
           <span className="text-xs font-semibold text-gray-700 truncate">
-            {viewMode === 'class' ? item.teacherName : item.className}
+            {viewMode === 'class' ? teacherName : className}
           </span>
         </div>
       </div>

@@ -1,75 +1,127 @@
-import React, { useState } from 'react';
-import { Filter, Calendar as CalendarIcon, CheckCircle2 } from 'lucide-react';
-import { useSchedules } from '../api/queries';
-import { useCreateSchedule, useUpdateSchedule, useDeleteSchedule } from '../api/mutations';
-import { WeeklyTimetable } from './WeeklyTimetable';
-import { ScheduleFormModal } from './ScheduleFormModal';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import type { ScheduleItem } from '../types';
+import React, { useState, useEffect } from 'react'
+import { Filter, Calendar as CalendarIcon, CheckCircle2 } from 'lucide-react'
+import { useSchedules } from '../api/queries'
+import {
+  useCreateSchedule,
+  useUpdateSchedule,
+  useDeleteSchedule,
+} from '../api/mutations'
+import { useClasses } from '@/features/classes/api/queries'
+import { useTeachers } from '@/features/teachers/api/queries'
+import { WeeklyTimetable } from './WeeklyTimetable'
+import { ScheduleFormModal } from './ScheduleFormModal'
+import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
+import type { ScheduleItem } from '../types'
 
 export const ScheduleManagementPage = () => {
-  const [viewMode, setViewMode] = useState<'class' | 'teacher'>('class');
-  const [selectedClass, setSelectedClass] = useState<string>('c1');
-  const [selectedTeacher, setSelectedTeacher] = useState<string>('');
-  
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<ScheduleItem | null>(null);
-  const [defaultTime, setDefaultTime] = useState<{ day: string, time: string } | null>(null);
+  const [viewMode, setViewMode] = useState<'class' | 'teacher'>('class')
+  const [selectedClass, setSelectedClass] = useState<string>('')
+  const [selectedTeacher, setSelectedTeacher] = useState<string>('')
 
-  const filters = viewMode === 'class' ? { classId: selectedClass } : { teacherId: selectedTeacher };
-  // If no filter selected, don't fetch or show empty? 
-  // We'll pass filters to useSchedules. If value is empty, the service currently returns all, but we could restrict it.
-  
-  const { data: schedules = [], isLoading } = useSchedules(filters);
-  const createMutation = useCreateSchedule();
-  const updateMutation = useUpdateSchedule();
-  const deleteMutation = useDeleteSchedule();
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [editingItem, setEditingItem] = useState<ScheduleItem | null>(null)
+  const [defaultTime, setDefaultTime] = useState<{
+    day: string
+    time: string
+  } | null>(null)
+
+  const { data: classesData } = useClasses({ limit: 100 })
+  const { data: teachersData } = useTeachers({ limit: 100 })
+
+  const classes = classesData?.data || []
+  const teachers = teachersData?.data || []
+
+  const filters =
+    viewMode === 'class'
+      ? { classId: selectedClass }
+      : { teacherId: selectedTeacher }
+
+  const { data: schedules = [], isLoading } = useSchedules(filters)
+  const createMutation = useCreateSchedule()
+  const updateMutation = useUpdateSchedule()
+  const deleteMutation = useDeleteSchedule()
+
+  useEffect(() => {
+    if (viewMode === 'class' && classes.length > 0 && !selectedClass) {
+      setSelectedClass(classes[0].id)
+    } else if (
+      viewMode === 'teacher' &&
+      teachers.length > 0 &&
+      !selectedTeacher
+    ) {
+      setSelectedTeacher(teachers[0].id)
+    }
+  }, [viewMode, classes, teachers, selectedClass, selectedTeacher])
 
   const handleAddSchedule = (day: string, time: string) => {
-    setEditingItem(null);
-    setDefaultTime({ day, time });
-    setIsModalOpen(true);
-  };
+    setEditingItem(null)
+    setDefaultTime({ day, time })
+    setIsModalOpen(true)
+  }
 
   const handleEditSchedule = (item: ScheduleItem) => {
-    setEditingItem(item);
-    setDefaultTime(null);
-    setIsModalOpen(true);
-  };
+    setEditingItem(item)
+    setDefaultTime(null)
+    setIsModalOpen(true)
+  }
 
   const handleDeleteSchedule = async (id: string) => {
     if (confirm('Are you sure you want to delete this schedule?')) {
-      await deleteMutation.mutateAsync(id);
+      await deleteMutation.mutateAsync(id)
     }
-  };
+  }
 
   const handleFormSubmit = async (data: any) => {
     try {
-      if (editingItem) {
-        await updateMutation.mutateAsync({ id: editingItem.id, data });
+      // Create Date objects. Axios will stringify these to ISO strings (with 'Z').
+      // Note: If the backend uses @IsDate() without @Type(() => Date), it may fail to parse JSON strings.
+      const today = new Date().toISOString().split('T')[0];
+      const payload = {
+        ...data,
+        startTime: new Date(`${today}T${data.startTime}:00`),
+        endTime: new Date(`${today}T${data.endTime}:00`),
+      };
+
+      if (data.dayOfWeek === 'ALL' && !editingItem) {
+        const days = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
+        // Create an entry for each weekday
+        await Promise.all(
+          days.map(day => 
+            createMutation.mutateAsync({ ...payload, dayOfWeek: day })
+          )
+        );
       } else {
-        await createMutation.mutateAsync(data);
+        if (editingItem) {
+          await updateMutation.mutateAsync({ id: editingItem.id, data: payload })
+        } else {
+          await createMutation.mutateAsync(payload)
+        }
       }
-      setIsModalOpen(false);
+      setIsModalOpen(false)
     } catch (error: any) {
-      // Toast error is handled in mutation hook, but we can catch to prevent modal close
-      console.error(error);
+      console.error(error)
     }
-  };
+  }
 
   return (
     <div className="p-8 max-w-7xl mx-auto min-h-screen bg-[#FDFBF9]">
       <div className="flex justify-between items-end mb-8">
         <div>
-          <h1 className="text-3xl font-black text-gray-900 display-title">Schedule Management</h1>
-          <p className="text-gray-500 font-medium mt-1">Organize and resolve academic timetables across departments.</p>
+          <h1 className="text-3xl font-black text-gray-900 display-title">
+            Schedule Management
+          </h1>
+          <p className="text-gray-500 font-medium mt-1">
+            Organize and resolve academic timetables across departments.
+          </p>
         </div>
         <div className="flex bg-white rounded-xl p-1.5 border border-gray-200 shadow-sm">
           <button
             onClick={() => setViewMode('class')}
             className={`px-5 py-2 rounded-lg text-sm font-bold transition-all ${
-              viewMode === 'class' ? 'bg-brand-orange text-white shadow-md' : 'text-gray-500 hover:text-gray-900'
+              viewMode === 'class'
+                ? 'bg-brand-orange text-white shadow-md'
+                : 'text-gray-500 hover:text-gray-900'
             }`}
           >
             Class Schedule
@@ -77,7 +129,9 @@ export const ScheduleManagementPage = () => {
           <button
             onClick={() => setViewMode('teacher')}
             className={`px-5 py-2 rounded-lg text-sm font-bold transition-all ${
-              viewMode === 'teacher' ? 'bg-brand-orange text-white shadow-md' : 'text-gray-500 hover:text-gray-900'
+              viewMode === 'teacher'
+                ? 'bg-brand-orange text-white shadow-md'
+                : 'text-gray-500 hover:text-gray-900'
             }`}
           >
             Teacher Schedule
@@ -92,32 +146,39 @@ export const ScheduleManagementPage = () => {
             <div className="flex items-center gap-2 text-gray-500 font-bold text-sm px-2">
               <Filter size={16} /> FILTERS
             </div>
-            
+
             {viewMode === 'class' ? (
-              <select 
+              <select
                 className="bg-white border-none rounded-xl px-4 py-2 text-sm font-bold text-gray-700 shadow-sm focus:ring-2 focus:ring-brand-orange outline-none"
                 value={selectedClass}
-                onChange={e => setSelectedClass(e.target.value)}
+                onChange={(e) => setSelectedClass(e.target.value)}
               >
                 <option value="">Select Class</option>
-                <option value="c1">Grade 11 - Alpha</option>
-                <option value="c2">Grade 11 - Beta</option>
+                {classes.map((cls) => (
+                  <option key={cls.id} value={cls.id}>
+                    {cls.name} - {cls.section}
+                  </option>
+                ))}
               </select>
             ) : (
-              <select 
+              <select
                 className="bg-white border-none rounded-xl px-4 py-2 text-sm font-bold text-gray-700 shadow-sm focus:ring-2 focus:ring-brand-orange outline-none"
                 value={selectedTeacher}
-                onChange={e => setSelectedTeacher(e.target.value)}
+                onChange={(e) => setSelectedTeacher(e.target.value)}
               >
                 <option value="">Select Teacher</option>
-                <option value="t1">Dr. E. Sterling</option>
-                <option value="t2">Prof. M. Chen</option>
-                <option value="t3">J. Doe</option>
-                <option value="t4">A. Wright</option>
+                {teachers.map((teacher) => (
+                  <option key={teacher.id} value={teacher.id}>
+                    {teacher.firstName} {teacher.lastName}
+                  </option>
+                ))}
               </select>
             )}
-            
-            <Button onClick={() => handleAddSchedule('MON', '08:00')} className="ml-auto bg-gray-900 text-white rounded-xl shadow-md hover:bg-gray-800">
+
+            <Button
+              onClick={() => handleAddSchedule('MON', '08:00')}
+              className="ml-auto bg-gray-900 text-white rounded-xl shadow-md hover:bg-gray-800"
+            >
               <CalendarIcon size={16} className="mr-2" /> Add Schedule
             </Button>
           </div>
@@ -125,7 +186,9 @@ export const ScheduleManagementPage = () => {
           {/* Timetable */}
           <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-black text-gray-900">Weekly Timetable</h3>
+              <h3 className="text-xl font-black text-gray-900">
+                Weekly Timetable
+              </h3>
               <div className="text-sm font-bold text-gray-500 flex items-center gap-2">
                 <span>&lt; Oct 16 - Oct 20, 2023 &gt;</span>
               </div>
@@ -138,8 +201,8 @@ export const ScheduleManagementPage = () => {
                 <Skeleton className="h-20 w-full rounded-2xl" />
               </div>
             ) : (
-              <WeeklyTimetable 
-                schedules={schedules} 
+              <WeeklyTimetable
+                schedules={schedules}
                 viewMode={viewMode}
                 onAddSchedule={handleAddSchedule}
                 onEditSchedule={handleEditSchedule}
@@ -156,7 +219,9 @@ export const ScheduleManagementPage = () => {
               <CheckCircle2 size={20} />
               <h4>Conflict Check</h4>
             </div>
-            <p className="text-sm text-green-600 font-medium">All schedules are validated. No overlaps detected.</p>
+            <p className="text-sm text-green-600 font-medium">
+              All schedules are validated. No overlaps detected.
+            </p>
           </div>
 
           <div className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm">
@@ -185,7 +250,7 @@ export const ScheduleManagementPage = () => {
         </div>
       </div>
 
-      <ScheduleFormModal 
+      <ScheduleFormModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleFormSubmit}
@@ -194,5 +259,5 @@ export const ScheduleManagementPage = () => {
         isLoading={createMutation.isPending || updateMutation.isPending}
       />
     </div>
-  );
-};
+  )
+}

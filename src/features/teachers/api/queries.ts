@@ -15,7 +15,7 @@ export const useTeachers = (
     queryKey: ['teachers', params],
     queryFn: async () => {
       const response = await getTeachersService(params)
-      return response.data.data
+      return response.data.data || response.data
     },
     ...options,
   })

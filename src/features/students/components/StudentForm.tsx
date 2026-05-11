@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/input'
 import { useClasses, useClassesByTeacher } from '@/features/classes/api/queries'
 import { useAuthStore } from '@/features/auth/store'
 import { Role } from '@/features/auth/types'
+import { useState } from 'react'
+import { Eye, EyeOff } from 'lucide-react'
 
 interface StudentFormProps {
   onSubmit: (data: CreateStudentDto) => void
@@ -44,6 +46,8 @@ export function StudentForm({
     resolver: zodResolver(CreateStudentSchema),
     defaultValues,
   })
+
+  const [showPassword, setShowPassword] = useState(false)
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -105,11 +109,23 @@ export function StudentForm({
               Set Password
             </label>
             <Input
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               {...register('password')}
               placeholder="••••••"
               className={errors.password ? 'border-red-500' : ''}
             />
+
+            <div
+              onClick={() => setShowPassword(!showPassword)}
+              className="relative bottom-10 left-[92%] cursor-pointer"
+            >
+              {showPassword ? (
+                <Eye className="w-5 h-5 text-gray-400" />
+              ) : (
+                <EyeOff className="w-5 h-5 text-gray-400" />
+              )}
+            </div>
+
             {errors.password && (
               <p className="text-xs text-red-500 font-semibold">
                 {errors.password.message}

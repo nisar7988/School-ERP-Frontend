@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CreateTeacherSchema  } from '../types'
-import type {CreateTeacherDto} from '../types';
+import { CreateTeacherSchema } from '../types'
+import type { CreateTeacherDto } from '../types'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { UserCircle, GraduationCap, Briefcase } from 'lucide-react'
+import { UserCircle, GraduationCap, Briefcase, Eye, EyeOff } from 'lucide-react'
 
 import { useClasses, useClassesByTeacher } from '@/features/classes/api/queries'
 import { useAuthStore } from '@/features/auth/store'
@@ -27,7 +27,7 @@ export function TeacherForm({
   const user = useAuthStore((state) => state.user)
   const isAdmin = user?.role === Role.ADMIN
   const isTeacher = user?.role === Role.TEACHER
-
+  const [showPassword, setShowPassword] = useState(false)
   const { data: adminClassesResponse, isLoading: isLoadingAdminClasses } =
     useClasses({ limit: 100 }, { enabled: isAdmin })
 
@@ -117,11 +117,21 @@ export function TeacherForm({
               Set Password
             </label>
             <Input
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               {...register('password')}
               placeholder="••••••"
               className={`h-12 rounded-2xl border-gray-100 bg-gray-50/50 focus:bg-white transition-all ${errors.password ? 'border-red-500 ring-4 ring-red-50' : 'focus:ring-4 focus:ring-brand-orange/10'}`}
             />
+            <div
+              onClick={() => setShowPassword(!showPassword)}
+              className="relative bottom-12 left-[92%] cursor-pointer"
+            >
+              {showPassword ? (
+                <Eye className="w-5 h-5 text-gray-400" />
+              ) : (
+                <EyeOff className="w-5 h-5 text-gray-400" />
+              )}
+            </div>
             {errors.password && (
               <p className="text-xs text-red-500 font-bold ml-1">
                 {errors.password.message}
