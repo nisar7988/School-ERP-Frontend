@@ -3,31 +3,47 @@ import { DollarSign, Clock, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { FeeStructuresTab } from '../components/FeeStructuresTab'
 import { StudentFeesTab } from '../components/StudentFeesTab'
+import { useStudentFeesList } from '../api/queries'
+import { FeeStatus } from '../types'
 
 export function FeesDashboardPage() {
   const [activeTab, setActiveTab] = useState('structures')
 
+  const { data: studentFees = [] } = useStudentFeesList()
+
+  const totalCollected = studentFees
+    .filter((f: any) => f.status === FeeStatus.PAID)
+    .reduce((sum: number, f: any) => sum + Number(f.amount || 0), 0)
+
+  const pendingDues = studentFees
+    .filter(
+      (f: any) =>
+        f.status === FeeStatus.PENDING || f.status === FeeStatus.OVERDUE,
+    )
+    .reduce((sum: number, f: any) => sum + Number(f.amount || 0), 0)
+
+  const partialCount = studentFees.filter(
+    (f: any) => f.status === FeeStatus.PARTIAL,
+  ).length
+
   const stats = [
     {
       label: 'Total Collected',
-      value: '$45,200',
+      value: `$${totalCollected.toLocaleString()}`,
       icon: DollarSign,
-      color: 'bg-green-500',
-      trend: '+12%',
+      color: 'bg-green-900',
     },
     {
       label: 'Pending Dues',
-      value: '$12,800',
+      value: `$${pendingDues.toLocaleString()}`,
       icon: Clock,
-      color: 'bg-orange-500',
-      trend: '-5%',
+      color: 'bg-gray-300',
     },
     {
       label: 'Partial Payments',
-      value: '24 Students',
+      value: `${partialCount} Students`,
       icon: AlertCircle,
-      color: 'bg-blue-500',
-      trend: '+2',
+      color: 'bg-brand-orange',
     },
   ]
 
@@ -69,11 +85,6 @@ export function FeesDashboardPage() {
                 <h2 className="text-3xl font-black text-gray-900">
                   {stat.value}
                 </h2>
-                <span
-                  className={`text-xs font-black px-2 py-1 rounded-lg ${stat.trend.startsWith('+') ? 'text-green-500 bg-green-50' : 'text-red-500 bg-red-50'}`}
-                >
-                  {stat.trend}
-                </span>
               </div>
             </div>
           </div>
