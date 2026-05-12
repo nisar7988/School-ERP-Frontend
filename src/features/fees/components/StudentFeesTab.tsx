@@ -1,18 +1,12 @@
-import { useState } from 'react'
 import { useStudentFeesList } from '../api/queries'
-import { useStudents } from '@/features/students/api/queries'
+
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Link } from '@tanstack/react-router'
 import { Eye } from 'lucide-react'
 
-import { FeeStatus } from '../types'
-
 export function StudentFeesTab() {
   const { data: studentFees, isLoading } = useStudentFeesList()
-  const { data: studentsResponse } = useStudents({ limit: 100 })
-  const students = studentsResponse?.data || []
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -110,7 +104,7 @@ export function StudentFeesTab() {
                     </Badge>
                   </td>
                   <td className="py-6 text-right">
-                    <Link to="/admin/students/$id" params={{ id: fee.studentId }}>
+                    <Link to="/students/$id" params={{ id: fee.studentId }}>
                       <Button
                         variant="ghost"
                         className="h-8 p-2 text-blue-500 hover:bg-blue-50 font-bold text-xs"

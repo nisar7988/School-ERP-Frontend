@@ -55,6 +55,7 @@ const teacherNavItems = [
   { icon: Users, label: 'Students', href: '/teacher/students' },
   { icon: Calendar, label: 'Schedule', href: '/teacher/schedule' },
   { icon: BookOpen, label: 'Classes', href: '/teacher/classes' },
+  { icon: CreditCard, label: 'Fees', href: '/teacher/fees' },
   { icon: ClipboardList, label: 'Attendance', href: '/teacher/attendance' },
 ]
 
