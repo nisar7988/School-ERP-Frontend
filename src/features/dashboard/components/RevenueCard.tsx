@@ -2,7 +2,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 
-export function RevenueCard() {
+interface RevenueCardProps {
+  collected: number
+  expected: number
+  isLoading?: boolean
+}
+
+export function RevenueCard({ collected, expected, isLoading }: RevenueCardProps) {
+  const progress = expected > 0 ? (collected / expected) * 100 : 0
+
   return (
     <Card className="flex flex-col h-full">
       <CardHeader className="flex flex-row items-center justify-between p-8 pb-4">
@@ -13,13 +21,17 @@ export function RevenueCard() {
         <div>
            <p className="text-sm font-semibold text-gray-500 mb-2">Current Term Revenue</p>
            <div className="flex items-baseline gap-2">
-             <span className="text-5xl font-black text-brand-orange">$1.2M</span>
-             <span className="text-sm font-bold text-gray-400">of $1.5M expected</span>
+             <span className="text-5xl font-black text-brand-orange">
+               {isLoading ? "..." : `$${(collected / 1000000).toFixed(1)}M`}
+             </span>
+             <span className="text-sm font-bold text-gray-400">
+               {isLoading ? "" : `of $${(expected / 1000000).toFixed(1)}M expected`}
+             </span>
            </div>
         </div>
         
         <div className="space-y-2">
-          <Progress value={80} className="h-3 bg-brand-peach/30" />
+          <Progress value={isLoading ? 0 : progress} className="h-3 bg-brand-peach/30" />
         </div>
       </CardContent>
     </Card>

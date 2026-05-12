@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import type { BaseQuery, Student, SchoolClass } from '@/types/base.types';
+import { z } from 'zod'
+import type { BaseQuery, Student, SchoolClass } from '@/types/base.types'
 
 export enum FeeStatus {
   PAID = 'PAID',
@@ -16,13 +16,13 @@ export enum PaymentMethod {
 }
 
 export interface FeeStructure {
-  id: string;
-  classId: string;
-  title: string;
-  amount: number | string;
-  mandatory: boolean;
-  class?: SchoolClass;
-  createdAt: string;
+  id: string
+  classId: string
+  title: string
+  amount: number | string
+  mandatory: boolean
+  class?: SchoolClass
+  createdAt: string
 }
 
 export const CreateFeeStructureSchema = z.object({
@@ -30,23 +30,23 @@ export const CreateFeeStructureSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   amount: z.number().min(0, 'Amount must be positive'),
   mandatory: z.boolean().optional(),
-});
+})
 
-export type CreateFeeStructureDto = z.infer<typeof CreateFeeStructureSchema>;
-export type UpdateFeeStructureDto = Partial<CreateFeeStructureDto>;
+export type CreateFeeStructureDto = z.infer<typeof CreateFeeStructureSchema>
+export type UpdateFeeStructureDto = Partial<CreateFeeStructureDto>
 
 export interface StudentFee {
-  id: string;
-  studentId: string;
-  feeStructureId: string;
-  amount: number | string;
-  dueDate: string;
-  paidAmount: number | string;
-  pendingAmount: number | string;
-  status: FeeStatus;
-  student?: Student;
-  feeStructure?: FeeStructure;
-  payments?: Payment[];
+  id: string
+  studentId: string
+  feeStructureId: string
+  amount: number | string
+  dueDate: string
+  paidAmount: number | string
+  pendingAmount: number | string
+  status: FeeStatus
+  student?: Student
+  feeStructure?: FeeStructure
+  payments?: Payment[]
 }
 
 export const CreateStudentFeeSchema = z.object({
@@ -55,19 +55,19 @@ export const CreateStudentFeeSchema = z.object({
   amount: z.number().min(0, 'Amount must be positive'),
   dueDate: z.string().min(1, 'Due date is required'),
   status: z.nativeEnum(FeeStatus).optional(),
-});
+})
 
-export type CreateStudentFeeDto = z.infer<typeof CreateStudentFeeSchema>;
-export type UpdateStudentFeeDto = Partial<CreateStudentFeeDto>;
+export type CreateStudentFeeDto = z.infer<typeof CreateStudentFeeSchema>
+export type UpdateStudentFeeDto = Partial<CreateStudentFeeDto>
 
 export interface Payment {
-  id: string;
-  studentFeeId: string;
-  amount: number | string;
-  method: PaymentMethod;
-  referenceNo?: string | null;
-  paidAt: string;
-  studentFee?: StudentFee;
+  id: string
+  studentFeeId: string
+  amount: number | string
+  method: PaymentMethod
+  referenceNo?: string | null
+  paidAt: string
+  studentFee?: StudentFee
 }
 
 export const PaymentSchema = z.object({
@@ -76,19 +76,19 @@ export const PaymentSchema = z.object({
   method: z.nativeEnum(PaymentMethod),
   referenceNo: z.string().optional(),
   paidAt: z.string().optional(),
-});
+})
 
-export type PaymentDto = z.infer<typeof PaymentSchema>;
+export type PaymentDto = z.infer<typeof PaymentSchema>
 
 export interface PaymentQuery extends BaseQuery {
-  studentId?: string;
-  studentFeeId?: string;
-  status?: FeeStatus;
+  studentId?: string
+  studentFeeId?: string
+  status?: FeeStatus
 }
 
 export interface PaymentSummary {
-  totalFee: number;
-  paidAmount: number;
-  remainingAmount: number;
-  status: string;
+  totalFees: number
+  paidAmount: number
+  remainingAmount: number
+  status: string
 }

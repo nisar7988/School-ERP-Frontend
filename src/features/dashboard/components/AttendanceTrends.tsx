@@ -8,16 +8,17 @@ import {
 } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
-const data = [
-  { day: 'M', height: '50%' },
-  { day: 'T', height: '70%' },
-  { day: 'W', height: '90%' },
-  { day: 'T', height: '65%' },
-  { day: 'F', height: '55%' },
-  { day: 'S', height: '30%' },
-]
+interface AttendanceDay {
+  day: string
+  height: string
+}
 
-export function AttendanceTrends() {
+interface AttendanceTrendsProps {
+  data: AttendanceDay[]
+  isLoading?: boolean
+}
+
+export function AttendanceTrends({ data, isLoading }: AttendanceTrendsProps) {
   return (
     <Card className="h-full">
       <CardHeader className="flex flex-row items-center justify-between p-8 pb-4">
@@ -35,18 +36,19 @@ export function AttendanceTrends() {
       </CardHeader>
       <CardContent className="px-8 pb-8 pt-6">
         <div className="flex items-end justify-between h-48 gap-4 px-2">
-          {data.map((item) => (
+          {isLoading ? (
+            <div className="w-full h-full flex items-center justify-center text-gray-400 font-bold">
+              Calculating Trends...
+            </div>
+          ) : data.map((item, idx) => (
             <div
-              key={item.day}
+              key={`${item.day}-${idx}`}
               className="flex-1 flex flex-col items-center gap-4"
             >
               <div
                 className="w-full bg-brand-peach/40 hover:bg-brand-orange/20 transition-all rounded-xl relative group active:scale-95 cursor-pointer"
-                style={{ height: item.day === 'W' ? '100%' : item.height }}
+                style={{ height: item.height }}
               >
-                {item.day === 'W' && (
-                  <div className="absolute inset-x-0 bottom-0 bg-brand-orange/10 rounded-xl h-full" />
-                )}
               </div>
               <span className="text-xs font-bold text-gray-400">
                 {item.day}

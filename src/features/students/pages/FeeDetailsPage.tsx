@@ -75,7 +75,7 @@ export function FeeDetailsPage() {
   const nextDueFee = fees.find(
     (f: any) => f.status === 'PENDING' || f.status === 'PARTIAL',
   )
-
+  console.log(summary, 'summary')
   return (
     <div className="bg-[#FAF9F7] min-h-screen p-10 font-sans text-gray-900 animate-in fade-in duration-700">
       {/* ── HEADER ── */}
@@ -166,7 +166,7 @@ export function FeeDetailsPage() {
                 Total Fees
               </span>
               <Badge className="bg-white/20 text-white border-none font-bold">
-                ${summary?.totalFee || 0}
+                ${summary?.totalFees || 0}
               </Badge>
             </div>
           </div>

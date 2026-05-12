@@ -2,28 +2,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
-const activity = [
-  {
-    user: "Sarah Jenkins",
-    role: "Registrar",
-    action: "Processed Fall Enrollments",
-    status: "Completed",
-    time: "10 mins ago",
-    initials: "SJ",
-    avatarBg: "bg-orange-50 text-orange-600"
-  },
-  {
-    user: "Michael Reed",
-    role: "Faculty",
-    action: "Updated Grades - CS201",
-    status: "In Progress",
-    time: "1 hour ago",
-    initials: "MR",
-    avatarBg: "bg-brand-peach text-brand-orange"
-  }
-]
+interface ActivityItem {
+  user: string
+  role: string
+  action: string
+  status: string
+  time: string
+  initials: string
+  avatarBg: string
+}
 
-export function RecentActivity() {
+interface RecentActivityProps {
+  activities: ActivityItem[]
+  isLoading?: boolean
+}
+
+export function RecentActivity({ activities, isLoading }: RecentActivityProps) {
   return (
     <Card className="border-none shadow-none bg-transparent">
       <CardHeader className="flex flex-row items-center justify-between p-0 mb-6">
@@ -42,32 +36,46 @@ export function RecentActivity() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {activity.map((item) => (
-                <tr key={item.user} className="group hover:bg-gray-50/50 transition-colors">
-                  <td className="px-8 py-6">
-                    <div className="flex items-center gap-4">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm ${item.avatarBg}`}>
-                        {item.initials}
-                      </div>
-                      <div>
-                        <p className="text-sm font-bold text-gray-900">{item.user}</p>
-                        <p className="text-xs font-semibold text-gray-400">{item.role}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-8 py-6 text-sm font-bold text-gray-600">
-                    {item.action}
-                  </td>
-                  <td className="px-8 py-6">
-                    <Badge variant={item.status === 'Completed' ? 'success' : 'brand'} className="rounded-lg px-3 py-1 font-bold">
-                      {item.status}
-                    </Badge>
-                  </td>
-                  <td className="px-8 py-6 text-right text-sm font-semibold text-gray-400">
-                    {item.time}
+              {isLoading ? (
+                <tr>
+                  <td colSpan={4} className="px-8 py-12 text-center text-gray-400 font-bold italic">
+                    Fetching latest activities...
                   </td>
                 </tr>
-              ))}
+              ) : activities.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="px-8 py-12 text-center text-gray-400 font-bold italic">
+                    No recent activity found.
+                  </td>
+                </tr>
+              ) : (
+                activities.map((item, idx) => (
+                  <tr key={`${item.user}-${idx}`} className="group hover:bg-gray-50/50 transition-colors">
+                    <td className="px-8 py-6">
+                      <div className="flex items-center gap-4">
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm ${item.avatarBg}`}>
+                          {item.initials}
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-gray-900">{item.user}</p>
+                          <p className="text-xs font-semibold text-gray-400">{item.role}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-8 py-6 text-sm font-bold text-gray-600">
+                      {item.action}
+                    </td>
+                    <td className="px-8 py-6">
+                      <Badge variant={item.status === 'Completed' || item.status === 'PAID' ? 'success' : 'brand'} className="rounded-lg px-3 py-1 font-bold">
+                        {item.status}
+                      </Badge>
+                    </td>
+                    <td className="px-8 py-6 text-right text-sm font-semibold text-gray-400">
+                      {item.time}
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
