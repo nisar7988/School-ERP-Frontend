@@ -12,6 +12,7 @@ import { WeeklyTimetable } from './WeeklyTimetable'
 import { ScheduleFormModal } from './ScheduleFormModal'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Dialog } from '@/components/ui/Dialog'
 import type { ScheduleItem } from '../types'
 
 export const ScheduleManagementPage = () => {
@@ -25,6 +26,13 @@ export const ScheduleManagementPage = () => {
     day: string
     time: string
   } | null>(null)
+  const [deleteDialog, setDeleteDialog] = useState<{
+    isOpen: boolean
+    id: string
+  }>({
+    isOpen: false,
+    id: '',
+  })
 
   const { data: classesData } = useClasses({ limit: 100 })
   const { data: teachersData } = useTeachers({ limit: 100 })
@@ -66,9 +74,14 @@ export const ScheduleManagementPage = () => {
     setIsModalOpen(true)
   }
 
-  const handleDeleteSchedule = async (id: string) => {
-    if (confirm('Are you sure you want to delete this schedule?')) {
-      await deleteMutation.mutateAsync(id)
+  const handleDeleteSchedule = (id: string) => {
+    setDeleteDialog({ isOpen: true, id })
+  }
+
+  const handleConfirmDelete = async () => {
+    if (deleteDialog.id) {
+      await deleteMutation.mutateAsync(deleteDialog.id)
+      setDeleteDialog({ isOpen: false, id: '' })
     }
   }
 
@@ -264,6 +277,16 @@ export const ScheduleManagementPage = () => {
         initialData={editingItem}
         defaultTime={defaultTime}
         isLoading={createMutation.isPending || updateMutation.isPending}
+      />
+
+      <Dialog
+        isOpen={deleteDialog.isOpen}
+        onClose={() => setDeleteDialog({ ...deleteDialog, isOpen: false })}
+        title="Delete Schedule"
+        message="Are you sure you want to delete this schedule? This action cannot be undone."
+        onConfirm={handleConfirmDelete}
+        confirmText="Delete"
+        variant="danger"
       />
     </div>
   )

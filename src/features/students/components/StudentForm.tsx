@@ -41,16 +41,21 @@ export function StudentForm({
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<CreateStudentDto>({
     resolver: zodResolver(CreateStudentSchema),
     defaultValues,
   })
+  const handleFormSubmit = (data: CreateStudentDto) => {
+    onSubmit(data)
+    reset()
+  }
 
   const [showPassword, setShowPassword] = useState(false)
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Personal Information */}
         <div className="space-y-4">
