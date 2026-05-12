@@ -7,7 +7,7 @@ import {
   updateSubjectService,
   deleteSubjectService,
 } from './services'
-import type { SubjectQuery, SubjectDto, UpdateSubjectDto } from '../types'
+import type { SubjectQuery, UpdateSubjectDto } from '../types'
 import { toast } from '@/lib/stores/toast.store'
 
 export const useSubjects = (params?: SubjectQuery) => {

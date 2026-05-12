@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
 import {
   ArrowLeft,
   Loader2,
@@ -70,7 +70,7 @@ function AttendanceToggle({
 
 // Dropdown for Late / Excused
 function StatusDropdown({
-  studentId,
+  studentId: _studentId,
   currentStatus,
   onSelect,
 }: {

@@ -4,22 +4,6 @@ import { Button } from '@/components/ui/button'
 import { useSchedulesByTeacher } from '@/features/schedule/api/queries'
 import { useAuthStore } from '@/features/auth/store'
 
-// Mock schedule times for demo — in real life these come from the schedule API
-const classSchedules = [
-  {
-    time: '09:00',
-    period: 'AM',
-    room: 'Room 4B, Science Wing',
-    urgency: 'In 30 mins',
-  },
-  {
-    time: '11:30',
-    period: 'AM',
-    room: 'Lab 2, Research Center',
-    urgency: null,
-  },
-]
-
 export function TodaysClasses() {
   const user = useAuthStore((state) => state.user)
   const teacherId = user?.teacherProfile?.id
@@ -77,7 +61,7 @@ export function TodaysClasses() {
             </p>
           </div>
         ) : (
-          todaysSchedules.map((item, idx) => {
+          todaysSchedules.map((item: any, idx: any) => {
             const { time, period } = formatTime(item.startTime)
             return (
               <div

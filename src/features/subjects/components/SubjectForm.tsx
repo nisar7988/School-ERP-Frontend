@@ -1,7 +1,8 @@
-import React from 'react';
+
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { SubjectSchema, type SubjectDto } from '../types';
+import { SubjectSchema  } from '../types';
+import type {SubjectDto} from '../types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useClasses } from '@/features/classes/api/queries';

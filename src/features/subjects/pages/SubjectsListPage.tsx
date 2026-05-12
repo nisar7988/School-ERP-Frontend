@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import {
   BookOpen,
   Plus,
@@ -6,26 +6,24 @@ import {
   Filter,
   Edit2,
   Trash2,
-  MoreVertical,
-  Loader2,
 } from 'lucide-react'
 import { useSubjects, useDeleteSubject } from '../api/queries'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { SubjectModal } from '../components/SubjectModal'
 import { Badge } from '@/components/ui/badge'
-import type { Subject } from '../types'
+import type { SubjectWithClass } from '../types'
 
 export function SubjectsListPage() {
   const [search, setSearch] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [selectedSubject, setSelectedSubject] = useState<Subject | null>(null)
+  const [selectedSubject, setSelectedSubject] = useState<SubjectWithClass | null>(null)
 
   const { data: subjectsData, isLoading } = useSubjects({ search })
   const subjects = subjectsData?.data || []
   const { mutate: deleteSubject } = useDeleteSubject()
 
-  const handleEdit = (subject: Subject) => {
+  const handleEdit = (subject: SubjectWithClass) => {
     setSelectedSubject(subject)
     setIsModalOpen(true)
   }
@@ -124,7 +122,7 @@ export function SubjectsListPage() {
                   </td>
                 </tr>
               ) : (
-                subjects?.map((subject) => (
+                subjects?.map((subject: SubjectWithClass) => (
                   <tr
                     key={subject.id}
                     className="group hover:bg-gray-50/50 transition-colors"

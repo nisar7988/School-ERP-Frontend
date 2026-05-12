@@ -1,4 +1,5 @@
-import React from 'react'
+import { useState, useEffect } from "react";
+
 import { Plus, Search, Filter, Loader2 } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
@@ -14,11 +15,11 @@ export function ClassesPage() {
   const isAdmin = user?.role === Role.ADMIN
   const isTeacher = user?.role === Role.TEACHER
 
-  const [searchQuery, setSearchQuery] = React.useState('')
-  const [debouncedSearch, setDebouncedSearch] = React.useState('')
-  const [page, setPage] = React.useState(1)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
+  const [page, setPage] = useState(1)
 
-  React.useEffect(() => {
+  useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(searchQuery)
       setPage(1) // Reset to first page on search

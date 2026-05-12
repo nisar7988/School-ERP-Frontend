@@ -1,43 +1,48 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { Dialog } from '@/components/ui/Dialog'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import type { ScheduleItem, CreateScheduleDto } from '../types'
+import type { ScheduleItem } from '../types'
 
 import { useClasses } from '@/features/classes/api/queries'
 import { useTeachers } from '@/features/teachers/api/queries'
 import { useSubjects } from '@/features/subjects/api/queries'
 
-const scheduleSchema = z.object({
-  subjectId: z.string().min(1, 'Subject is required'),
-  teacherId: z.string().min(1, 'Teacher is required'),
-  classId: z.string().min(1, 'Class is required'),
-  room: z.string().min(1, 'Room is required'),
-  dayOfWeek: z.enum(['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN', 'ALL']),
-  startTime: z
-    .string()
-    .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, 'Invalid time format (HH:MM)'),
-  endTime: z
-    .string()
-    .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, 'Invalid time format (HH:MM)'),
-}).refine((data) => {
-  const start = parseInt(data.startTime.replace(':', ''));
-  const end = parseInt(data.endTime.replace(':', ''));
-  return end > start;
-}, {
-  message: "End time must be after start time",
-  path: ["endTime"],
-});
+const scheduleSchema = z
+  .object({
+    subjectId: z.string().min(1, 'Subject is required'),
+    teacherId: z.string().min(1, 'Teacher is required'),
+    classId: z.string().min(1, 'Class is required'),
+    room: z.string().min(1, 'Room is required'),
+    dayOfWeek: z.enum(['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN', 'ALL']),
+    startTime: z
+      .string()
+      .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, 'Invalid time format (HH:MM)'),
+    endTime: z
+      .string()
+      .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, 'Invalid time format (HH:MM)'),
+  })
+  .refine(
+    (data) => {
+      const start = parseInt(data.startTime.replace(':', ''))
+      const end = parseInt(data.endTime.replace(':', ''))
+      return end > start
+    },
+    {
+      message: 'End time must be after start time',
+      path: ['endTime'],
+    },
+  )
 
 type ScheduleFormData = z.infer<typeof scheduleSchema>
 
 interface ScheduleFormModalProps {
   isOpen: boolean
   onClose: () => void
-  onSubmit: (data: CreateScheduleDto) => void
+  onSubmit: (data: any) => void
   initialData?: ScheduleItem | null
   defaultTime?: { day: string; time: string } | null
   isLoading: boolean
@@ -55,7 +60,6 @@ export const ScheduleFormModal = ({
     register,
     handleSubmit,
     reset,
-    watch,
     formState: { errors },
   } = useForm<ScheduleFormData>({
     resolver: zodResolver(scheduleSchema),
@@ -70,7 +74,6 @@ export const ScheduleFormModal = ({
     },
   })
 
-  const selectedClassId = watch('classId')
   const { data: classesData } = useClasses({ limit: 100 })
   const { data: teachersData } = useTeachers({ limit: 100 })
   const { data: subjectsData } = useSubjects({ limit: 100 })

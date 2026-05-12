@@ -4,7 +4,6 @@ import {
   Users,
   UserSquare2,
   Calendar,
-  BarChart3,
   LogOut,
   LifeBuoy,
   ClipboardList,
@@ -14,7 +13,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { Role } from '@/features/auth/types'
-import { useAuthStore } from '#/features/auth/store'
+import { useAuthStore } from '@/features/auth/store'
 import { useState } from 'react'
 import { Dialog } from '@/components/ui/Dialog'
 
@@ -33,6 +32,7 @@ const adminNavItems = [
   { icon: Calendar, label: 'Schedule', href: '/schedule' },
   { icon: BookOpen, label: 'Classes', href: '/classes' },
   { icon: BookMarked, label: 'Subjects', href: '/subjects' },
+  { icon: CreditCard, label: 'Fees', href: '/fees' },
 ]
 
 const studentNavItems = [

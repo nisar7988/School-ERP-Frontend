@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { createPortal } from 'react-dom'
 import { useToastStore } from '@/lib/stores/toast.store'
 import { Toast } from './Toast'

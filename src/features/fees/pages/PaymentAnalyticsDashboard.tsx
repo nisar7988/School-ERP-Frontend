@@ -1,5 +1,5 @@
-import React from 'react';
-import { TrendingUp, Users, DollarSign, PieChart, ArrowRight, Wallet, Activity } from 'lucide-react';
+
+import { TrendingUp, Users, PieChart, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 

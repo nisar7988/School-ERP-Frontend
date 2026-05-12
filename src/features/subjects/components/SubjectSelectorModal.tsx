@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Dialog } from '@/components/ui/Dialog'
 import { useSubjects, useUpdateSubject } from '../api/queries'
 import { Button } from '@/components/ui/button'

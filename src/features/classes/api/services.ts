@@ -12,7 +12,6 @@ import type {
   PaginatedResponse,
   SingleResponse,
 } from '@/types/base.types'
-import type { Subjects } from 'react-hook-form'
 
 export const getClassesService = (params?: ClassQuery) =>
   http.get<PaginatedResponse<SchoolClassWithRelations>>(CLASS_ROUTES.BASE, {

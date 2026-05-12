@@ -14,6 +14,7 @@ export function EditStudentPage() {
     if (!data.password) {
       delete data.password
     }
+    if (!id) return
     updateStudent({ id, data })
   }
 
@@ -55,7 +56,7 @@ export function EditStudentPage() {
       {/* Header */}
       <div className="space-y-4">
         <Link
-          to="../.."
+          to={"/admin/students" as any}
           className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-brand-orange transition-colors group"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />

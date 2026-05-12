@@ -23,6 +23,7 @@ import { Route as AdminFeesIndexRouteImport } from './routes/_admin/fees/index'
 import { Route as AdminFacultyIndexRouteImport } from './routes/_admin/faculty/index'
 import { Route as AdminClassesIndexRouteImport } from './routes/_admin/classes/index'
 import { Route as TeacherTeacherScheduleRouteImport } from './routes/_teacher/teacher/schedule'
+import { Route as TeacherTeacherFeesRouteImport } from './routes/_teacher/teacher/fees'
 import { Route as TeacherTeacherDashboardRouteImport } from './routes/_teacher/teacher/dashboard'
 import { Route as TeacherTeacherClassesRouteImport } from './routes/_teacher/teacher/classes'
 import { Route as TeacherTeacherAttendanceRouteImport } from './routes/_teacher/teacher/attendance'
@@ -116,6 +117,11 @@ const AdminClassesIndexRoute = AdminClassesIndexRouteImport.update({
 const TeacherTeacherScheduleRoute = TeacherTeacherScheduleRouteImport.update({
   id: '/teacher/schedule',
   path: '/teacher/schedule',
+  getParentRoute: () => TeacherRoute,
+} as any)
+const TeacherTeacherFeesRoute = TeacherTeacherFeesRouteImport.update({
+  id: '/teacher/fees',
+  path: '/teacher/fees',
   getParentRoute: () => TeacherRoute,
 } as any)
 const TeacherTeacherDashboardRoute = TeacherTeacherDashboardRouteImport.update({
@@ -284,6 +290,7 @@ export interface FileRoutesByFullPath {
   '/teacher/attendance': typeof TeacherTeacherAttendanceRoute
   '/teacher/classes': typeof TeacherTeacherClassesRoute
   '/teacher/dashboard': typeof TeacherTeacherDashboardRoute
+  '/teacher/fees': typeof TeacherTeacherFeesRoute
   '/teacher/schedule': typeof TeacherTeacherScheduleRoute
   '/classes/': typeof AdminClassesIndexRoute
   '/faculty/': typeof AdminFacultyIndexRoute
@@ -321,6 +328,7 @@ export interface FileRoutesByTo {
   '/teacher/attendance': typeof TeacherTeacherAttendanceRoute
   '/teacher/classes': typeof TeacherTeacherClassesRoute
   '/teacher/dashboard': typeof TeacherTeacherDashboardRoute
+  '/teacher/fees': typeof TeacherTeacherFeesRoute
   '/teacher/schedule': typeof TeacherTeacherScheduleRoute
   '/classes': typeof AdminClassesIndexRoute
   '/faculty': typeof AdminFacultyIndexRoute
@@ -364,6 +372,7 @@ export interface FileRoutesById {
   '/_teacher/teacher/attendance': typeof TeacherTeacherAttendanceRoute
   '/_teacher/teacher/classes': typeof TeacherTeacherClassesRoute
   '/_teacher/teacher/dashboard': typeof TeacherTeacherDashboardRoute
+  '/_teacher/teacher/fees': typeof TeacherTeacherFeesRoute
   '/_teacher/teacher/schedule': typeof TeacherTeacherScheduleRoute
   '/_admin/classes/': typeof AdminClassesIndexRoute
   '/_admin/faculty/': typeof AdminFacultyIndexRoute
@@ -406,6 +415,7 @@ export interface FileRouteTypes {
     | '/teacher/attendance'
     | '/teacher/classes'
     | '/teacher/dashboard'
+    | '/teacher/fees'
     | '/teacher/schedule'
     | '/classes/'
     | '/faculty/'
@@ -443,6 +453,7 @@ export interface FileRouteTypes {
     | '/teacher/attendance'
     | '/teacher/classes'
     | '/teacher/dashboard'
+    | '/teacher/fees'
     | '/teacher/schedule'
     | '/classes'
     | '/faculty'
@@ -485,6 +496,7 @@ export interface FileRouteTypes {
     | '/_teacher/teacher/attendance'
     | '/_teacher/teacher/classes'
     | '/_teacher/teacher/dashboard'
+    | '/_teacher/teacher/fees'
     | '/_teacher/teacher/schedule'
     | '/_admin/classes/'
     | '/_admin/faculty/'
@@ -612,6 +624,13 @@ declare module '@tanstack/react-router' {
       path: '/teacher/schedule'
       fullPath: '/teacher/schedule'
       preLoaderRoute: typeof TeacherTeacherScheduleRouteImport
+      parentRoute: typeof TeacherRoute
+    }
+    '/_teacher/teacher/fees': {
+      id: '/_teacher/teacher/fees'
+      path: '/teacher/fees'
+      fullPath: '/teacher/fees'
+      preLoaderRoute: typeof TeacherTeacherFeesRouteImport
       parentRoute: typeof TeacherRoute
     }
     '/_teacher/teacher/dashboard': {
@@ -926,6 +945,7 @@ interface TeacherRouteChildren {
   TeacherTeacherAttendanceRoute: typeof TeacherTeacherAttendanceRoute
   TeacherTeacherClassesRoute: typeof TeacherTeacherClassesRoute
   TeacherTeacherDashboardRoute: typeof TeacherTeacherDashboardRoute
+  TeacherTeacherFeesRoute: typeof TeacherTeacherFeesRoute
   TeacherTeacherScheduleRoute: typeof TeacherTeacherScheduleRoute
   TeacherTeacherStudentsIdRoute: typeof TeacherTeacherStudentsIdRouteWithChildren
   TeacherTeacherStudentsCreateRoute: typeof TeacherTeacherStudentsCreateRoute
@@ -936,6 +956,7 @@ const TeacherRouteChildren: TeacherRouteChildren = {
   TeacherTeacherAttendanceRoute: TeacherTeacherAttendanceRoute,
   TeacherTeacherClassesRoute: TeacherTeacherClassesRoute,
   TeacherTeacherDashboardRoute: TeacherTeacherDashboardRoute,
+  TeacherTeacherFeesRoute: TeacherTeacherFeesRoute,
   TeacherTeacherScheduleRoute: TeacherTeacherScheduleRoute,
   TeacherTeacherStudentsIdRoute: TeacherTeacherStudentsIdRouteWithChildren,
   TeacherTeacherStudentsCreateRoute: TeacherTeacherStudentsCreateRoute,

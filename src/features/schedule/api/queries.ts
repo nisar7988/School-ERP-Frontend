@@ -14,7 +14,7 @@ export const useSchedules = (params?: ScheduleQueryFilters) => {
     queryKey: ['schedules', params],
     queryFn: async () => {
       const response = await getSchedulesService(params);
-      return response.data.data;
+      return response.data.data.data;
     },
   });
 };
@@ -35,7 +35,7 @@ export const useSchedulesByClass = (classId: string) => {
     queryKey: ['schedules', 'class', classId],
     queryFn: async () => {
       const response = await getSchedulesByClassService(classId);
-      return response.data.data;
+      return response.data.data.data;
     },
     enabled: !!classId,
   });
@@ -46,7 +46,7 @@ export const useSchedulesByTeacher = (teacherId: string) => {
     queryKey: ['schedules', 'teacher', teacherId],
     queryFn: async () => {
       const response = await getSchedulesByTeacherService(teacherId);
-      return response.data.data;
+      return response.data.data.data;
     },
     enabled: !!teacherId,
   });
@@ -63,7 +63,7 @@ export const useSchedulesByMe = () => {
       // TEACHER: Use teacher-specific schedules
       if (user.role === Role.TEACHER && user.teacherProfile) {
         const response = await getSchedulesByTeacherService(user.teacherProfile.id);
-        return response.data.data;
+        return response.data.data.data;
       }
       
       // STUDENT: Use class-specific schedules via /api/schedule/class/{classId}
@@ -74,13 +74,13 @@ export const useSchedulesByMe = () => {
         
         if (classId) {
           const response = await getSchedulesByClassService(classId);
-          return response.data.data;
+          return response.data.data.data;
         }
       }
       
       // ADMIN or FALLBACK: Get all (or filter by generic params)
       const response = await getSchedulesService();
-      return response.data.data;
+      return response.data.data.data;
     },
     enabled: !!user,
   });

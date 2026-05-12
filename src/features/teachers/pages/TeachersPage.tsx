@@ -1,4 +1,5 @@
-import React from 'react'
+import { useState, useEffect } from "react";
+
 import { Plus, Search, Filter } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -8,11 +9,11 @@ import { Link } from '@tanstack/react-router'
 import { Pagination } from '@/components/ui/Pagination'
 
 export function TeachersPage() {
-  const [searchQuery, setSearchQuery] = React.useState('')
-  const [debouncedSearch, setDebouncedSearch] = React.useState('')
-  const [page, setPage] = React.useState(1)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
+  const [page, setPage] = useState(1)
 
-  React.useEffect(() => {
+  useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(searchQuery)
       setPage(1)

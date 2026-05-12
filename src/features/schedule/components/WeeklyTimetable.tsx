@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, Clock } from 'lucide-react';
 import type { ScheduleItem } from '../types';
 import { ScheduleCard } from './ScheduleCard';

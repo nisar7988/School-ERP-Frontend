@@ -1,19 +1,65 @@
 import { apiClient } from '@/lib/http/client';
 import { FEE_ROUTES } from './routes';
-import type { Payment, PaymentDto, PaymentQuery, PaymentSummary } from '../types';
+import type { 
+  Payment, PaymentDto, PaymentQuery, PaymentSummary,
+  FeeStructure, CreateFeeStructureDto, UpdateFeeStructureDto,
+  StudentFee, CreateStudentFeeDto, UpdateStudentFeeDto
+} from '../types';
 import type { PaginatedResponse, SingleResponse } from '@/types/base.types';
 
+// Structures
+export const createFeeStructureService = (data: CreateFeeStructureDto) =>
+  apiClient.post<SingleResponse<FeeStructure>>(FEE_ROUTES.STRUCTURES, data);
+
+export const updateFeeStructureService = ({ id, data }: { id: string; data: UpdateFeeStructureDto }) =>
+  apiClient.patch<SingleResponse<FeeStructure>>(FEE_ROUTES.STRUCTURE_BY_ID(id), data);
+
+export const deleteFeeStructureService = (id: string) =>
+  apiClient.delete(FEE_ROUTES.STRUCTURE_BY_ID(id));
+
+export const getFeeStructuresService = () =>
+  apiClient.get<SingleResponse<FeeStructure[]>>(FEE_ROUTES.STRUCTURES);
+
+export const getFeeStructureByClassService = (classId: string) =>
+  apiClient.get<SingleResponse<FeeStructure>>(FEE_ROUTES.STRUCTURES_BY_CLASS(classId));
+
+// Student Fees
+export const createStudentFeeService = (data: CreateStudentFeeDto) =>
+  apiClient.post<SingleResponse<StudentFee>>(FEE_ROUTES.STUDENT_FEES, data);
+
+export const updateStudentFeeService = ({ id, data }: { id: string; data: UpdateStudentFeeDto }) =>
+  apiClient.patch<SingleResponse<StudentFee>>(FEE_ROUTES.STUDENT_FEE_BY_ID(id), data);
+
+export const deleteStudentFeeService = (id: string) =>
+  apiClient.delete(FEE_ROUTES.STUDENT_FEE_BY_ID(id));
+
+export const getStudentFeesService = () =>
+  apiClient.get<SingleResponse<StudentFee[]>>(FEE_ROUTES.STUDENT_FEES);
+
+export const getStudentFeeByIdService = (id: string) =>
+  apiClient.get<SingleResponse<StudentFee>>(FEE_ROUTES.STUDENT_FEE_BY_ID(id));
+
+export const getStudentFeesByStudentService = (studentId: string) =>
+  apiClient.get<SingleResponse<StudentFee[]>>(FEE_ROUTES.STUDENT_FEES_BY_STUDENT(studentId));
+
+export const getFeesByStudentService = (studentId: string) =>
+  apiClient.get<SingleResponse<StudentFee[]>>(FEE_ROUTES.FEES_BY_STUDENT(studentId));
+
+export const getPendingFeesByClassService = (classId: string) =>
+  apiClient.get<SingleResponse<StudentFee[]>>(FEE_ROUTES.PENDING_FEES_BY_CLASS(classId));
+
+// Payments
 export const createPaymentService = (data: PaymentDto) =>
   apiClient.post<SingleResponse<Payment>>(FEE_ROUTES.PAYMENTS, data);
 
 export const getPaymentService = (id: string) =>
   apiClient.get<SingleResponse<Payment>>(FEE_ROUTES.PAYMENT_BY_ID(id));
 
-export const getPaymentsByFeeService = (feeId: string) =>
-  apiClient.get<SingleResponse<Payment[]>>(FEE_ROUTES.PAYMENTS_BY_FEE(feeId));
+export const getPaymentsByStudentFeeService = (studentFeeId: string, params?: PaymentQuery) =>
+  apiClient.get<PaginatedResponse<Payment>>(FEE_ROUTES.PAYMENTS_BY_STUDENT_FEE(studentFeeId), { params });
 
-export const getPaymentsByStudentService = (studentId: string) =>
-  apiClient.get<SingleResponse<Payment[]>>(FEE_ROUTES.PAYMENTS_BY_STUDENT(studentId));
+export const getPaymentsByStudentService = (studentId: string, params?: PaymentQuery) =>
+  apiClient.get<PaginatedResponse<Payment>>(FEE_ROUTES.PAYMENTS_BY_STUDENT(studentId), { params });
 
 export const getStudentPaymentSummaryService = (studentId: string) =>
   apiClient.get<SingleResponse<PaymentSummary>>(FEE_ROUTES.STUDENT_PAYMENT_SUMMARY(studentId));
@@ -21,6 +67,5 @@ export const getStudentPaymentSummaryService = (studentId: string) =>
 export const deletePaymentService = (id: string) =>
   apiClient.delete(FEE_ROUTES.PAYMENT_BY_ID(id));
 
-// General payments search for admin dashboard
 export const getPaymentsService = (params?: PaymentQuery) =>
   apiClient.get<PaginatedResponse<Payment>>(FEE_ROUTES.PAYMENTS, { params });

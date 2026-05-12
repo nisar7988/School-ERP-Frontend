@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { getMeService } from './services'
 import { useAuthStore } from '../store'
+// eslint-disable-next-line no-restricted-imports
 import { useEffect } from 'react'
 
 export const useMe = () => {

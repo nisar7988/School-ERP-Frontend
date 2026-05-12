@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Filter, Calendar as CalendarIcon, CheckCircle2 } from 'lucide-react'
 import { useSchedules } from '../api/queries'
 import {

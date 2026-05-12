@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { ArrowLeft, UserPlus2 } from 'lucide-react'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { TeacherForm } from '../components/TeacherForm'

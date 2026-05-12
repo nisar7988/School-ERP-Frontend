@@ -15,11 +15,11 @@ interface AttendanceTableProps {
 
 export function AttendanceTable({
   records,
-  onEdit,
-  onDelete,
-  isAdmin,
+  onEdit: _onEdit,
+  onDelete: _onDelete,
+  isAdmin: _isAdmin,
   showStudent = true,
-  showActions = true,
+  showActions: _showActions = true,
 }: AttendanceTableProps) {
   const getStatusConfig = (status: AttendanceStatus) => {
     switch (status) {

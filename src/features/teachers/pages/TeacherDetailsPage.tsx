@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import { useRef } from 'react'
 import { useParams, Link } from '@tanstack/react-router'
 import {
   ArrowLeft,

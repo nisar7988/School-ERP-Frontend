@@ -14,4 +14,12 @@ export interface SubjectQuery extends BaseQuery {
   classId?: string
 }
 
+export type SubjectWithClass = Subject & {
+  class?: {
+    id: string
+    name: string
+    section: string
+  }
+}
+
 export type { Subject }

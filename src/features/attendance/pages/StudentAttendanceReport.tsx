@@ -15,13 +15,13 @@ interface StudentAttendanceReportProps {
 
 export function StudentAttendanceReport({
   studentId,
-  studentName,
+  studentName: _studentName,
 }: StudentAttendanceReportProps) {
   const [page, setPage] = useState(1)
   const [statusFilter, setStatusFilter] = useState<
     AttendanceStatus | undefined
   >()
-  const [dateFilter, setDateFilter] = useState<string>('')
+  const [dateFilter, _setDateFilter] = useState<string>('')
   const [monthFilter, setMonthFilter] = useState<string>('')
 
   const { data: response, isLoading } = useStudentAttendance(studentId, {

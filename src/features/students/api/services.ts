@@ -92,7 +92,7 @@ const MOCK_FEE_DATA: FeeData = {
     { name: 'Fee Structure 2024', sub: 'Annual Breakdown' },
   ],
 }
-export const getFeeDetailsService = (id: string) => {
+export const getFeeDetailsService = (_id: string) => {
   return {
     data: {
       data: MOCK_FEE_DATA,
