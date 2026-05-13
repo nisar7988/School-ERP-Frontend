@@ -23,7 +23,11 @@ export function DashboardPage() {
 
   // Revenue Calculations
   const collectedRevenue = paymentsData?.data?.reduce((sum, p) => sum + Number(p.amount), 0) ?? 0
-  const expectedRevenue = allFees?.reduce((sum: number, f: any) => sum + Number(f.amount), 0) ?? 0
+  const expectedRevenue = Array.isArray((allFees as any)?.data)
+    ? (allFees as any).data.reduce((sum: number, f: any) => sum + Number(f.amount), 0)
+    : Array.isArray(allFees)
+      ? allFees.reduce((sum: number, f: any) => sum + Number(f.amount), 0)
+      : 0
 
   // Recent Activity from Payments
   const recentActivities = paymentsData?.data?.map((p: any) => {

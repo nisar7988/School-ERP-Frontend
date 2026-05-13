@@ -41,7 +41,7 @@ export const useClassesByTeacher = (
     queryFn: async () => {
       if (!teacherId)
         return { data: [], meta: { total: 0, page: 1, lastPage: 1, limit: 10 } }
-      const response = await getClassesByTeacherService()
+      const response = await getClassesByTeacherService(params)
       return response.data.data
     },
     enabled: !!teacherId,

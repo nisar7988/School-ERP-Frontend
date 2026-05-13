@@ -17,8 +17,8 @@ export const updateFeeStructureService = ({ id, data }: { id: string; data: Upda
 export const deleteFeeStructureService = (id: string) =>
   apiClient.delete(FEE_ROUTES.STRUCTURE_BY_ID(id));
 
-export const getFeeStructuresService = () =>
-  apiClient.get<SingleResponse<FeeStructure[]>>(FEE_ROUTES.STRUCTURES);
+export const getFeeStructuresService = (params?: any) =>
+  apiClient.get<PaginatedResponse<FeeStructure>>(FEE_ROUTES.STRUCTURES, { params });
 
 export const getFeeStructureByClassService = (classId: string) =>
   apiClient.get<SingleResponse<FeeStructure>>(FEE_ROUTES.STRUCTURES_BY_CLASS(classId));
@@ -33,8 +33,8 @@ export const updateStudentFeeService = ({ id, data }: { id: string; data: Update
 export const deleteStudentFeeService = (id: string) =>
   apiClient.delete(FEE_ROUTES.STUDENT_FEE_BY_ID(id));
 
-export const getStudentFeesService = () =>
-  apiClient.get<SingleResponse<StudentFee[]>>(FEE_ROUTES.STUDENT_FEES);
+export const getStudentFeesService = (params?: any) =>
+  apiClient.get<PaginatedResponse<StudentFee>>(FEE_ROUTES.STUDENT_FEES, { params });
 
 
 export const getStudentFeesByStudentService = (studentId: string) =>

@@ -30,6 +30,6 @@ export const updateTeacherService = (id: string, data: UpdateTeacherDto) =>
 export const deleteTeacherService = (id: string) =>
   http.delete(TEACHER_ROUTES.BY_ID(id))
 
-export const getClassesByTeacherService = () =>
-  http.get<PaginatedResponse<SchoolClassWithRelations>>(TEACHER_ROUTES.CLASSES)
+export const getClassesByTeacherService = (params?: any) =>
+  http.get<PaginatedResponse<SchoolClassWithRelations>>(TEACHER_ROUTES.CLASSES, { params })
 

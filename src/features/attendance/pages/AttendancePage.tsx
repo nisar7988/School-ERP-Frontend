@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ClipboardCheck, Search, Filter, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -32,6 +32,7 @@ export function AttendancePage() {
     initialView || (initialClassId ? 'take' : 'history'),
   )
   const [searchQuery, setSearchQuery] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<
     AttendanceStatus | undefined
   >(search.status as AttendanceStatus)
@@ -44,10 +45,18 @@ export function AttendancePage() {
   const [selectedRecord, setSelectedRecord] =
     useState<AttendanceWithStudent | null>(null)
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery)
+      setPage(1)
+    }, 500)
+    return () => clearTimeout(timer)
+  }, [searchQuery])
+
   const { data: classes } = useClasses({ limit: 100 })
 
   const { data: attendanceResponse, isLoading } = useAttendance({
-    search: searchQuery,
+    search: debouncedSearch,
     status: statusFilter,
     classId: classIdFilter,
     date: dateFilter || undefined,
@@ -133,7 +142,6 @@ export function AttendancePage() {
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value)
-              setPage(1)
             }}
           />
         </div>

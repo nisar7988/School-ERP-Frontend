@@ -5,7 +5,6 @@ import {
   UserSquare2,
   Calendar,
   LogOut,
-  LifeBuoy,
   ClipboardList,
   CreditCard,
   BookMarked,

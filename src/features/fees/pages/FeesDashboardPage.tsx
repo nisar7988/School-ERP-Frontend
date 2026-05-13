@@ -9,7 +9,12 @@ import { FeeStatus } from '../types'
 export function FeesDashboardPage() {
   const [activeTab, setActiveTab] = useState('structures')
 
-  const { data: studentFees = [] } = useStudentFeesList()
+  const { data: response } = useStudentFeesList({ limit: 1000 })
+  const studentFees = Array.isArray((response as any)?.data) 
+    ? (response as any).data 
+    : Array.isArray(response) 
+      ? response 
+      : []
 
   const totalCollected = studentFees
     .filter((f: any) => f.status === FeeStatus.PAID)

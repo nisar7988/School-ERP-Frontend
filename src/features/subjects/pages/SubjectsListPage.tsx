@@ -1,12 +1,5 @@
-import { useState } from 'react'
-import {
-  BookOpen,
-  Plus,
-  Search,
-  Filter,
-  Edit2,
-  Trash2,
-} from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { BookOpen, Plus, Search, Filter, Edit2, Trash2 } from 'lucide-react'
 import { useSubjects, useDeleteSubject } from '../api/queries'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -15,11 +8,22 @@ import { Badge } from '@/components/ui/badge'
 import type { SubjectWithClass } from '../types'
 
 export function SubjectsListPage() {
-  const [search, setSearch] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [selectedSubject, setSelectedSubject] = useState<SubjectWithClass | null>(null)
+  const [selectedSubject, setSelectedSubject] =
+    useState<SubjectWithClass | null>(null)
 
-  const { data: subjectsData, isLoading } = useSubjects({ search })
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery)
+    }, 500)
+    return () => clearTimeout(timer)
+  }, [searchQuery])
+
+  const { data: subjectsData, isLoading } = useSubjects({
+    search: debouncedSearch,
+  })
   const subjects = subjectsData?.data || []
   const { mutate: deleteSubject } = useDeleteSubject()
 
@@ -68,8 +72,8 @@ export function SubjectsListPage() {
             <Input
               placeholder="Search subjects by name or code..."
               className="pl-12 h-14 rounded-2xl border-gray-100 bg-gray-50/50 focus:bg-white transition-all text-sm font-bold"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
           <Button

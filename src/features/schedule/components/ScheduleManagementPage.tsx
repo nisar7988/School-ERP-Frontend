@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Filter, Calendar as CalendarIcon, CheckCircle2 } from 'lucide-react'
+import { Filter, Calendar as CalendarIcon } from 'lucide-react'
 import { useSchedules } from '../api/queries'
 import {
   useCreateSchedule,
