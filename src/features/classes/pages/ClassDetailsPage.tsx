@@ -110,19 +110,16 @@ export function ClassDetailsPage() {
           label="Total Students"
           value={cls.students?.length.toString() || '0'}
           icon={Users}
-          trend="Enrolled"
         />
         <StatsCard
           label="Subjects"
           value={cls.subjects?.length.toString() || '0'}
           icon={BookOpen}
-          trend="Curriculum"
         />
         <StatsCard
           label="Created On"
           value={new Date(cls.createdAt).toLocaleDateString()}
           icon={Calendar}
-          trend="Date"
         />
       </div>
 

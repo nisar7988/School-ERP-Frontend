@@ -4,14 +4,16 @@ import { useStudentFeesList } from '../api/queries'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Link } from '@tanstack/react-router'
-import { Eye, Search, Filter } from 'lucide-react'
+import { Eye, Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Pagination } from '@/components/ui/Pagination'
+import { useClasses } from '@/features/classes/api/queries'
 
 export function StudentFeesTab() {
   const [searchQuery, setSearchQuery] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
   const [page, setPage] = useState(1)
+  const [classId, setClassId] = useState('')
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -24,10 +26,15 @@ export function StudentFeesTab() {
   const { data: response, isLoading } = useStudentFeesList({
     search: debouncedSearch,
     page,
+    classId,
   })
+  const { data: classesResponse } = useClasses()
 
-  const studentFees = (response as any)?.data?.data
-  const meta = (response as any)?.data?.meta
+  const classes = classesResponse?.data || []
+
+  const studentFees = (response as any)?.data || []
+  const meta = (response as any)?.meta
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -49,12 +56,21 @@ export function StudentFeesTab() {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <Button
-          variant="outline"
-          className="h-14 rounded-2xl gap-2 font-bold text-gray-600 bg-white shadow-sm px-8"
+        <select
+          className="h-14 bg-white px-6 rounded-2xl border-gray-100 bg-white shadow-sm focus:ring-brand-orange/10 font-sans outline-none cursor-pointer hover:bg-gray-50 transition-colors"
+          value={classId}
+          onChange={(e) => {
+            setClassId(e.target.value)
+            setPage(1)
+          }}
         >
-          <Filter className="w-5 h-5 text-gray-400" /> Filters
-        </Button>
+          <option value="">All Classes</option>
+          {classes.map((cls: any) => (
+            <option key={cls.id} value={cls.id}>
+              {cls.name} - {cls.section}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-gray-100 overflow-hidden">
@@ -103,7 +119,7 @@ export function StudentFeesTab() {
                   </td>
                 </tr>
               ) : (
-                studentFees?.map((fee: any) => (
+                studentFees?.data.map((fee: any) => (
                   <tr
                     key={fee.id}
                     className="group hover:bg-gray-50/50 transition-colors"

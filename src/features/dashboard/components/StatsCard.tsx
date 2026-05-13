@@ -6,7 +6,6 @@ interface StatsCardProps {
   label: string
   value: string
   icon: LucideIcon
-  trend: string
   isPositive?: boolean
 }
 
@@ -14,13 +13,12 @@ export function StatsCard({
   label,
   value,
   icon: Icon,
-  trend,
   isPositive = true,
 }: StatsCardProps) {
   return (
-    <Card className="flex-1 p-2">
-      <CardContent className="p-8 flex items-start justify-between">
-        <div className="space-y-4">
+    <Card className="flex-1 p-2 w-1/2">
+      <CardContent className="p-8 flex items-center justify-center">
+        <div className="space-y-4 flex flex-col items-center">
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-brand-peach/50 rounded-xl">
               <Icon className="w-5 h-5 text-brand-orange" />
@@ -29,10 +27,6 @@ export function StatsCard({
           </div>
           <h3 className="text-4xl font-extrabold text-gray-900">{value}</h3>
         </div>
-        <Badge variant={isPositive ? 'brand' : 'warning'} className="text-xs">
-          {isPositive ? '+' : '-'}
-          {trend}
-        </Badge>
       </CardContent>
     </Card>
   )
