@@ -86,6 +86,16 @@ export interface PaymentQuery extends BaseQuery {
   status?: FeeStatus
 }
 
+export interface FeeStructureQuery extends BaseQuery {
+  classId?: string
+}
+
+export interface StudentFeeQuery extends BaseQuery {
+  studentId?: string
+  classId?: string
+  status?: FeeStatus
+}
+
 export interface PaymentSummary {
   totalFees: number
   paidAmount: number

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useStudentFeesList } from '../api/queries'
+import { getFeeStatusColor } from '../utils/fee-utils'
 
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -149,15 +150,7 @@ export function StudentFeesTab() {
                     <td className="py-6">
                       <Badge
                         variant="secondary"
-                        className={`border-none font-bold ${
-                          fee.status === 'PAID'
-                            ? 'bg-green-50 text-green-600'
-                            : fee.status === 'PARTIAL'
-                              ? 'bg-blue-50 text-blue-600'
-                              : fee.status === 'OVERDUE'
-                                ? 'bg-red-50 text-red-600'
-                                : 'bg-orange-50 text-orange-600'
-                        }`}
+                        className={`border-none font-bold ${getFeeStatusColor(fee.status)}`}
                       >
                         {fee.status}
                       </Badge>

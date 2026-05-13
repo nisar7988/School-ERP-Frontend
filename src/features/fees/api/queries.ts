@@ -17,13 +17,13 @@ import {
   getPendingFeesByClassService,
   getFeeStructureByClassService,
 } from './services'
-import type { PaymentQuery, StudentFee, FeeStructure, Payment } from '../types'
+import type { PaymentQuery, StudentFee, FeeStructure, Payment, FeeStructureQuery, StudentFeeQuery } from '../types'
 import type { PaginatedData, PaginatedMeta } from '@/types/base.types'
 import { toast } from '@/lib/stores/toast.store'
 
 // --- STRUCTURES ---
 
-export const useFeeStructures = (params?: any) => {
+export const useFeeStructures = (params?: FeeStructureQuery) => {
   return useQuery<PaginatedData<FeeStructure>, Error>({
     queryKey: ['fees', 'structures', params],
     queryFn: async () => {
@@ -95,7 +95,7 @@ export const useDeleteFeeStructure = () => {
 
 // --- STUDENT FEES ---
 
-export const useStudentFeesList = (params?: any) => {
+export const useStudentFeesList = (params?: StudentFeeQuery) => {
   return useQuery<PaginatedData<StudentFee>, Error>({
     queryKey: ['fees', 'student-fees', params],
     queryFn: async () => {

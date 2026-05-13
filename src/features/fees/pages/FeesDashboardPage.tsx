@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { FeeStructuresTab } from '../components/FeeStructuresTab'
 import { StudentFeesTab } from '../components/StudentFeesTab'
 import { useStudentFeesList } from '../api/queries'
-import { FeeStatus } from '../types'
+import { calculateFeeStats } from '../utils/fee-utils'
 
 export function FeesDashboardPage() {
   const [activeTab, setActiveTab] = useState('structures')
@@ -12,20 +12,8 @@ export function FeesDashboardPage() {
   const { data: response } = useStudentFeesList({ limit: 1000 })
   const studentFees = response?.data || []
 
-  const totalCollected = studentFees
-    .filter((f: any) => f.status === FeeStatus.PAID)
-    .reduce((sum: number, f: any) => sum + Number(f.amount || 0), 0)
-
-  const pendingDues = studentFees
-    .filter(
-      (f: any) =>
-        f.status === FeeStatus.PENDING || f.status === FeeStatus.OVERDUE,
-    )
-    .reduce((sum: number, f: any) => sum + Number(f.amount || 0), 0)
-
-  const partialCount = studentFees.filter(
-    (f: any) => f.status === FeeStatus.PARTIAL,
-  ).length
+  const { totalCollected, pendingDues, partialCount } =
+    calculateFeeStats(studentFees)
 
   const stats = [
     {
