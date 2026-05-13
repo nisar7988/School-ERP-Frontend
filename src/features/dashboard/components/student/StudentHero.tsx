@@ -10,12 +10,6 @@ export function StudentHero() {
         <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight leading-tight">
           Welcome back, {user?.firstName || 'Student'}.
         </h1>
-        <p className="text-gray-500 font-medium">
-          Your next class begins in{' '}
-          <span className="font-bold text-brand-orange">45 minutes</span>. You
-          have <span className="font-bold text-gray-900">2 assignments</span>{' '}
-          due this week.
-        </p>
       </div>
       <Button
         variant="brand"
