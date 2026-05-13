@@ -33,7 +33,7 @@ export const LoginForm = () => {
   const onFormSubmit = (data: LoginDto) => {
     mutate(data, {
       onSuccess: (response) => {
-        const user = response.data.user
+        const user = response.data.data.user
         if (user.role === Role.TEACHER) {
           navigate({ to: '/teacher/dashboard' })
         } else if (user.role === Role.STUDENT) {

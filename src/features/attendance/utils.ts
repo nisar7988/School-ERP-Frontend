@@ -1,11 +1,13 @@
-import { AttendanceStatus } from '../types'
+import { AttendanceStatus } from './types'
 import { CheckCircle2, XCircle, Clock, Info } from 'lucide-react'
 import React from 'react'
 
 /**
  * Returns configuration for attendance status badges
  */
-export const getAttendanceStatusConfig = (status: AttendanceStatus | string) => {
+export const getAttendanceStatusConfig = (
+  status: AttendanceStatus | string,
+) => {
   switch (status) {
     case AttendanceStatus.PRESENT:
     case 'PRESENT':

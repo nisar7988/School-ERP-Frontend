@@ -11,7 +11,7 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: loginService,
     onSuccess: (response) => {
-      const { access_token, user } = response.data
+      const { access_token, user } = response.data.data
       setAuth(access_token, user)
       queryClient.invalidateQueries({ queryKey: ['auth', 'me'] })
       toast.success('Successfully logged in')
