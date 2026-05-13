@@ -1,13 +1,19 @@
 
+import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useToastStore } from '@/lib/stores/toast.store'
 import { Toast } from './Toast'
 
 export const ToastContainer: React.FC = () => {
   const toasts = useToastStore((state) => state.toasts)
+  const [isMounted, setIsMounted] = useState(false)
 
-  // Only render on the client
-  if (typeof document === 'undefined') return null
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  // Only render the portal after the client has hydrated
+  if (!isMounted) return null
 
   return createPortal(
     <div

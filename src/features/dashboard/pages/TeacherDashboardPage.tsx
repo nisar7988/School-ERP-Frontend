@@ -2,7 +2,6 @@ import { TeacherHero } from '../components/teacher/TeacherHero'
 import { QuickActions } from '../components/teacher/QuickActions'
 import { TodaysClasses } from '../components/teacher/TodaysClasses'
 import { TeacherAttendance } from '../components/teacher/TeacherAttendance'
-import { ActionItems } from '../components/teacher/ActionItems'
 
 export function TeacherDashboardPage() {
   return (
@@ -22,11 +21,8 @@ export function TeacherDashboardPage() {
 
       {/* Row 2: Weekly Attendance & Action Items */}
       <div className="grid grid-cols-12 gap-5">
-        <div className="col-span-12 lg:col-span-8">
+        <div className="col-span-12 lg:col-span-12">
           <TeacherAttendance />
-        </div>
-        <div className="col-span-12 lg:col-span-4">
-          <ActionItems />
         </div>
       </div>
     </div>

@@ -61,7 +61,7 @@ export function TodaysClasses() {
             </p>
           </div>
         ) : (
-          todaysSchedules.map((item: any, idx: any) => {
+          todaysSchedules.map((item, idx) => {
             const { time, period } = formatTime(item.startTime)
             return (
               <div

@@ -1,3 +1,4 @@
+import * as React from 'react'
 import {
   HeadContent,
   Scripts,
@@ -87,7 +88,13 @@ function AuthSync() {
 
 export default function RootLayout() {
   const _hasHydrated = useAuthStore((state) => state._hasHydrated)
-  const isServer = typeof window === 'undefined'
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const showLoader = !mounted || !_hasHydrated
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -95,10 +102,13 @@ export default function RootLayout() {
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <HeadContent />
       </head>
-      <body className="font-sans antialiased [overflow-wrap:anywhere] selection:bg-[rgba(79,184,178,0.24)]">
+      <body
+        className="font-sans antialiased [overflow-wrap:anywhere] selection:bg-[rgba(79,184,178,0.24)]"
+        suppressHydrationWarning
+      >
         <QueryProvider>
           <AuthSync />
-          {!_hasHydrated && !isServer ? <Loader /> : <Outlet />}
+          {showLoader ? <Loader /> : <Outlet />}
 
           <TanStackDevtools
             config={{ position: 'bottom-right' }}

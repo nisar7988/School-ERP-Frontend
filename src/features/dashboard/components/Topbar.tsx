@@ -1,6 +1,6 @@
-import { Search, Bell, HelpCircle, Settings } from "lucide-react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import { Search, Bell, HelpCircle, Settings } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 
 interface TopbarProps {
   title?: string
@@ -12,32 +12,35 @@ interface TopbarProps {
   }
 }
 
-export function Topbar({ 
-  title, 
+export function Topbar({
+  title,
   showSearch = true,
   user = {
-    name: "Alex Mercer",
-    role: "Sophomore",
-    avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100"
-  }
+    name: 'Alex Mercer',
+    role: 'Sophomore',
+    avatar:
+      'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100',
+  },
 }: TopbarProps) {
   return (
     <header className="h-16 px-8 flex items-center justify-between sticky top-0 bg-white/90 backdrop-blur-md z-30 border-b border-gray-100">
       <div className="flex-1 flex items-center">
         {title ? (
-          <h1 className="text-lg font-bold text-gray-900 display-title">{title}</h1>
+          <h1 className="text-lg font-bold text-gray-900 display-title">
+            {title}
+          </h1>
         ) : showSearch ? (
           <div className="w-80 relative group">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-brand-orange transition-colors" />
-            <Input 
-              placeholder="Search students, classes..." 
+            <Input
+              placeholder="Search students, classes..."
               className="pl-10 h-9 bg-gray-50 border-gray-100 focus:bg-white text-sm rounded-xl"
             />
           </div>
         ) : null}
       </div>
 
-      <div className="flex items-center gap-1">
+      {/* <div className="flex items-center gap-1">
         <Button variant="ghost" size="icon" className="relative text-gray-500 w-9 h-9">
           <Bell className="w-4.5 h-4.5" />
           <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
@@ -65,7 +68,7 @@ export function Topbar({
             Settings
           </Button>
         </div>
-      </div>
+      </div> */}
     </header>
   )
 }

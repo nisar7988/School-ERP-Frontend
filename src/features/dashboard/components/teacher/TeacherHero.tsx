@@ -12,7 +12,7 @@ function getGreeting() {
 export function TeacherHero() {
   const user = useAuthStore((state) => state.user)
   const greeting = getGreeting()
-  const displayName = user?.firstName ? `Dr. ${user.firstName}` : 'Dr. Aris'
+  const displayName = user?.firstName ? `${user.firstName} ${user.lastName || ''}` : 'Teacher'
 
   return (
     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
