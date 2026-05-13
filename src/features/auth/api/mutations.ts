@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { loginService, updateUserProfileImageService } from './services'
 import { useAuthStore } from '../store'
 import { toast } from '@/lib/stores/toast.store'
+import type { AxiosError } from 'axios'
 
 export const useLogin = () => {
   const setAuth = useAuthStore((state) => state.setAuth)
@@ -10,11 +11,12 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: loginService,
     onSuccess: (response) => {
-      setAuth(response.data.access_token, response.data.user)
+      const { access_token, user } = response.data
+      setAuth(access_token, user)
       queryClient.invalidateQueries({ queryKey: ['auth', 'me'] })
       toast.success('Successfully logged in')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ message: string }>) => {
       toast.error(error.response?.data?.message || 'Login failed')
     }
   })

@@ -23,7 +23,11 @@ import {
 } from '@/features/fees/api/queries'
 import { Input } from '@/components/ui/input'
 import { Dialog } from '@/components/ui/Dialog'
-import { PaymentMethod } from '@/features/fees/types'
+import {
+  PaymentMethod,
+  type StudentFee,
+  type Payment,
+} from '@/features/fees/types'
 
 export function FeeDetailsPage() {
   const user = useAuthStore((state) => state.user)
@@ -73,7 +77,7 @@ export function FeeDetailsPage() {
   }
 
   const nextDueFee = fees.find(
-    (f: any) => f.status === 'PENDING' || f.status === 'PARTIAL',
+    (f: StudentFee) => f.status === 'PENDING' || f.status === 'PARTIAL',
   )
 
   return (
@@ -216,7 +220,7 @@ export function FeeDetailsPage() {
                   </td>
                 </tr>
               ) : (
-                payments.map((p: any) => (
+                payments.map((p: Payment) => (
                   <tr
                     key={p.id}
                     className="group hover:bg-gray-50/50 transition-colors"
@@ -267,7 +271,7 @@ export function FeeDetailsPage() {
                 No fees assigned
               </div>
             ) : (
-              fees.map((fee: any) => (
+              fees.map((fee: StudentFee) => (
                 <div
                   key={fee.id}
                   className="flex items-center justify-between group"
@@ -385,7 +389,9 @@ export function FeeDetailsPage() {
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
               value={payFormData.studentFeeId}
               onChange={(e) => {
-                const fee = fees.find((f: any) => f.id === e.target.value)
+                const fee = fees.find(
+                  (f: StudentFee) => f.id === e.target.value,
+                )
                 setPayFormData({
                   ...payFormData,
                   studentFeeId: e.target.value,
@@ -398,9 +404,10 @@ export function FeeDetailsPage() {
               <option value="">Select a pending fee...</option>
               {fees
                 .filter(
-                  (f: any) => f.status === 'PENDING' || f.status === 'PARTIAL',
+                  (f: StudentFee) =>
+                    f.status === 'PENDING' || f.status === 'PARTIAL',
                 )
-                .map((f: any) => (
+                .map((f: StudentFee) => (
                   <option key={f.id} value={f.id}>
                     {f.feeStructure?.title} (Due: $
                     {Number(f.amount) - Number(f.paidAmount)})

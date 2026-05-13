@@ -6,6 +6,7 @@ import {
 } from './services'
 import type { UpdateClassDto } from '../types'
 import { toast } from '@/lib/stores/toast.store'
+import type { AxiosError } from 'axios'
 
 export const useCreateClass = () => {
   const queryClient = useQueryClient()
@@ -16,6 +17,9 @@ export const useCreateClass = () => {
       queryClient.invalidateQueries({ queryKey: ['classes'] })
       toast.success('Class created successfully')
     },
+    onError: (error: AxiosError<{ message: string }>) => {
+      toast.error(error.response?.data?.message || 'Failed to create class')
+    }
   })
 }
 
@@ -30,6 +34,9 @@ export const useUpdateClass = () => {
       queryClient.invalidateQueries({ queryKey: ['classes', variables.id] })
       toast.success('Class updated successfully')
     },
+    onError: (error: AxiosError<{ message: string }>) => {
+      toast.error(error.response?.data?.message || 'Failed to update class')
+    }
   })
 }
 
@@ -42,5 +49,8 @@ export const useDeleteClass = () => {
       queryClient.invalidateQueries({ queryKey: ['classes'] })
       toast.success('Class deleted successfully')
     },
+    onError: (error: AxiosError<{ message: string }>) => {
+      toast.error(error.response?.data?.message || 'Failed to delete class')
+    }
   })
 }

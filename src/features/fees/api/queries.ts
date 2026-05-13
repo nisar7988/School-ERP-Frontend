@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import type { AxiosError } from 'axios'
 import {
   getPaymentsService,
   getStudentPaymentSummaryService,
@@ -53,7 +54,7 @@ export const useCreateFeeStructure = () => {
       queryClient.invalidateQueries({ queryKey: ['fees', 'structures'] })
       toast.success('Fee structure created successfully')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ message: string }>) => {
       toast.error(
         error.response?.data?.message || 'Failed to create fee structure',
       )
@@ -69,7 +70,7 @@ export const useUpdateFeeStructure = () => {
       queryClient.invalidateQueries({ queryKey: ['fees', 'structures'] })
       toast.success('Fee structure updated successfully')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ message: string }>) => {
       toast.error(
         error.response?.data?.message || 'Failed to update fee structure',
       )
@@ -85,7 +86,7 @@ export const useDeleteFeeStructure = () => {
       queryClient.invalidateQueries({ queryKey: ['fees', 'structures'] })
       toast.success('Fee structure deleted successfully')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ message: string }>) => {
       toast.error(
         error.response?.data?.message || 'Failed to delete fee structure',
       )
@@ -138,7 +139,7 @@ export const useCreateStudentFee = () => {
       queryClient.invalidateQueries({ queryKey: ['fees', 'pending'] })
       toast.success('Student fee recorded successfully')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ message: string }>) => {
       toast.error(
         error.response?.data?.message || 'Failed to create student fee',
       )
@@ -155,7 +156,7 @@ export const useUpdateStudentFee = () => {
       queryClient.invalidateQueries({ queryKey: ['fees', 'pending'] })
       toast.success('Student fee updated successfully')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ message: string }>) => {
       toast.error(
         error.response?.data?.message || 'Failed to update student fee',
       )
@@ -171,7 +172,7 @@ export const useDeleteStudentFee = () => {
       queryClient.invalidateQueries({ queryKey: ['fees', 'student-fees'] })
       toast.success('Student fee deleted successfully')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ message: string }>) => {
       toast.error(
         error.response?.data?.message || 'Failed to delete student fee',
       )
@@ -228,7 +229,7 @@ export const useCreatePayment = () => {
       queryClient.invalidateQueries({ queryKey: ['fees', 'student-fees'] })
       toast.success('Payment recorded successfully')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ message: string }>) => {
       toast.error(error.response?.data?.message || 'Failed to record payment')
     },
   })
@@ -243,7 +244,7 @@ export const useDeletePayment = () => {
       queryClient.invalidateQueries({ queryKey: ['fees', 'student-fees'] })
       toast.success('Payment deleted successfully')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ message: string }>) => {
       toast.error(error.response?.data?.message || 'Failed to delete payment')
     },
   })

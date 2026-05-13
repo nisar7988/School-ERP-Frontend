@@ -10,6 +10,7 @@ import { useTeachers } from '@/features/teachers/api/queries'
 import { useClasses } from '@/features/classes/api/queries'
 import { usePayments, useStudentFeesList } from '@/features/fees/api/queries'
 import { useAttendance } from '@/features/attendance/api/queries'
+import type { StudentFee, Payment } from '@/features/fees/types'
 import { formatDistanceToNow } from 'date-fns'
 
 export function DashboardPage() {
@@ -31,22 +32,19 @@ export function DashboardPage() {
   const totalStudents = studentsData?.meta.total ?? 0
   const totalTeachers = teachersData?.meta.total ?? 0
   const totalClasses = classesData?.meta.total ?? 0
-  
+
   // Revenue Calculations
   const collectedRevenue =
     paymentsData?.data?.reduce((sum, p) => sum + Number(p.amount), 0) ?? 0
-  const expectedRevenue = Array.isArray((allFees as any)?.data)
-    ? (allFees as any).data.reduce(
-        (sum: number, f: any) => sum + Number(f.amount),
-        0,
-      )
-    : Array.isArray(allFees)
-      ? allFees.reduce((sum: number, f: any) => sum + Number(f.amount), 0)
-      : 0
+  const expectedRevenue =
+    allFees?.data?.reduce(
+      (sum: number, f: StudentFee) => sum + Number(f.amount),
+      0,
+    ) ?? 0
 
   // Recent Activity from Payments
   const recentActivities =
-    paymentsData?.data?.map((p: any) => {
+    paymentsData?.data?.map((p: Payment) => {
       const student = p.studentFee?.student
       const user = student?.user
       const firstName = user?.firstName || 'Student'

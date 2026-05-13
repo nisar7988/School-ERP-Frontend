@@ -8,7 +8,10 @@ export const useMe = () => {
   const token = useAuthStore((state) => state.token)
   const query = useQuery({
     queryKey: ['auth', 'me'],
-    queryFn: getMeService,
+    queryFn: async () => {
+      const response = await getMeService()
+      return response.data.data
+    },
     staleTime: Infinity,
     enabled: !!token,
   })

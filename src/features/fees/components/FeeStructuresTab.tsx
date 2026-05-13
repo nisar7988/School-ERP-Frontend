@@ -19,6 +19,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Dialog } from '@/components/ui/Dialog'
 import { Pagination } from '@/components/ui/Pagination'
+import type { FeeStructure } from '../types'
 
 export function FeeStructuresTab() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -52,7 +53,7 @@ export function FeeStructuresTab() {
   }
 
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [editingStructure, setEditingStructure] = useState<any>(null)
+  const [editingStructure, setEditingStructure] = useState<FeeStructure | null>(null)
 
   const [formData, setFormData] = useState({
     classId: '',
@@ -65,7 +66,7 @@ export function FeeStructuresTab() {
   const updateMutation = useUpdateFeeStructure()
   const deleteMutation = useDeleteFeeStructure()
 
-  const handleOpenDialog = (structure?: any) => {
+  const handleOpenDialog = (structure?: FeeStructure) => {
     if (structure) {
       setEditingStructure(structure)
       setFormData({
@@ -286,7 +287,7 @@ export function FeeStructuresTab() {
               }
             >
               <option value="">Select a class</option>
-              {classes.map((c: any) => (
+              {classes.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name} - {c.section}
                 </option>

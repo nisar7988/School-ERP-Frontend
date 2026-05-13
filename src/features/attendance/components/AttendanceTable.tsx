@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { MoreHorizontal, CheckCircle2, XCircle, Clock, Info } from 'lucide-react'
 import type { AttendanceWithStudent } from '../types'
 import { AttendanceStatus } from '../types'
+import { getAttendanceStatusConfig } from '../utils'
 
 interface AttendanceTableProps {
   records: AttendanceWithStudent[]
@@ -21,40 +22,6 @@ export function AttendanceTable({
   showStudent = true,
   showActions: _showActions = true,
 }: AttendanceTableProps) {
-  const getStatusConfig = (status: AttendanceStatus) => {
-    switch (status) {
-      case AttendanceStatus.PRESENT:
-        return {
-          label: 'Present',
-          color: 'bg-green-50 text-green-600 border-green-100',
-          icon: <CheckCircle2 className="w-3.5 h-3.5" />,
-        }
-      case AttendanceStatus.ABSENT:
-        return {
-          label: 'Absent',
-          color: 'bg-red-50 text-red-600 border-red-100',
-          icon: <XCircle className="w-3.5 h-3.5" />,
-        }
-      case AttendanceStatus.LATE:
-        return {
-          label: 'Late',
-          color: 'bg-amber-50 text-amber-600 border-amber-100',
-          icon: <Clock className="w-3.5 h-3.5" />,
-        }
-      case AttendanceStatus.EXCUSED:
-        return {
-          label: 'Excused',
-          color: 'bg-blue-50 text-blue-600 border-blue-100',
-          icon: <Info className="w-3.5 h-3.5" />,
-        }
-      default:
-        return {
-          label: status,
-          color: 'bg-gray-50 text-gray-600 border-gray-100',
-          icon: null,
-        }
-    }
-  }
 
   return (
     <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden font-sans">
@@ -86,7 +53,7 @@ export function AttendanceTable({
           </thead>
           <tbody className="divide-y divide-gray-50">
             {records.map((record) => {
-              const status = getStatusConfig(record.status)
+              const status = getAttendanceStatusConfig(record.status)
               return (
                 <tr key={record.id} className="group hover:bg-gray-50/50 transition-all duration-300">
                   <td className="px-8 py-6 text-gray-900 font-bold">
@@ -114,7 +81,7 @@ export function AttendanceTable({
                     </td>
                   )}
                   <td className="px-8 py-6 text-gray-600 font-bold">
-                    {(record as any).class?.name || (record as any).subject?.name || 'Academic Session'}
+                    {record.class?.name || record.subject?.name || 'Academic Session'}
                   </td>
                   <td className="px-8 py-6">
                     <Badge

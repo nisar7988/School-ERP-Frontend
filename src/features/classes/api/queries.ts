@@ -2,21 +2,21 @@ import { useQuery  } from '@tanstack/react-query'
 import type {UseQueryOptions} from '@tanstack/react-query';
 import { getClassesService, getClassService, getAcademicYearsService } from './services'
 import type { ClassQuery, SchoolClassWithRelations } from '../types'
-import type { PaginatedMeta } from '@/types/base.types'
+import type { PaginatedData, PaginatedMeta } from '@/types/base.types'
 import { getClassesByTeacherService } from '@/features/teachers/api/services'
 
 export const useClasses = (
   params?: ClassQuery,
   options?: Omit<
-    UseQueryOptions<{ data: SchoolClassWithRelations[]; meta: PaginatedMeta }, Error>,
+    UseQueryOptions<PaginatedData<SchoolClassWithRelations>, Error>,
     'queryKey' | 'queryFn'
   >,
 ) => {
-  return useQuery<{ data: SchoolClassWithRelations[]; meta: PaginatedMeta }, Error>({
+  return useQuery<PaginatedData<SchoolClassWithRelations>, Error>({
     queryKey: ['classes', params],
     queryFn: async () => {
       const response = await getClassesService(params)
-      return response.data.data || response.data
+      return response.data.data
     },
     ...options,
   })
@@ -26,17 +26,11 @@ export const useClassesByTeacher = (
   teacherId: string | undefined,
   params?: ClassQuery,
   options?: Omit<
-    UseQueryOptions<
-      { data: SchoolClassWithRelations[]; meta: PaginatedMeta },
-      Error
-    >,
+    UseQueryOptions<PaginatedData<SchoolClassWithRelations>, Error>,
     'queryKey' | 'queryFn'
   >,
 ) => {
-  return useQuery<
-    { data: SchoolClassWithRelations[]; meta: PaginatedMeta },
-    Error
-  >({
+  return useQuery<PaginatedData<SchoolClassWithRelations>, Error>({
     queryKey: ['classes', 'teacher', teacherId, params],
     queryFn: async () => {
       if (!teacherId)

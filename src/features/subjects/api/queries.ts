@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import type { AxiosError } from 'axios'
 import {
   getSubjectsService,
   createSubjectService,
@@ -28,7 +29,7 @@ export const useCreateSubject = () => {
       queryClient.invalidateQueries({ queryKey: ['classes'] })
       toast.success('Subject created successfully')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ message: string }>) => {
       toast.error(error.response?.data?.message || 'Failed to create subject')
     },
   })
@@ -44,7 +45,7 @@ export const useUpdateSubject = () => {
       queryClient.invalidateQueries({ queryKey: ['subjects', variables.id] })
       toast.success('Subject updated successfully')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ message: string }>) => {
       toast.error(error.response?.data?.message || 'Failed to update subject')
     },
   })
@@ -58,7 +59,7 @@ export const useDeleteSubject = () => {
       queryClient.invalidateQueries({ queryKey: ['subjects'] })
       toast.success('Subject deleted successfully')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ message: string }>) => {
       toast.error(error.response?.data?.message || 'Failed to delete subject')
     },
   })
