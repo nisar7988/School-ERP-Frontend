@@ -5,11 +5,13 @@ import { toast } from '@/lib/stores/toast.store'
 
 export const useLogin = () => {
   const setAuth = useAuthStore((state) => state.setAuth)
+  const queryClient = useQueryClient()
   
   return useMutation({
     mutationFn: loginService,
     onSuccess: (response) => {
       setAuth(response.data.access_token, response.data.user)
+      queryClient.invalidateQueries({ queryKey: ['auth', 'me'] })
       toast.success('Successfully logged in')
     },
     onError: (error: any) => {

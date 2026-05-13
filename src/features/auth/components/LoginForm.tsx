@@ -12,8 +12,8 @@ import {
 import { useLogin } from '../api/mutations'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { LoginSchema, Role  } from '../types'
-import type {LoginDto} from '../types';
+import { LoginSchema, Role } from '../types'
+import type { LoginDto } from '../types'
 import { useNavigate } from '@tanstack/react-router'
 
 export const LoginForm = () => {

@@ -64,6 +64,7 @@ export type Student = {
   userId: string
   createdAt: string | Date
   updatedAt: string | Date
+  enrollments?: (Enrollment & { class: SchoolClass })[]
 }
 
 export type Teacher = {
@@ -96,6 +97,7 @@ export type Enrollment = {
   classId: string
   startDate: string | Date
   endDate: string | Date | null
+  class?: SchoolClass
 }
 
 export type Subject = {

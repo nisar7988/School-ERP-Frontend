@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Link, useNavigate } from '@tanstack/react-router'
+import { useQueryClient } from '@tanstack/react-query'
 import { Role } from '@/features/auth/types'
 import { useAuthStore } from '@/features/auth/store'
 import { useState } from 'react'
@@ -62,6 +63,7 @@ const teacherNavItems = [
 export function Sidebar({ role: overrideRole }: SidebarProps) {
   const { logout, user } = useAuthStore()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   const currentRole = overrideRole || user?.role || Role.STUDENT
 
@@ -81,6 +83,7 @@ export function Sidebar({ role: overrideRole }: SidebarProps) {
 
   const handleConfirmLogout = () => {
     logout()
+    queryClient.clear()
     navigate({ to: '/auth/login' })
   }
 

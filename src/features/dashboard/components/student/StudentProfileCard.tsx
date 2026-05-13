@@ -5,13 +5,13 @@ export function StudentProfileCard() {
   const user = useAuthStore((state) => state.user)
 
   const studentProfile = user?.studentProfile
-  console.log('studentProfile', studentProfile)
   const name = user ? `${user.firstName} ${user.lastName}` : 'Unknown Student'
   const admissionNo = studentProfile?.admissionNo || 'N/A'
-  const classInfo =
-    studentProfile && (studentProfile as any).enrollments?.[0]?.class
-      ? `${(studentProfile as any).enrollments[0].class.name} - ${(studentProfile as any).enrollments[0].class.section}`
-      : 'No Class Assigned'
+  
+  const activeEnrollment = studentProfile?.enrollments?.[0]
+  const classInfo = activeEnrollment?.class
+    ? `${activeEnrollment.class.name} - ${activeEnrollment.class.section}`
+    : 'No Class Assigned'
 
   return (
     <div className="bg-gradient-to-br from-brand-peach/40 to-white border border-brand-taupe/30 rounded-[32px] p-8 relative overflow-hidden group">
@@ -51,7 +51,7 @@ export function StudentProfileCard() {
                 Status
               </p>
               <p className="text-2xl font-extrabold text-gray-900 tracking-tight">
-                Active
+                {user?.isActive ? 'Active' : 'Inactive'}
               </p>
             </div>
             <div className="bg-white/80 backdrop-blur-sm border border-gray-100 p-4 rounded-2xl shadow-sm transition-all duration-300 hover:shadow-md hover:border-brand-taupe">
@@ -59,8 +59,8 @@ export function StudentProfileCard() {
                 Joined
               </p>
               <p className="text-2xl font-extrabold text-gray-900 tracking-tight">
-                {studentProfile
-                  ? new Date(studentProfile.createdAt).getFullYear()
+                {user?.createdAt
+                  ? new Date(user.createdAt).getFullYear()
                   : 'N/A'}
               </p>
             </div>
