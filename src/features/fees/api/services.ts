@@ -3,7 +3,8 @@ import { FEE_ROUTES } from './routes';
 import type { 
   Payment, PaymentDto, PaymentQuery, PaymentSummary,
   FeeStructure, CreateFeeStructureDto, UpdateFeeStructureDto,
-  StudentFee, CreateStudentFeeDto, UpdateStudentFeeDto
+  StudentFee, CreateStudentFeeDto, UpdateStudentFeeDto,
+  FeeStructureQuery, StudentFeeQuery
 } from '../types';
 import type { PaginatedResponse, SingleResponse } from '@/types/base.types';
 
@@ -17,7 +18,7 @@ export const updateFeeStructureService = ({ id, data }: { id: string; data: Upda
 export const deleteFeeStructureService = (id: string) =>
   apiClient.delete(FEE_ROUTES.STRUCTURE_BY_ID(id));
 
-export const getFeeStructuresService = (params?: any) =>
+export const getFeeStructuresService = (params?: FeeStructureQuery) =>
   apiClient.get<PaginatedResponse<FeeStructure>>(FEE_ROUTES.STRUCTURES, { params });
 
 export const getFeeStructureByClassService = (classId: string) =>
@@ -33,7 +34,7 @@ export const updateStudentFeeService = ({ id, data }: { id: string; data: Update
 export const deleteStudentFeeService = (id: string) =>
   apiClient.delete(FEE_ROUTES.STUDENT_FEE_BY_ID(id));
 
-export const getStudentFeesService = (params?: any) =>
+export const getStudentFeesService = (params?: StudentFeeQuery) =>
   apiClient.get<PaginatedResponse<StudentFee>>(FEE_ROUTES.STUDENT_FEES, { params });
 
 
