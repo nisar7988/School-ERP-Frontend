@@ -10,12 +10,8 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import {
-  ClassRole
-  
-  
-} from '../types'
-import type { SchoolClassWithRelations} from '../types';
+import { ClassRole } from '../types'
+import type { SchoolClassWithRelations } from '../types'
 import { Link } from '@tanstack/react-router'
 import { useDeleteClass } from '../api/mutations'
 import { Dialog } from '@/components/ui/Dialog'
@@ -106,7 +102,7 @@ export function ClassTable({ classes }: ClassTableProps) {
                     <Link
                       to="/classes/$id"
                       params={{ id: cls.id }}
-                      onClick={() => console.log(cls.id)}
+                      onClick={() => {}}
                     >
                       <Button
                         variant="ghost"

@@ -1,6 +1,7 @@
 import { Search, Bell, HelpCircle, Settings } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { useAuthStore } from '#/features/auth/store'
 
 interface TopbarProps {
   title?: string
@@ -12,16 +13,8 @@ interface TopbarProps {
   }
 }
 
-export function Topbar({
-  title,
-  showSearch = true,
-  user = {
-    name: 'Alex Mercer',
-    role: 'Sophomore',
-    avatar:
-      'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100',
-  },
-}: TopbarProps) {
+export function Topbar({ title, showSearch = true }: TopbarProps) {
+  const user = useAuthStore((state) => state.user)
   return (
     <header className="h-16 px-8 flex items-center justify-between sticky top-0 bg-white/90 backdrop-blur-md z-30 border-b border-gray-100">
       <div className="flex-1 flex items-center">
@@ -40,35 +33,41 @@ export function Topbar({
         ) : null}
       </div>
 
-      {/* <div className="flex items-center gap-1">
-        <Button variant="ghost" size="icon" className="relative text-gray-500 w-9 h-9">
+      <div className="flex items-center gap-1">
+        {/* <Button
+          variant="ghost"
+          size="icon"
+          className="relative text-gray-500 w-9 h-9"
+        >
           <Bell className="w-4.5 h-4.5" />
           <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-        </Button>
-        <Button variant="ghost" size="icon" className="text-gray-500 lg:inline-flex hidden w-9 h-9">
-          <HelpCircle className="w-4.5 h-4.5" />
-        </Button>
-        
+        </Button> */}
+
         <div className="ml-2 flex items-center gap-2.5 pl-3 border-l border-gray-100">
           <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden ring-2 ring-brand-orange/10 ring-offset-1">
-            {user.avatar ? (
-              <img 
-                src={user.avatar} 
-                alt="User" 
+            {user?.profileImage ? (
+              <img
+                src={user.profileImage}
+                alt="User"
                 className="w-full h-full object-cover"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-brand-orange text-white font-bold text-sm">
-                {user.name.charAt(0)}
+                {user?.firstName.charAt(0).toUpperCase() +
+                  user?.lastName.charAt(0).toUpperCase()}
               </div>
             )}
           </div>
-          <Button variant="ghost" size="sm" className="text-gray-700 font-semibold text-sm gap-1.5 h-8 px-2 hover:bg-gray-50">
+          {/* <Button
+            variant="ghost"
+            size="sm"
+            className="text-gray-700 font-semibold text-sm gap-1.5 h-8 px-2 hover:bg-gray-50"
+          >
             <Settings className="w-3.5 h-3.5 text-gray-400" />
             Settings
-          </Button>
+          </Button> */}
         </div>
-      </div> */}
+      </div>
     </header>
   )
 }

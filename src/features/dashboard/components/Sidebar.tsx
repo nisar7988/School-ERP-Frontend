@@ -146,10 +146,6 @@ export function Sidebar({ role: overrideRole }: SidebarProps) {
 
         <div className="mt-auto space-y-6">
           <div className="space-y-1">
-            <Button variant="ghost" className="w-full justify-start gap-3 h-10">
-              <LifeBuoy className="w-5 h-5" />
-              Support
-            </Button>
             <Button
               variant="ghost"
               className="w-full justify-start gap-3 h-10 text-red-500 hover:text-red-600 hover:bg-red-50"
