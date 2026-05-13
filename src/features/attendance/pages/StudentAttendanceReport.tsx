@@ -31,8 +31,6 @@ export function StudentAttendanceReport({
     month: monthFilter || undefined,
   })
 
-  console.log('student attenndence', response)
-
   const records = response?.data || []
   const meta = response?.meta
   const stats = response?.stats
