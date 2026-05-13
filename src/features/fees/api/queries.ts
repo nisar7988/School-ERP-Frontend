@@ -17,18 +17,18 @@ import {
   getPendingFeesByClassService,
   getFeeStructureByClassService,
 } from './services'
-import type { PaymentQuery, StudentFee, FeeStructure } from '../types'
-import type { PaginatedMeta } from '@/types/base.types'
+import type { PaymentQuery, StudentFee, FeeStructure, Payment } from '../types'
+import type { PaginatedData, PaginatedMeta } from '@/types/base.types'
 import { toast } from '@/lib/stores/toast.store'
 
 // --- STRUCTURES ---
 
 export const useFeeStructures = (params?: any) => {
-  return useQuery<{ data: FeeStructure[]; meta: PaginatedMeta }, Error>({
+  return useQuery<PaginatedData<FeeStructure>, Error>({
     queryKey: ['fees', 'structures', params],
     queryFn: async () => {
       const response = await getFeeStructuresService(params)
-      return response.data
+      return response.data.data
     },
   })
 }
@@ -96,11 +96,11 @@ export const useDeleteFeeStructure = () => {
 // --- STUDENT FEES ---
 
 export const useStudentFeesList = (params?: any) => {
-  return useQuery<{ data: StudentFee[]; meta: PaginatedMeta }, Error>({
+  return useQuery<PaginatedData<StudentFee>, Error>({
     queryKey: ['fees', 'student-fees', params],
     queryFn: async () => {
       const response = await getStudentFeesService(params)
-      return response.data
+      return response.data.data
     },
   })
 }
@@ -182,7 +182,7 @@ export const useDeleteStudentFee = () => {
 // --- PAYMENTS ---
 
 export const usePayments = (params?: PaymentQuery) => {
-  return useQuery({
+  return useQuery<PaginatedData<Payment>, Error>({
     queryKey: ['payments', params],
     queryFn: async () => {
       const response = await getPaymentsService(params)
@@ -207,7 +207,7 @@ export const useStudentPayments = (
   studentId: string | undefined,
   params?: PaymentQuery,
 ) => {
-  return useQuery({
+  return useQuery<PaginatedData<Payment>, Error>({
     queryKey: ['payments', 'student', studentId, params],
     queryFn: async () => {
       if (!studentId)

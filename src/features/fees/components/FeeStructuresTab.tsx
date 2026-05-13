@@ -39,8 +39,8 @@ export function FeeStructuresTab() {
     page,
     classId: selectedClassId,
   })
-  const structures = (response as any)?.data?.data
-  const meta = (response as any)?.data?.meta
+  const structures = response?.data || []
+  const meta = response?.meta
 
   const { data: classesResponse } = useClasses({ limit: 100 })
   const classes = classesResponse?.data || []
@@ -146,7 +146,7 @@ export function FeeStructuresTab() {
                 }}
               >
                 <option value="">All Classes</option>
-                {classes.map((c: any) => (
+                {classes.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.name} - {c.section}
                   </option>
@@ -200,7 +200,7 @@ export function FeeStructuresTab() {
                   </td>
                 </tr>
               ) : (
-                structures?.map((s: any) => (
+                structures.map((s) => (
                   <tr
                     key={s.id}
                     className="group hover:bg-gray-50/50 transition-colors"

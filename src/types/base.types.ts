@@ -160,13 +160,15 @@ export interface PaginatedMeta {
   limit?: number
 }
 
+export interface PaginatedData<T> {
+  data: T[]
+  meta: PaginatedMeta
+}
+
 export interface PaginatedResponse<T> {
   success: boolean
   message: string
-  data: {
-    data: T[]
-    meta: PaginatedMeta
-  }
+  data: PaginatedData<T>
 }
 
 export interface SingleResponse<T> {

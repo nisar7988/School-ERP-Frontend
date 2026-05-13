@@ -32,8 +32,8 @@ export function StudentFeesTab() {
 
   const classes = classesResponse?.data || []
 
-  const studentFees = (response as any)?.data || []
-  const meta = (response as any)?.meta
+  const studentFees = response?.data || []
+  const meta = response?.meta
 
   return (
     <div className="space-y-6">
@@ -65,7 +65,7 @@ export function StudentFeesTab() {
           }}
         >
           <option value="">All Classes</option>
-          {classes.map((cls: any) => (
+          {classes.map((cls) => (
             <option key={cls.id} value={cls.id}>
               {cls.name} - {cls.section}
             </option>
@@ -119,7 +119,7 @@ export function StudentFeesTab() {
                   </td>
                 </tr>
               ) : (
-                studentFees?.data.map((fee: any) => (
+                studentFees.map((fee) => (
                   <tr
                     key={fee.id}
                     className="group hover:bg-gray-50/50 transition-colors"

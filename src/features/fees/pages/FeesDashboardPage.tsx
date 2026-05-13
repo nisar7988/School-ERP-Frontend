@@ -10,11 +10,7 @@ export function FeesDashboardPage() {
   const [activeTab, setActiveTab] = useState('structures')
 
   const { data: response } = useStudentFeesList({ limit: 1000 })
-  const studentFees = Array.isArray((response as any)?.data) 
-    ? (response as any).data 
-    : Array.isArray(response) 
-      ? response 
-      : []
+  const studentFees = response?.data || []
 
   const totalCollected = studentFees
     .filter((f: any) => f.status === FeeStatus.PAID)

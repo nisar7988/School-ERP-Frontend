@@ -5,19 +5,19 @@ import {
   updateSubjectService,
   deleteSubjectService,
 } from './services'
-import type { SubjectQuery, UpdateSubjectDto } from '../types'
+import type { SubjectQuery, UpdateSubjectDto, Subject } from '../types'
+import type { PaginatedData } from '@/types/base.types'
 import { toast } from '@/lib/stores/toast.store'
 
 export const useSubjects = (params?: SubjectQuery) => {
-  return useQuery({
+  return useQuery<PaginatedData<Subject>, Error>({
     queryKey: ['subjects', params],
     queryFn: async () => {
-      const response = await getSubjectsService(params);
-      // Return the object containing { data, meta }
-      return response.data.data || response.data;
+      const response = await getSubjectsService(params)
+      return response.data.data
     },
-  });
-};
+  })
+}
 
 export const useCreateSubject = () => {
   const queryClient = useQueryClient()

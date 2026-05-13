@@ -2,16 +2,16 @@ import { useQuery  } from '@tanstack/react-query'
 import type {UseQueryOptions} from '@tanstack/react-query';
 import { getStudentsService, getStudentService } from './services'
 import type { StudentQuery, StudentWithRelations } from '../types'
-import type { PaginatedMeta } from '@/types/base.types'
+import type { PaginatedData, PaginatedMeta } from '@/types/base.types'
 
 export const useStudents = (
   params?: StudentQuery,
   options?: Omit<
-    UseQueryOptions<{ data: StudentWithRelations[]; meta: PaginatedMeta }, Error>,
+    UseQueryOptions<PaginatedData<StudentWithRelations>, Error>,
     'queryKey' | 'queryFn'
   >,
 ) => {
-  return useQuery<{ data: StudentWithRelations[]; meta: PaginatedMeta }, Error>({
+  return useQuery<PaginatedData<StudentWithRelations>, Error>({
     queryKey: ['students', params],
     queryFn: async () => {
       const response = await getStudentsService(params)
