@@ -12,8 +12,6 @@ import type { Attendance, PaginatedResponse, SingleResponse } from '@/types/base
 export const getAttendanceService = (params?: AttendanceFilters) =>
   http.get<PaginatedResponse<AttendanceWithStudent>>(ATTENDANCE_ROUTES.BASE, { params });
 
-export const getAttendanceByIdService = (id: string) =>
-  http.get<SingleResponse<AttendanceWithStudent>>(ATTENDANCE_ROUTES.BY_ID(id));
 
 export const createAttendanceService = (data: CreateAttendanceDto) =>
   http.post<SingleResponse<Attendance>>(ATTENDANCE_ROUTES.BASE, data);

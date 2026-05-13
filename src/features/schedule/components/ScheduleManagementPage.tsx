@@ -89,31 +89,34 @@ export const ScheduleManagementPage = () => {
     try {
       // Construction of Date objects that preserves the literal time entered by the user.
       // We use the current date but set the hours/minutes directly.
-      const today = new Date();
-      const year = today.getFullYear();
-      const month = today.getMonth();
-      const date = today.getDate();
+      const today = new Date()
+      const year = today.getFullYear()
+      const month = today.getMonth()
+      const date = today.getDate()
 
-      const [sH, sM] = data.startTime.split(':').map(Number);
-      const [eH, eM] = data.endTime.split(':').map(Number);
+      const [sH, sM] = data.startTime.split(':').map(Number)
+      const [eH, eM] = data.endTime.split(':').map(Number)
 
       const payload = {
         ...data,
         startTime: new Date(year, month, date, sH, sM),
         endTime: new Date(year, month, date, eH, eM),
-      };
+      }
 
       if (data.dayOfWeek === 'ALL' && !editingItem) {
-        const days = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
+        const days = ['MON', 'TUE', 'WED', 'THU', 'FRI']
         // Create an entry for each weekday
         await Promise.all(
-          days.map(day => 
-            createMutation.mutateAsync({ ...payload, dayOfWeek: day })
-          )
-        );
+          days.map((day) =>
+            createMutation.mutateAsync({ ...payload, dayOfWeek: day }),
+          ),
+        )
       } else {
         if (editingItem) {
-          await updateMutation.mutateAsync({ id: editingItem.id, data: payload })
+          await updateMutation.mutateAsync({
+            id: editingItem.id,
+            data: payload,
+          })
         } else {
           await createMutation.mutateAsync(payload)
         }
@@ -229,43 +232,6 @@ export const ScheduleManagementPage = () => {
                 onDeleteSchedule={handleDeleteSchedule}
               />
             )}
-          </div>
-        </div>
-
-        {/* Sidebar Widgets */}
-        <div className="w-full lg:w-80 space-y-6">
-          <div className="bg-green-50 rounded-[2rem] p-6 border border-green-100">
-            <div className="flex items-center gap-3 text-green-700 font-bold mb-2">
-              <CheckCircle2 size={20} />
-              <h4>Conflict Check</h4>
-            </div>
-            <p className="text-sm text-green-600 font-medium">
-              All schedules are validated. No overlaps detected.
-            </p>
-          </div>
-
-          <div className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm">
-            <h4 className="font-black text-gray-900 mb-4">Teacher Workload</h4>
-            <div className="space-y-4">
-              <div>
-                <div className="flex justify-between text-xs font-bold text-gray-700 mb-1">
-                  <span>Dr. E. Sterling</span>
-                  <span>14/20 hrs</span>
-                </div>
-                <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-brand-orange w-[70%]"></div>
-                </div>
-              </div>
-              <div>
-                <div className="flex justify-between text-xs font-bold text-gray-700 mb-1">
-                  <span>Prof. M. Chen</span>
-                  <span>18/20 hrs</span>
-                </div>
-                <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-orange-800 w-[90%]"></div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>

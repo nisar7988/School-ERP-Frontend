@@ -36,14 +36,10 @@ export const deleteStudentFeeService = (id: string) =>
 export const getStudentFeesService = () =>
   apiClient.get<SingleResponse<StudentFee[]>>(FEE_ROUTES.STUDENT_FEES);
 
-export const getStudentFeeByIdService = (id: string) =>
-  apiClient.get<SingleResponse<StudentFee>>(FEE_ROUTES.STUDENT_FEE_BY_ID(id));
 
 export const getStudentFeesByStudentService = (studentId: string) =>
   apiClient.get<SingleResponse<StudentFee[]>>(FEE_ROUTES.STUDENT_FEES_BY_STUDENT(studentId));
 
-export const getFeesByStudentService = (studentId: string) =>
-  apiClient.get<SingleResponse<StudentFee[]>>(FEE_ROUTES.FEES_BY_STUDENT(studentId));
 
 export const getPendingFeesByClassService = (classId: string) =>
   apiClient.get<SingleResponse<StudentFee[]>>(FEE_ROUTES.PENDING_FEES_BY_CLASS(classId));
@@ -52,11 +48,7 @@ export const getPendingFeesByClassService = (classId: string) =>
 export const createPaymentService = (data: PaymentDto) =>
   apiClient.post<SingleResponse<Payment>>(FEE_ROUTES.PAYMENTS, data);
 
-export const getPaymentService = (id: string) =>
-  apiClient.get<SingleResponse<Payment>>(FEE_ROUTES.PAYMENT_BY_ID(id));
 
-export const getPaymentsByStudentFeeService = (studentFeeId: string, params?: PaymentQuery) =>
-  apiClient.get<PaginatedResponse<Payment>>(FEE_ROUTES.PAYMENTS_BY_STUDENT_FEE(studentFeeId), { params });
 
 export const getPaymentsByStudentService = (studentId: string, params?: PaymentQuery) =>
   apiClient.get<PaginatedResponse<Payment>>(FEE_ROUTES.PAYMENTS_BY_STUDENT(studentId), { params });

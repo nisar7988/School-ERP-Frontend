@@ -1,8 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   getSubjectsService,
-  getSubjectService,
-  getSubjectsByClassService,
   createSubjectService,
   updateSubjectService,
   deleteSubjectService,
@@ -18,30 +16,6 @@ export const useSubjects = (params?: SubjectQuery) => {
       // Return the object containing { data, meta }
       return response.data.data || response.data;
     },
-  });
-};
-
-export const useSubject = (id: string | undefined) => {
-  return useQuery({
-    queryKey: ['subjects', id],
-    queryFn: async () => {
-      if (!id) return null
-      const response = await getSubjectService(id)
-      return response.data.data
-    },
-    enabled: !!id,
-  })
-}
-
-export const useSubjectsByClass = (classId: string | undefined) => {
-  return useQuery({
-    queryKey: ['subjects', 'class', classId],
-    queryFn: async () => {
-      if (!classId) return { data: [], meta: { total: 0, page: 1, lastPage: 1 } };
-      const response = await getSubjectsByClassService(classId);
-      return response.data.data || response.data;
-    },
-    enabled: !!classId,
   });
 };
 

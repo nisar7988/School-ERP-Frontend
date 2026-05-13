@@ -1,6 +1,6 @@
-import { useQuery  } from '@tanstack/react-query'
-import type {UseQueryOptions} from '@tanstack/react-query';
-import { getTeachersService, getTeacherService, getClassesByTeacherService, getScheduleService } from './services'
+import { useQuery } from '@tanstack/react-query'
+import type { UseQueryOptions } from '@tanstack/react-query'
+import { getTeachersService, getTeacherService } from './services'
 import type { TeacherQuery, TeacherWithRelations } from '../types'
 import type { PaginatedMeta } from '@/types/base.types'
 
@@ -33,22 +33,3 @@ export const useTeacher = (id: string | undefined) => {
   })
 }
 
-export const useClassesByTeacher = () => {
-  return useQuery({
-    queryKey: ['teachers', 'classes'],
-    queryFn: async () => {
-      const response = await getClassesByTeacherService()
-      return response.data.data
-    },
-  })
-}
-
-export const useSchedule = () => {
-  return useQuery({
-    queryKey: ['teachers', 'schedule'],
-    queryFn: async () => {
-      const response = await getScheduleService()
-      return response.data.data
-    },
-  })
-}

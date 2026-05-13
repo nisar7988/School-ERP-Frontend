@@ -1,6 +1,6 @@
 import { useQuery  } from '@tanstack/react-query'
 import type {UseQueryOptions} from '@tanstack/react-query';
-import { getAttendanceService, getAttendanceByIdService, getStudentAttendanceService } from './services'
+import { getAttendanceService, getStudentAttendanceService } from './services'
 import type { AttendanceFilters, AttendanceWithStudent  } from '../types'
 import type { PaginatedMeta, Attendance  } from '@/types/base.types'
 
@@ -17,22 +17,6 @@ export const useAttendance = (
       const response = await getAttendanceService(params)
       return response.data.data
     },
-    ...options,
-  })
-}
-
-export const useAttendanceById = (
-  id: string | undefined,
-  options?: Omit<UseQueryOptions<AttendanceWithStudent | null, Error>, 'queryKey' | 'queryFn'>,
-) => {
-  return useQuery<AttendanceWithStudent | null, Error>({
-    queryKey: ['attendance', id],
-    queryFn: async () => {
-      if (!id) return null
-      const response = await getAttendanceByIdService(id)
-      return response.data.data
-    },
-    enabled: !!id,
     ...options,
   })
 }
