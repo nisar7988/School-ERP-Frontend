@@ -1,6 +1,5 @@
-import { Search, Bell, HelpCircle, Settings } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 import { useAuthStore } from '#/features/auth/store'
 
 interface TopbarProps {
@@ -45,16 +44,17 @@ export function Topbar({ title, showSearch = true }: TopbarProps) {
 
         <div className="ml-2 flex items-center gap-2.5 pl-3 border-l border-gray-100">
           <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden ring-2 ring-brand-orange/10 ring-offset-1">
-            {user?.profileImage ? (
+            {user && user?.profileImage ? (
               <img
-                src={user.profileImage}
+                src={user?.profileImage}
                 alt="User"
                 className="w-full h-full object-cover"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-brand-orange text-white font-bold text-sm">
-                {user?.firstName.charAt(0).toUpperCase() +
-                  user?.lastName.charAt(0).toUpperCase()}
+                {user &&
+                  user?.firstName?.charAt(0).toUpperCase() +
+                    user?.lastName?.charAt(0).toUpperCase()}
               </div>
             )}
           </div>
