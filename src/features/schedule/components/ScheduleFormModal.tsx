@@ -17,7 +17,16 @@ const scheduleSchema = z
     teacherId: z.string().min(1, 'Teacher is required'),
     classId: z.string().min(1, 'Class is required'),
     room: z.string().min(1, 'Room is required'),
-    dayOfWeek: z.enum(['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN', 'ALL']),
+    dayOfWeek: z.enum([
+      'MONDAY',
+      'TUESDAY',
+      'WEDNESDAY',
+      'THURSDAY',
+      'FRIDAY',
+      'SATURDAY',
+      'SUNDAY',
+      'ALL',
+    ]),
     startTime: z
       .string()
       .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, 'Invalid time format (HH:MM)'),
@@ -68,7 +77,7 @@ export const ScheduleFormModal = ({
       teacherId: '',
       classId: '',
       room: '',
-      dayOfWeek: 'MON',
+      dayOfWeek: 'MONDAY',
       startTime: '08:00',
       endTime: '09:00',
     },
@@ -119,7 +128,7 @@ export const ScheduleFormModal = ({
           teacherId: '',
           classId: '',
           room: '',
-          dayOfWeek: 'MON',
+          dayOfWeek: 'MONDAY',
           startTime: '08:00',
           endTime: '09:00',
         })
@@ -206,11 +215,11 @@ export const ScheduleFormModal = ({
               {...register('dayOfWeek')}
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
-              <option value="MON">Monday</option>
-              <option value="TUE">Tuesday</option>
-              <option value="WED">Wednesday</option>
-              <option value="THU">Thursday</option>
-              <option value="FRI">Friday</option>
+              <option value="MONDAY">Monday</option>
+              <option value="TUESDAY">Tuesday</option>
+              <option value="WEDNESDAY">Wednesday</option>
+              <option value="THURSDAY">Thursday</option>
+              <option value="FRIDAY">Friday</option>
               {!initialData && (
                 <option value="ALL">All Weekdays (Mon-Fri)</option>
               )}

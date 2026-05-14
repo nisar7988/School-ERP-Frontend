@@ -1,3 +1,5 @@
+import { DayOfWeek } from '@/types/base.types';
+
 export interface ScheduleItem {
   id: string;
   subjectId: string;
@@ -24,7 +26,7 @@ export interface ScheduleItem {
   };
   className?: string;
   room: string;
-  dayOfWeek: 'MON' | 'TUE' | 'WED' | 'THU' | 'FRI' | 'SAT' | 'SUN';
+  dayOfWeek: DayOfWeek;
   startTime: string; 
   endTime: string;   
 }
@@ -34,7 +36,7 @@ export interface CreateScheduleDto {
   teacherId: string;
   classId: string;
   room: string;
-  dayOfWeek: 'MON' | 'TUE' | 'WED' | 'THU' | 'FRI' | 'SAT' | 'SUN';
+  dayOfWeek: DayOfWeek;
   startTime: string;
   endTime: string;
 }

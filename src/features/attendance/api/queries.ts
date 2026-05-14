@@ -1,8 +1,12 @@
-import { useQuery  } from '@tanstack/react-query'
-import type {UseQueryOptions} from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query'
+import type { UseQueryOptions } from '@tanstack/react-query'
 import { getAttendanceService, getStudentAttendanceService } from './services'
-import type { AttendanceFilters, AttendanceWithStudent, PaginatedAttendanceData } from '../types'
-import type { PaginatedMeta, Attendance, PaginatedData } from '@/types/base.types'
+import type {
+  AttendanceFilters,
+  AttendanceWithStudent,
+  PaginatedAttendanceData,
+} from '../types'
+import type { PaginatedData } from '@/types/base.types'
 
 export const useAttendance = (
   params?: AttendanceFilters,
@@ -22,7 +26,7 @@ export const useAttendance = (
 }
 
 export const useStudentAttendance = (
-  studentId: string | undefined,
+  userId: string | undefined,
   params?: AttendanceFilters,
   options?: Omit<
     UseQueryOptions<PaginatedAttendanceData | null, Error>,
@@ -30,13 +34,13 @@ export const useStudentAttendance = (
   >,
 ) => {
   return useQuery<PaginatedAttendanceData | null, Error>({
-    queryKey: ['attendance', 'student', studentId, params],
+    queryKey: ['attendance', 'student', userId, params],
     queryFn: async () => {
-      if (!studentId) return null
-      const response = await getStudentAttendanceService(studentId, params)
+      if (!userId) return null
+      const response = await getStudentAttendanceService(userId, params)
       return response.data.data
     },
-    enabled: !!studentId,
+    enabled: !!userId,
     ...options,
   })
 }

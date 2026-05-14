@@ -4,9 +4,9 @@ import { useAuthStore } from '@/features/auth/store'
 export function OverallAttendance() {
   const user = useAuthStore((state) => state.user)
   // Use studentProfile.id if available, fallback to user.id
-  const studentId = user?.id
+  const userId = user?.id
 
-  const { data: response } = useStudentAttendance(studentId || '')
+  const { data: response } = useStudentAttendance(userId || '')
 
   const stats = response?.stats
   const percentage = stats?.percentage || 0

@@ -11,7 +11,7 @@ interface WeeklyTimetableProps {
   onDeleteSchedule?: (id: string) => void
 }
 
-const DAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN']
+const DAYS = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']
 const START_HOUR = 7
 const END_HOUR = 16
 const HOURS = Array.from(
@@ -62,9 +62,15 @@ export const WeeklyTimetable = ({
     return { top: `${top}px`, height: `${height}px` }
   }
 
-  const currentDayName = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][
-    currentTime.getDay()
-  ]
+  const currentDayName = [
+    'SUNDAY',
+    'MONDAY',
+    'TUESDAY',
+    'WEDNESDAY',
+    'THURSDAY',
+    'FRIDAY',
+    'SATURDAY',
+  ][currentTime.getDay()]
   const currentTotalMins =
     currentTime.getHours() * 60 + currentTime.getMinutes()
 
@@ -91,7 +97,7 @@ export const WeeklyTimetable = ({
               key={day}
               className={`flex-1 text-center font-black text-xs tracking-[0.2em] uppercase transition-colors ${day === currentDayName ? 'text-brand-orange' : 'text-gray-400'}`}
             >
-              {day}
+              {day.slice(0, 3)}
               {day === currentDayName && (
                 <div className="w-1.5 h-1.5 bg-brand-orange rounded-full mx-auto mt-2 animate-pulse" />
               )}

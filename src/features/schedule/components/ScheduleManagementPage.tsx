@@ -104,7 +104,7 @@ export const ScheduleManagementPage = () => {
       }
 
       if (data.dayOfWeek === 'ALL' && !editingItem) {
-        const days = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+        const days = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY']
         // Create an entry for each weekday
         await Promise.all(
           days.map((day) =>
@@ -199,7 +199,7 @@ export const ScheduleManagementPage = () => {
             )}
 
             <Button
-              onClick={() => handleAddSchedule('MON', '08:00')}
+              onClick={() => handleAddSchedule('MONDAY', '08:00')}
               className="ml-auto bg-gray-900 text-white rounded-xl shadow-md hover:bg-gray-800"
             >
               <CalendarIcon size={16} className="mr-2" /> Add Schedule

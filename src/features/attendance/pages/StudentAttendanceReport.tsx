@@ -9,12 +9,12 @@ import { Pagination } from '@/components/ui/Pagination'
 import { AttendanceStatus } from '../types'
 
 interface StudentAttendanceReportProps {
-  studentId: string
+  userId: string
   studentName?: string
 }
 
 export function StudentAttendanceReport({
-  studentId,
+  userId,
   studentName: _studentName,
 }: StudentAttendanceReportProps) {
   const [page, setPage] = useState(1)
@@ -24,7 +24,7 @@ export function StudentAttendanceReport({
   const [dateFilter, _setDateFilter] = useState<string>('')
   const [monthFilter, setMonthFilter] = useState<string>('')
 
-  const { data: response, isLoading } = useStudentAttendance(studentId, {
+  const { data: response, isLoading } = useStudentAttendance(userId, {
     page,
     status: statusFilter,
     date: dateFilter || undefined,

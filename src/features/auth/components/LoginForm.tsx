@@ -170,22 +170,6 @@ export const LoginForm = () => {
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-100"></div>
           </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-white px-4 text-gray-400 font-bold tracking-widest">
-              Or continue with
-            </span>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <button className="flex items-center justify-center space-x-2 px-4 py-3.5 bg-brand-taupe hover:bg-brand-taupe-hover text-gray-800 font-bold rounded-2xl transition-all active:scale-95 cursor-pointer">
-            <Building2 className="w-5 h-5 text-brand-orange" />
-            <span>Institution</span>
-          </button>
-          <button className="flex items-center justify-center space-x-2 px-4 py-3.5 bg-brand-taupe hover:bg-brand-taupe-hover text-gray-800 font-bold rounded-2xl transition-all active:scale-95 cursor-pointer">
-            <KeyRound className="w-5 h-5 text-brand-orange" />
-            <span>SSO Portal</span>
-          </button>
         </div>
       </div>
 

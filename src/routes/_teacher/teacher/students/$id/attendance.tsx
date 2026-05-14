@@ -17,7 +17,7 @@ function TeacherStudentAttendanceComponent() {
   return (
     <DashboardLayout topbarTitle="Student Attendance">
       <StudentAttendanceReport
-        studentId={id}
+        userId={student?.userId || id}
         studentName={
           student
             ? `${student.user.firstName} ${student.user.lastName}`

@@ -24,7 +24,7 @@ function StudentAttendanceComponent() {
   return (
     <DashboardLayout topbarTitle="Attendance Report">
       <StudentAttendanceReport
-        studentId={studentId}
+        userId={studentId}
         studentName={`${user.firstName} ${user.lastName}`}
       />
     </DashboardLayout>

@@ -30,6 +30,16 @@ export enum ClassRole {
   SUBJECT_TEACHER = 'SUBJECT_TEACHER',
 }
 
+export enum DayOfWeek {
+  MONDAY = 'MONDAY',
+  TUESDAY = 'TUESDAY',
+  WEDNESDAY = 'WEDNESDAY',
+  THURSDAY = 'THURSDAY',
+  FRIDAY = 'FRIDAY',
+  SATURDAY = 'SATURDAY',
+  SUNDAY = 'SUNDAY',
+}
+
 // --- BASE MODELS ---
 export type User = {
   id: string

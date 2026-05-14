@@ -22,8 +22,8 @@ export const updateAttendanceService = (id: string, data: UpdateAttendanceDto) =
 export const deleteAttendanceService = (id: string) =>
   http.delete<SingleResponse<void>>(ATTENDANCE_ROUTES.BY_ID(id));
 
-export const getStudentAttendanceService = (studentId: string, params?: AttendanceFilters) =>
+export const getStudentAttendanceService = (userId: string, params?: AttendanceFilters) =>
   http.get<StudentAttendanceResponse>(
-    ATTENDANCE_ROUTES.BY_STUDENT(studentId),
+    ATTENDANCE_ROUTES.BY_STUDENT(userId),
     { params },
   );
