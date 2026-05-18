@@ -4,7 +4,9 @@ import { toast } from '@/lib/stores/toast.store'
 
 // Base API configuration
 export const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://192.168.1.208:3000/api',
+  baseURL:
+    import.meta.env.VITE_API_URL ||
+    'https://school-erp-backend-2av9.onrender.com/api',
   headers: {
     'Content-Type': 'application/json',
   },
