@@ -17,8 +17,16 @@ import {
   deleteStudentFeeService,
   getPendingFeesByClassService,
   getFeeStructureByClassService,
+  generateFeeReportService,
 } from './services'
-import type { PaymentQuery, StudentFee, FeeStructure, Payment, FeeStructureQuery, StudentFeeQuery } from '../types'
+import type {
+  PaymentQuery,
+  StudentFee,
+  FeeStructure,
+  Payment,
+  FeeStructureQuery,
+  StudentFeeQuery,
+} from '../types'
 import type { PaginatedData, PaginatedMeta } from '@/types/base.types'
 import { toast } from '@/lib/stores/toast.store'
 
@@ -246,6 +254,29 @@ export const useDeletePayment = () => {
     },
     onError: (error: AxiosError<{ message: string }>) => {
       toast.error(error.response?.data?.message || 'Failed to delete payment')
+    },
+  })
+}
+
+export const useFeeReport = () => {
+  return useMutation({
+    mutationFn: generateFeeReportService,
+    onSuccess: (response, studentId) => {
+      const blob = new Blob([response.data], { type: 'application/pdf' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `fee_report_${studentId}.pdf`
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      URL.revokeObjectURL(url)
+      toast.success('Fee report downloaded successfully')
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
+      toast.error(
+        error.response?.data?.message || 'Failed to generate fee report',
+      )
     },
   })
 }

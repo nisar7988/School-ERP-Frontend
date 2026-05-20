@@ -7,12 +7,16 @@ export const FEE_ROUTES = {
   // Student Fees
   STUDENT_FEES: '/fees/student-fees',
   STUDENT_FEE_BY_ID: (id: string) => `/fees/student-fees/${id}`,
-  STUDENT_FEES_BY_STUDENT: (studentId: string) => `/fees/student-fees/student/${studentId}`,
+  STUDENT_FEES_BY_STUDENT: (studentId: string) =>
+    `/fees/student-fees/student/${studentId}`,
   PENDING_FEES_BY_CLASS: (classId: string) => `/fees/pending/class/${classId}`,
 
   // Payments
   PAYMENTS: '/payments',
   PAYMENT_BY_ID: (id: string) => `/payments/${id}`,
   PAYMENTS_BY_STUDENT: (studentId: string) => `/payments/student/${studentId}`,
-  STUDENT_PAYMENT_SUMMARY: (studentId: string) => `/payments/student/${studentId}/summary`,
-};
+  STUDENT_PAYMENT_SUMMARY: (studentId: string) =>
+    `/payments/student/${studentId}/summary`,
+
+  FEE_REPORT: (studentId: string) => `/fees/student/${studentId}/report`,
+}

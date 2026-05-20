@@ -98,7 +98,7 @@ export interface StudentFeeQuery extends BaseQuery {
 
 export interface PaymentSummary {
   totalFees: number
-  paidAmount: number
+  totalPaid: number
   remainingAmount: number
   status: string
 }

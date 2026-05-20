@@ -9,6 +9,7 @@ import {
   CheckCircle2,
   X,
   Clock,
+  Loader2,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -20,6 +21,7 @@ import {
   useStudentPaymentSummary,
   useStudentPayments,
   useCreatePayment,
+  useFeeReport,
 } from '@/features/fees/api/queries'
 import { Input } from '@/components/ui/input'
 import { Dialog } from '@/components/ui/Dialog'
@@ -53,7 +55,7 @@ export function FeeDetailsPage() {
   })
 
   const isLoading = isLoadingFees || isLoadingSummary || isLoadingPayments
-
+  const generateFeeReportMutation = useFeeReport()
   if (isLoading) {
     return <FeeDetailsLoading />
   }
@@ -74,6 +76,10 @@ export function FeeDetailsPage() {
         },
       },
     )
+  }
+
+  const handleGenerateFeeReport = () => {
+    generateFeeReportMutation.mutate(studentId)
   }
 
   const nextDueFee = fees.find(
@@ -163,7 +169,7 @@ export function FeeDetailsPage() {
               Total Paid (YTD)
             </div>
             <div className="text-3xl font-bold text-white tracking-tight mb-4">
-              ${summary?.paidAmount || 0}
+              ${summary?.totalPaid || 0}
             </div>
             <div className="flex items-center justify-between">
               <span className="text-white/70 text-xs font-bold uppercase tracking-widest">
@@ -327,21 +333,30 @@ export function FeeDetailsPage() {
           )}
 
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-gray-50/50 rounded-2xl group cursor-pointer hover:bg-brand-orange/5 transition-all">
+            <div
+              onClick={() =>
+                !generateFeeReportMutation.isPending &&
+                handleGenerateFeeReport()
+              }
+              className={cn(
+                'flex items-center justify-between p-4 bg-gray-50/50 rounded-2xl group cursor-pointer hover:bg-brand-orange/5 transition-all',
+                generateFeeReportMutation.isPending &&
+                  'opacity-60 pointer-events-none',
+              )}
+            >
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 bg-white rounded-xl border border-gray-100 flex items-center justify-center group-hover:border-brand-orange/20">
-                  <FileText className="w-5 h-5 text-gray-400 group-hover:text-brand-orange" />
-                </div>
-                <div>
-                  <div className="font-bold text-sm text-gray-900 group-hover:text-brand-orange transition-colors">
-                    Annual Fee Receipt
-                  </div>
-                  <div className="text-[10px] text-gray-300 font-black uppercase tracking-widest mt-0.5">
-                    PDF • 1.2MB
-                  </div>
+                <div className="w-10 h-10 bg-white rounded-xl border border-gray-100 flex items-center justify-center group-hover:border-brand-orange/20"></div>
+                <div className="font-bold text-sm text-gray-900 group-hover:text-brand-orange transition-colors">
+                  {generateFeeReportMutation.isPending
+                    ? 'Generating Report...'
+                    : 'Annual Fee Receipt'}
                 </div>
               </div>
-              <Download className="w-5 h-5 text-gray-300 group-hover:text-brand-orange transition-colors" />
+              {generateFeeReportMutation.isPending ? (
+                <Loader2 className="w-5 h-5 text-brand-orange animate-spin" />
+              ) : (
+                <Download className="w-5 h-5 text-gray-300 group-hover:text-brand-orange transition-colors" />
+              )}
             </div>
           </div>
         </div>
