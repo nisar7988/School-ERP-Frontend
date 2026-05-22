@@ -145,12 +145,7 @@ export function StudentsPage() {
             <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
           </div>
 
-          <Button
-            variant="outline"
-            className="h-14 rounded-3xl gap-2 font-bold text-gray-600 bg-white shadow-sm px-8"
-          >
-            <Filter className="w-5 h-5 text-gray-400" /> Filters
-          </Button>
+         
         </div>
       </div>
 

@@ -1,7 +1,6 @@
 import { Users, GraduationCap, School } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { StatsCard } from '../components/StatsCard'
-import { AttendanceTrends } from '../components/AttendanceTrends'
 import { RevenueCard } from '../components/RevenueCard'
 import { ApprovalsList } from '../components/ApprovalsList'
 import { RecentActivity } from '../components/RecentActivity'
@@ -9,9 +8,9 @@ import { useStudents } from '@/features/students/api/queries'
 import { useTeachers } from '@/features/teachers/api/queries'
 import { useClasses } from '@/features/classes/api/queries'
 import { usePayments, useStudentFeesList } from '@/features/fees/api/queries'
-import { useAttendance } from '@/features/attendance/api/queries'
 import type { StudentFee, Payment } from '@/features/fees/types'
 import { formatDistanceToNow } from 'date-fns'
+import FeeChart from '../components/FeeChart'
 
 export function DashboardPage() {
   const { data: studentsData, isLoading: isLoadingStudents } = useStudents({
@@ -27,8 +26,7 @@ export function DashboardPage() {
     limit: 5,
   })
   const { data: allFees, isLoading: isLoadingFees } = useStudentFeesList()
-  const { isLoading: isLoadingAttendance } = useAttendance({ limit: 100 })
-
+const {data:feesData} = useStudentFeesList()
   const totalStudents = studentsData?.meta.total ?? 0
   const totalTeachers = teachersData?.meta.total ?? 0
   const totalClasses = classesData?.meta.total ?? 0
@@ -63,13 +61,6 @@ export function DashboardPage() {
       }
     }) || []
 
-  // Attendance Trends Calculation (Simplified for demo)
-  const days = ['M', 'T', 'W', 'T', 'F', 'S']
-  const trendData = days.map((day, idx) => {
-    // This is a placeholder logic. In a real app, you'd filter attendance by day.
-    const baseHeight = 40 + ((idx * 10) % 50)
-    return { day, height: `${baseHeight}%` }
-  })
 
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -111,12 +102,9 @@ export function DashboardPage() {
             />
           </div>
 
-          <div className="h-[400px]">
-            <AttendanceTrends
-              data={trendData}
-              isLoading={isLoadingAttendance}
-            />
-          </div>
+    {/* show fee collection chart here  */}
+    <FeeChart feesData={feesData} />
+
         </div>
 
         {/* Right Column - Revenue & Approvals */}

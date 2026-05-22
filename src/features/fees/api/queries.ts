@@ -18,6 +18,7 @@ import {
   getPendingFeesByClassService,
   getFeeStructureByClassService,
   generateFeeReportService,
+  getAllFees,
 } from './services'
 import type {
   PaymentQuery,
@@ -277,6 +278,17 @@ export const useFeeReport = () => {
       toast.error(
         error.response?.data?.message || 'Failed to generate fee report',
       )
+    },
+  })
+}
+
+
+export const useFeeCollectionSummary = () => {
+  return useQuery({
+    queryKey: ['all-fees'],
+    queryFn: async () => {
+      const response = await getAllFees()
+      return response.data.data
     },
   })
 }

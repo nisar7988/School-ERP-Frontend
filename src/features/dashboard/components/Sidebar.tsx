@@ -102,7 +102,7 @@ export function Sidebar({ role: overrideRole }: SidebarProps) {
 
   return (
     <>
-      <aside className="w-72 h-screen flex flex-col bg-brand-peach/30 border-r border-gray-100 p-8 fixed left-0 top-0 z-40">
+      <aside className="w-72 h-screen flex flex-col bg-brand-orange/10 border-r border-gray-100 p-8 fixed left-0 top-0 z-40">
         <div className="flex items-center gap-3 mb-12">
           <div className="w-10 h-10 bg-brand-orange rounded-xl flex items-center justify-center text-white font-bold text-xl">
             A

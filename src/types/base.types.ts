@@ -75,6 +75,7 @@ export type Student = {
   createdAt: string | Date
   updatedAt: string | Date
   enrollments?: (Enrollment & { class: SchoolClass })[]
+  user? : User
 }
 
 export type Teacher = {

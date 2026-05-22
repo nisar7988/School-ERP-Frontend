@@ -46,19 +46,13 @@ export function Dialog({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 w-full max-w-md overflow-hidden animate-in zoom-in-95 rise-in duration-300">
         <div className="p-8">
-          <div className="flex items-center justify-between mb-6">
-            <div
-              className={`w-12 h-12 rounded-2xl flex items-center justify-center ${variant === 'danger' ? 'bg-red-50 text-red-600' : 'bg-brand-peach text-brand-orange'}`}
-            >
-              <AlertTriangle className="w-6 h-6" />
-            </div>
+           
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 p-2 rounded-xl hover:bg-gray-50 transition-colors"
+              className="float-right text-gray-400 hover:text-orange-600 p-2 rounded-xl hover:bg-gray-50 transition-colors"
             >
-              <X className="w-6 h-6" />
+              <X className="w-8 h-8" />
             </button>
-          </div>
 
           <h2 className="text-2xl font-extrabold text-gray-900 mb-2 display-title">
             {title}
@@ -74,13 +68,6 @@ export function Dialog({
 
         {onConfirm && (
           <div className="bg-gray-50/50 p-6 flex flex-col sm:flex-row gap-3">
-            <Button
-              variant="ghost"
-              onClick={onClose}
-              className="flex-1 h-12 rounded-2xl font-bold"
-            >
-              {cancelText}
-            </Button>
             <Button
               variant={variant === 'danger' ? 'default' : 'brand'}
               onClick={() => {

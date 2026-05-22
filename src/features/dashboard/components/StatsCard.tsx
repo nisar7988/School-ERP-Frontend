@@ -16,7 +16,7 @@ export function StatsCard({
   isPositive = true,
 }: StatsCardProps) {
   return (
-    <Card className="flex-1 p-2 w-1/2">
+    <Card className="flex-1 p-2 w-1/2 shadow-sm">
       <CardContent className="p-8 flex items-center justify-center">
         <div className="space-y-4 flex flex-col items-center">
           <div className="flex items-center gap-3">

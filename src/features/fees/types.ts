@@ -68,6 +68,7 @@ export interface Payment {
   referenceNo?: string | null
   paidAt: string
   studentFee?: StudentFee
+  student?: Student
 }
 
 export const PaymentSchema = z.object({
@@ -94,6 +95,21 @@ export interface StudentFeeQuery extends BaseQuery {
   studentId?: string
   classId?: string
   status?: FeeStatus
+}
+export interface StudentFees {
+  id: string
+  studentId: string
+  feeStructureId: string
+  amount: number | string
+  dueDate: string
+  paidAmount: number | string
+  pendingAmount: number | string
+  status: FeeStatus
+  createdAt: string
+  updatedAt: string
+  student?: Student
+  feeStructure?: FeeStructure
+  payments?: Payment[]
 }
 
 export interface PaymentSummary {

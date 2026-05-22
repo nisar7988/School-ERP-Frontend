@@ -13,6 +13,7 @@ import type {
   UpdateStudentFeeDto,
   FeeStructureQuery,
   StudentFeeQuery,
+  StudentFees,
 } from '../types'
 import type { PaginatedResponse, SingleResponse } from '@/types/base.types'
 
@@ -78,6 +79,9 @@ export const getPendingFeesByClassService = (classId: string) =>
   apiClient.get<SingleResponse<StudentFee[]>>(
     FEE_ROUTES.PENDING_FEES_BY_CLASS(classId),
   )
+
+export const getAllFees = () =>
+  apiClient.get<SingleResponse<StudentFees[]>>(FEE_ROUTES.STUDENT_FEES)
 
 // Payments
 export const createPaymentService = (data: PaymentDto) =>
