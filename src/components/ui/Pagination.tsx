@@ -27,17 +27,17 @@ export function Pagination({
   return (
     <div
       className={cn(
-        'flex flex-col md:flex-row items-center justify-between gap-4 px-6 py-4 bg-white border-t border-gray-50',
+        'flex  flex-col md:flex-row items-center justify-between  ',
         className,
       )}
     >
-      <div className="text-sm text-gray-600 font-sans">
+      <div className="text-sm  font-sans">
         Showing{' '}
-        <span className="font-semibold text-gray-900">
+        <span className="font-semibold ">
           {startRange}–{endRange}
-        </span>{' '}
+        </span>{' '}  
         of{' '}
-        <span className="font-semibold text-gray-900">
+        <span className="font-semibold ">
           {total.toLocaleString()}
         </span>{' '}
         results
@@ -54,7 +54,7 @@ export function Pagination({
           <ChevronLeft className="w-4 h-4 mr-2" /> Previous
         </Button>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center ">
           {Array.from({ length: lastPage }, (_, i) => i + 1)
             .filter((p) => {
               // Show current, first, last, and pages around current
@@ -69,14 +69,14 @@ export function Pagination({
               return (
                 <div key={p} className="flex items-center gap-1">
                   {showEllipsis && (
-                    <span className="px-2 text-gray-400">...</span>
+                    <span className="px-2 text-gray-400 text-4xl pb-3"> . . .</span>
                   )}
                   <Button
                     variant={currentPage === p ? 'brand' : 'outline'}
                     size="sm"
                     onClick={() => onPageChange(p)}
                     className={cn(
-                      'h-10 w-10 rounded-xl font-bold transition-all',
+                      ' rounded-xl font-bold transition-all',
                       currentPage !== p &&
                         'border-gray-100 hover:bg-brand-peach hover:text-brand-orange',
                     )}

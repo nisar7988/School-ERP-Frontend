@@ -118,9 +118,7 @@ export function StudentAttendanceReport({
             />
 
             <div className="flex items-center justify-between bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm">
-              <div className="text-sm font-black text-gray-400 uppercase tracking-widest">
-                Showing {records.length} of {meta?.total || 0} entries
-              </div>
+            
               {meta && meta.lastPage > 1 && (
                 <Pagination
                   currentPage={meta.page}
