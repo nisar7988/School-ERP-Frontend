@@ -18,7 +18,17 @@ import { StatsCard } from '@/features/dashboard/components/StatsCard'
 import { ClassRole } from '../types'
 
 export function ClassDetailsPage() {
-  const { id } = useParams({ from: '/_admin/classes/$id' })
+const {id} = useParams({
+  strict: false,
+})
+console.log("Class ID from params:", id)
+if(!id) { 
+  return (
+    <div className="p-10 text-center font-bold text-red-500">
+      Invalid class ID.
+    </div>
+  )
+}
   const { data: cls, isLoading, error } = useClass(id)
   const { mutate: deleteClass } = useDeleteClass()
   const navigate = useNavigate()

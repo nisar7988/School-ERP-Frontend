@@ -39,11 +39,13 @@ import { Route as AdminFacultyIdRouteImport } from './routes/_admin/faculty/$id'
 import { Route as AdminClassesCreateRouteImport } from './routes/_admin/classes/create'
 import { Route as AdminClassesIdRouteImport } from './routes/_admin/classes/$id'
 import { Route as TeacherTeacherStudentsIndexRouteImport } from './routes/_teacher/teacher/students/index'
+import { Route as TeacherTeacherClassesIndexRouteImport } from './routes/_teacher/teacher/classes/index'
 import { Route as AdminStudentsIdIndexRouteImport } from './routes/_admin/students/$id.index'
 import { Route as AdminFacultyIdIndexRouteImport } from './routes/_admin/faculty/$id.index'
 import { Route as AdminClassesIdIndexRouteImport } from './routes/_admin/classes/$id.index'
 import { Route as TeacherTeacherStudentsCreateRouteImport } from './routes/_teacher/teacher/students/create'
 import { Route as TeacherTeacherStudentsIdRouteImport } from './routes/_teacher/teacher/students/$id'
+import { Route as TeacherTeacherClassesIdRouteImport } from './routes/_teacher/teacher/classes/$id'
 import { Route as AdminStudentsIdEditRouteImport } from './routes/_admin/students/$id.edit'
 import { Route as AdminStudentsIdAttendanceRouteImport } from './routes/_admin/students/$id.attendance'
 import { Route as AdminFacultyIdEditRouteImport } from './routes/_admin/faculty/$id.edit'
@@ -202,6 +204,12 @@ const TeacherTeacherStudentsIndexRoute =
     path: '/teacher/students/',
     getParentRoute: () => TeacherRoute,
   } as any)
+const TeacherTeacherClassesIndexRoute =
+  TeacherTeacherClassesIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => TeacherTeacherClassesRoute,
+  } as any)
 const AdminStudentsIdIndexRoute = AdminStudentsIdIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -229,6 +237,11 @@ const TeacherTeacherStudentsIdRoute =
     path: '/teacher/students/$id',
     getParentRoute: () => TeacherRoute,
   } as any)
+const TeacherTeacherClassesIdRoute = TeacherTeacherClassesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => TeacherTeacherClassesRoute,
+} as any)
 const AdminStudentsIdEditRoute = AdminStudentsIdEditRouteImport.update({
   id: '/edit',
   path: '/edit',
@@ -288,7 +301,7 @@ export interface FileRoutesByFullPath {
   '/student/dashboard': typeof StudentStudentDashboardRoute
   '/student/schedule': typeof StudentStudentScheduleRoute
   '/teacher/attendance': typeof TeacherTeacherAttendanceRoute
-  '/teacher/classes': typeof TeacherTeacherClassesRoute
+  '/teacher/classes': typeof TeacherTeacherClassesRouteWithChildren
   '/teacher/dashboard': typeof TeacherTeacherDashboardRoute
   '/teacher/fees': typeof TeacherTeacherFeesRoute
   '/teacher/schedule': typeof TeacherTeacherScheduleRoute
@@ -300,11 +313,13 @@ export interface FileRoutesByFullPath {
   '/faculty/$id/edit': typeof AdminFacultyIdEditRoute
   '/students/$id/attendance': typeof AdminStudentsIdAttendanceRoute
   '/students/$id/edit': typeof AdminStudentsIdEditRoute
+  '/teacher/classes/$id': typeof TeacherTeacherClassesIdRoute
   '/teacher/students/$id': typeof TeacherTeacherStudentsIdRouteWithChildren
   '/teacher/students/create': typeof TeacherTeacherStudentsCreateRoute
   '/classes/$id/': typeof AdminClassesIdIndexRoute
   '/faculty/$id/': typeof AdminFacultyIdIndexRoute
   '/students/$id/': typeof AdminStudentsIdIndexRoute
+  '/teacher/classes/': typeof TeacherTeacherClassesIndexRoute
   '/teacher/students/': typeof TeacherTeacherStudentsIndexRoute
   '/teacher/students/$id/attendance': typeof TeacherTeacherStudentsIdAttendanceRoute
   '/teacher/students/$id/edit': typeof TeacherTeacherStudentsIdEditRoute
@@ -326,7 +341,6 @@ export interface FileRoutesByTo {
   '/student/dashboard': typeof StudentStudentDashboardRoute
   '/student/schedule': typeof StudentStudentScheduleRoute
   '/teacher/attendance': typeof TeacherTeacherAttendanceRoute
-  '/teacher/classes': typeof TeacherTeacherClassesRoute
   '/teacher/dashboard': typeof TeacherTeacherDashboardRoute
   '/teacher/fees': typeof TeacherTeacherFeesRoute
   '/teacher/schedule': typeof TeacherTeacherScheduleRoute
@@ -338,10 +352,12 @@ export interface FileRoutesByTo {
   '/faculty/$id/edit': typeof AdminFacultyIdEditRoute
   '/students/$id/attendance': typeof AdminStudentsIdAttendanceRoute
   '/students/$id/edit': typeof AdminStudentsIdEditRoute
+  '/teacher/classes/$id': typeof TeacherTeacherClassesIdRoute
   '/teacher/students/create': typeof TeacherTeacherStudentsCreateRoute
   '/classes/$id': typeof AdminClassesIdIndexRoute
   '/faculty/$id': typeof AdminFacultyIdIndexRoute
   '/students/$id': typeof AdminStudentsIdIndexRoute
+  '/teacher/classes': typeof TeacherTeacherClassesIndexRoute
   '/teacher/students': typeof TeacherTeacherStudentsIndexRoute
   '/teacher/students/$id/attendance': typeof TeacherTeacherStudentsIdAttendanceRoute
   '/teacher/students/$id/edit': typeof TeacherTeacherStudentsIdEditRoute
@@ -370,7 +386,7 @@ export interface FileRoutesById {
   '/_student/student/dashboard': typeof StudentStudentDashboardRoute
   '/_student/student/schedule': typeof StudentStudentScheduleRoute
   '/_teacher/teacher/attendance': typeof TeacherTeacherAttendanceRoute
-  '/_teacher/teacher/classes': typeof TeacherTeacherClassesRoute
+  '/_teacher/teacher/classes': typeof TeacherTeacherClassesRouteWithChildren
   '/_teacher/teacher/dashboard': typeof TeacherTeacherDashboardRoute
   '/_teacher/teacher/fees': typeof TeacherTeacherFeesRoute
   '/_teacher/teacher/schedule': typeof TeacherTeacherScheduleRoute
@@ -382,11 +398,13 @@ export interface FileRoutesById {
   '/_admin/faculty/$id/edit': typeof AdminFacultyIdEditRoute
   '/_admin/students/$id/attendance': typeof AdminStudentsIdAttendanceRoute
   '/_admin/students/$id/edit': typeof AdminStudentsIdEditRoute
+  '/_teacher/teacher/classes/$id': typeof TeacherTeacherClassesIdRoute
   '/_teacher/teacher/students/$id': typeof TeacherTeacherStudentsIdRouteWithChildren
   '/_teacher/teacher/students/create': typeof TeacherTeacherStudentsCreateRoute
   '/_admin/classes/$id/': typeof AdminClassesIdIndexRoute
   '/_admin/faculty/$id/': typeof AdminFacultyIdIndexRoute
   '/_admin/students/$id/': typeof AdminStudentsIdIndexRoute
+  '/_teacher/teacher/classes/': typeof TeacherTeacherClassesIndexRoute
   '/_teacher/teacher/students/': typeof TeacherTeacherStudentsIndexRoute
   '/_teacher/teacher/students/$id/attendance': typeof TeacherTeacherStudentsIdAttendanceRoute
   '/_teacher/teacher/students/$id/edit': typeof TeacherTeacherStudentsIdEditRoute
@@ -425,11 +443,13 @@ export interface FileRouteTypes {
     | '/faculty/$id/edit'
     | '/students/$id/attendance'
     | '/students/$id/edit'
+    | '/teacher/classes/$id'
     | '/teacher/students/$id'
     | '/teacher/students/create'
     | '/classes/$id/'
     | '/faculty/$id/'
     | '/students/$id/'
+    | '/teacher/classes/'
     | '/teacher/students/'
     | '/teacher/students/$id/attendance'
     | '/teacher/students/$id/edit'
@@ -451,7 +471,6 @@ export interface FileRouteTypes {
     | '/student/dashboard'
     | '/student/schedule'
     | '/teacher/attendance'
-    | '/teacher/classes'
     | '/teacher/dashboard'
     | '/teacher/fees'
     | '/teacher/schedule'
@@ -463,10 +482,12 @@ export interface FileRouteTypes {
     | '/faculty/$id/edit'
     | '/students/$id/attendance'
     | '/students/$id/edit'
+    | '/teacher/classes/$id'
     | '/teacher/students/create'
     | '/classes/$id'
     | '/faculty/$id'
     | '/students/$id'
+    | '/teacher/classes'
     | '/teacher/students'
     | '/teacher/students/$id/attendance'
     | '/teacher/students/$id/edit'
@@ -506,11 +527,13 @@ export interface FileRouteTypes {
     | '/_admin/faculty/$id/edit'
     | '/_admin/students/$id/attendance'
     | '/_admin/students/$id/edit'
+    | '/_teacher/teacher/classes/$id'
     | '/_teacher/teacher/students/$id'
     | '/_teacher/teacher/students/create'
     | '/_admin/classes/$id/'
     | '/_admin/faculty/$id/'
     | '/_admin/students/$id/'
+    | '/_teacher/teacher/classes/'
     | '/_teacher/teacher/students/'
     | '/_teacher/teacher/students/$id/attendance'
     | '/_teacher/teacher/students/$id/edit'
@@ -738,6 +761,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TeacherTeacherStudentsIndexRouteImport
       parentRoute: typeof TeacherRoute
     }
+    '/_teacher/teacher/classes/': {
+      id: '/_teacher/teacher/classes/'
+      path: '/'
+      fullPath: '/teacher/classes/'
+      preLoaderRoute: typeof TeacherTeacherClassesIndexRouteImport
+      parentRoute: typeof TeacherTeacherClassesRoute
+    }
     '/_admin/students/$id/': {
       id: '/_admin/students/$id/'
       path: '/'
@@ -772,6 +802,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/teacher/students/$id'
       preLoaderRoute: typeof TeacherTeacherStudentsIdRouteImport
       parentRoute: typeof TeacherRoute
+    }
+    '/_teacher/teacher/classes/$id': {
+      id: '/_teacher/teacher/classes/$id'
+      path: '/$id'
+      fullPath: '/teacher/classes/$id'
+      preLoaderRoute: typeof TeacherTeacherClassesIdRouteImport
+      parentRoute: typeof TeacherTeacherClassesRoute
     }
     '/_admin/students/$id/edit': {
       id: '/_admin/students/$id/edit'
@@ -922,6 +959,21 @@ const StudentRouteChildren: StudentRouteChildren = {
 const StudentRouteWithChildren =
   StudentRoute._addFileChildren(StudentRouteChildren)
 
+interface TeacherTeacherClassesRouteChildren {
+  TeacherTeacherClassesIdRoute: typeof TeacherTeacherClassesIdRoute
+  TeacherTeacherClassesIndexRoute: typeof TeacherTeacherClassesIndexRoute
+}
+
+const TeacherTeacherClassesRouteChildren: TeacherTeacherClassesRouteChildren = {
+  TeacherTeacherClassesIdRoute: TeacherTeacherClassesIdRoute,
+  TeacherTeacherClassesIndexRoute: TeacherTeacherClassesIndexRoute,
+}
+
+const TeacherTeacherClassesRouteWithChildren =
+  TeacherTeacherClassesRoute._addFileChildren(
+    TeacherTeacherClassesRouteChildren,
+  )
+
 interface TeacherTeacherStudentsIdRouteChildren {
   TeacherTeacherStudentsIdAttendanceRoute: typeof TeacherTeacherStudentsIdAttendanceRoute
   TeacherTeacherStudentsIdEditRoute: typeof TeacherTeacherStudentsIdEditRoute
@@ -943,7 +995,7 @@ const TeacherTeacherStudentsIdRouteWithChildren =
 
 interface TeacherRouteChildren {
   TeacherTeacherAttendanceRoute: typeof TeacherTeacherAttendanceRoute
-  TeacherTeacherClassesRoute: typeof TeacherTeacherClassesRoute
+  TeacherTeacherClassesRoute: typeof TeacherTeacherClassesRouteWithChildren
   TeacherTeacherDashboardRoute: typeof TeacherTeacherDashboardRoute
   TeacherTeacherFeesRoute: typeof TeacherTeacherFeesRoute
   TeacherTeacherScheduleRoute: typeof TeacherTeacherScheduleRoute
@@ -954,7 +1006,7 @@ interface TeacherRouteChildren {
 
 const TeacherRouteChildren: TeacherRouteChildren = {
   TeacherTeacherAttendanceRoute: TeacherTeacherAttendanceRoute,
-  TeacherTeacherClassesRoute: TeacherTeacherClassesRoute,
+  TeacherTeacherClassesRoute: TeacherTeacherClassesRouteWithChildren,
   TeacherTeacherDashboardRoute: TeacherTeacherDashboardRoute,
   TeacherTeacherFeesRoute: TeacherTeacherFeesRoute,
   TeacherTeacherScheduleRoute: TeacherTeacherScheduleRoute,

@@ -5,7 +5,7 @@ import { DashboardLayout } from '@/features/dashboard/components/DashboardLayout
 export const Route = createFileRoute('/_admin/classes/$id/')({
   component: () => (
     <DashboardLayout>
-      <ClassDetailsPage />
+      <ClassDetailsPage  />
     </DashboardLayout>
   ),
 })

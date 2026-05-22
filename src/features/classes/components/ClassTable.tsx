@@ -24,7 +24,8 @@ interface ClassTableProps {
 
 export function ClassTable({ classes }: ClassTableProps) {
   const user = useAuthStore((state) => state.user)
-  const isAdmin = user?.role === Role.ADMIN
+  const role = user?.role;
+   const isAdmin = user?.role === Role.ADMIN
   const { mutate: deleteClass } = useDeleteClass()
   const [deleteId, setDeleteId] = useState<string | null>(null)
 
@@ -100,9 +101,8 @@ export function ClassTable({ classes }: ClassTableProps) {
                 <td className="px-6 py-5 text-right">
                   <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <Link
-                      to="/classes/$id"
+                      to={ role === Role.TEACHER ? "/teacher/classes/$id" : "/classes/$id"}
                       params={{ id: cls.id }}
-                      onClick={() => {}}
                     >
                       <Button
                         variant="ghost"
