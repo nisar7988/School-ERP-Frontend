@@ -54,6 +54,7 @@ export const CreateStudentSchema = z.object({
     .min(6, 'Password must be at least 6 characters')
     .optional()
     .or(z.literal('')),
+    profileImage: z.instanceof(File).optional(),  
 })
 
 export type CreateStudentDto = z.infer<typeof CreateStudentSchema>

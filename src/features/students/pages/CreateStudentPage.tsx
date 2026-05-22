@@ -2,12 +2,11 @@ import { ArrowLeft, UserPlus } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { StudentForm } from '../components/StudentForm'
 import { useCreateStudent } from '../api/mutations'
-import type { CreateStudentDto } from '../types'
 
 export function CreateStudentPage() {
   const { mutate: createStudent, isPending } = useCreateStudent()
 
-  const handleSubmit = (data: CreateStudentDto) => {
+  const handleSubmit = (data: FormData) => {
     createStudent(data)
   }
 

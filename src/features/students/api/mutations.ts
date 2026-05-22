@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createStudentService, updateStudentService, deleteStudentService } from './services'
-import type { UpdateStudentDto } from '../types'
 import { toast } from '@/lib/stores/toast.store'
 import type { AxiosError } from 'axios'
 
@@ -23,7 +22,7 @@ export const useUpdateStudent = () => {
   const queryClient = useQueryClient()
   
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateStudentDto }) =>
+    mutationFn: ({ id, data }: { id: string; data: FormData }) =>
       updateStudentService(id, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['students'] })

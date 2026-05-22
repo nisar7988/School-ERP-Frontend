@@ -20,11 +20,19 @@ export const getStudentsService = (params?: StudentQuery) =>
 export const getStudentService = (id: string) =>
   http.get<SingleResponse<StudentWithRelations>>(STUDENT_ROUTES.BY_ID(id))
 
-export const createStudentService = (data: CreateStudentDto) =>
-  http.post<SingleResponse<Student>>(STUDENT_ROUTES.BASE, data)
+export const createStudentService = (data: FormData) =>
+  http.post<SingleResponse<Student>>(STUDENT_ROUTES.BASE, data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
 
-export const updateStudentService = (id: string, data: UpdateStudentDto) =>
-  http.patch<SingleResponse<Student>>(STUDENT_ROUTES.BY_ID(id), data)
+export const updateStudentService = (id: string, data: FormData ) =>
+  http.patch<SingleResponse<Student>>(STUDENT_ROUTES.BY_ID(id), data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
 
 export const deleteStudentService = (id: string) =>
   http.delete(STUDENT_ROUTES.BY_ID(id))

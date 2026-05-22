@@ -11,7 +11,7 @@ import { useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
 
 interface StudentFormProps {
-  onSubmit: (data: CreateStudentDto) => void
+  onSubmit: (data: FormData) => void
   isLoading: boolean
   defaultValues?: Partial<CreateStudentDto>
 }
@@ -24,7 +24,7 @@ export function StudentForm({
   const user = useAuthStore((state) => state.user)
   const isAdmin = user?.role === Role.ADMIN
   const isTeacher = user?.role === Role.TEACHER
-
+  const [profileImage, setProfileImage] = useState<File | null>(null)
   const { data: adminClassesResponse, isLoading: isLoadingAdminClasses } =
     useClasses({ limit: 100 }, { enabled: isAdmin })
 
@@ -47,10 +47,23 @@ export function StudentForm({
     resolver: zodResolver(CreateStudentSchema),
     defaultValues,
   })
-  const handleFormSubmit = (data: CreateStudentDto) => {
-    onSubmit(data)
-    reset()
+const handleFormSubmit = (data: CreateStudentDto) => {
+  const formData = new FormData()
+
+  Object.entries(data).forEach(([key, value]) => {
+    if (key !== 'profileImage' && value !== undefined && value !== null) {
+      formData.append(key, String(value))
+    }
+  })
+
+  if (profileImage) {
+    formData.append('profileImage', profileImage)
   }
+console.log("Form Data:", Object.fromEntries(formData.entries())) // Debug log to check form data
+  onSubmit(formData)
+  reset()
+  setProfileImage(null)
+}
 
   const [showPassword, setShowPassword] = useState(false)
 
@@ -62,7 +75,19 @@ export function StudentForm({
           <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider">
             Personal Info
           </h3>
-
+          <div className="space-y-2">
+            <label className="text-sm font-bold text-gray-700">
+              Profile Image
+            </label>
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files?.[0]
+                if (file) setProfileImage(file)
+              }}
+            />
+          </div>
           <div className="space-y-2">
             <label className="text-sm font-bold text-gray-700">
               First Name
